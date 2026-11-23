@@ -26,7 +26,7 @@
 | DRC `Courtyards overlap` | 器件占位重叠 | 看 2D/3D | 移器件/确认可叠 |
 | DRC `Silkscreen clipped by solder mask` | 丝印压到阻焊开窗/焊盘 | 看丝印层与 `F.Mask` | 移丝印/改封装 |
 | DRC 对话框 `Unconnected Items` 标签 | 仍有飞线/网络未连 | 看飞线与标签页 | 布线/补过孔/调整铺铜 |
-| DRC `Schematic parity` 检查 | PCB 与原理图不一致（缺/多封装、字段不符） | 看差异列表 | 更新 PCB/原理图 |
+| DRC `Schematic parity` 检查 | PCB 与原理图不一致（仅在启用 parity 且随工程运行时检查） | 看差异列表 | 更新 PCB/原理图 |
 | 铺铜后有孤岛 | 最小岛设置/无连接 | 看铺铜 | 删岛/加过孔 |
 | 3D 模型缺失 | 路径/格式 | 看封装 3D 设置 | 修路径/转 STEP |
 
