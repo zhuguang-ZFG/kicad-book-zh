@@ -121,12 +121,12 @@
 
 <figure class="illu illu-photo screenshot">
 <div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-dialog-erc.png" alt="ERC 对话框"></div>
-<figcaption><span class="fig-no">图 A-1</span><span class="fig-cap">ERC 对话框。左侧列出违规，右侧显示当前违规的对象与说明；底部可筛选错误、警告和排除项。</span></figcaption>
+<figcaption><span class="fig-no">图 A-1</span><span class="fig-cap">ERC 对话框。左侧按错误类型分组列出违规对象；底部可筛选错误、警告和排除项，或重新运行检查。</span></figcaption>
 </figure>
 
 <figure class="illu illu-photo screenshot">
-<div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-erc-severity.png" alt="ERC 严重级别设置"></div>
-<figcaption><span class="fig-no">图 A-2</span><span class="fig-cap">ERC 的 Severity 页。每类检查可单独设为 Error、Warning 或 Ignore。</span></figcaption>
+<div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-erc-severity.png" alt="Schematic Setup 违规严重级别"></div>
+<figcaption><span class="fig-no">图 A-2</span><span class="fig-cap">Schematic Setup 的 Violation Severity 页。每类 ERC 检查可单独设为 Error、Warning 或 Ignore。</span></figcaption>
 </figure>
 
 <figure class="illu illu-photo screenshot">
