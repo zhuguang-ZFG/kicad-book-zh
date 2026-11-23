@@ -151,7 +151,7 @@
 
 <figure class="illu illu-photo screenshot">
 <div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-drc-violations.png" alt="DRC 违规列表"></div>
-<figcaption><span class="fig-no">图 A-7</span><span class="fig-cap">DRC 的 Violations 页。每条记录给出规则、对象、实测值与要求值；底部可排除、保存报告或重新运行。</span></figcaption>
+<figcaption><span class="fig-no">图 A-7</span><span class="fig-cap">DRC 的 Violations 页。每条记录给出规则、对象、实测值与要求值；底部可勾选 Exclusions、保存报告或重新运行；排除单条违规要用右键菜单。</span></figcaption>
 </figure>
 
 <figure class="illu illu-photo screenshot">
