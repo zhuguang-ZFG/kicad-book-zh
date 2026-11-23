@@ -472,17 +472,18 @@ def ch08_return_path(a):
     board(a, 60, 48, 600, 190, r=8)
     a.path("M110 112L180 112L240 152L430 152L480 112L610 112", width=2.4)
     a.text(120, 100, "信号电流 →", size=10, anchor="start", opacity=.6)
-    for x, w in ((84, 250), (386, 250)):
-        a.rect(x, 190, w, 34, width=1.0, opacity=.35)
-        a.hatch(x, 190, w, 34, step=7, opacity=.12)
+    # B.Cu plane: a short slot in the upper part, continuous copper below it
+    for x, w in ((84, 266), (370, 264)):
+        a.rect(x, 190, w, 22, width=1.0, opacity=.35)
+        a.hatch(x, 190, w, 22, step=7, opacity=.12)
+    a.rect(84, 212, 550, 12, width=1.0, opacity=.35)
+    a.hatch(84, 212, 550, 12, step=7, opacity=.12)
     a.text(100, 214, "B.Cu GND", size=9, anchor="start", opacity=.55)
-    a.line(350, 184, 350, 230, width=2.0)
-    a.line(370, 184, 370, 230, width=2.0)
-    a.text(360, 248, "开槽", size=10)
-    a.path("M100 205L330 205L340 238L380 238L390 205L500 205L610 205",
+    a.text(360, 184, "开槽", size=9)
+    a.path("M100 205L330 205L340 218L380 218L390 205L500 205L610 205",
            width=1.6, dash="7 5", opacity=.8)
     a.text(470, 198, "返回电流", size=9, anchor="end", opacity=.6)
-    a.text(360, 275, "绕行让环路面积变大；低频时它还肯绕，高频时它会找别的地。", size=12, opacity=.55)
+    a.text(360, 275, "开槽迫使回流绕过槽端，环路面积随之变大。", size=12, opacity=.55)
 
 
 # ---- chapter 9 ---------------------------------------------------------
@@ -529,7 +530,7 @@ def ch09_dfm(a):
 
 def ch09_three_gates(a):
     a.text(360, 30, "三道门都过，才叫“可以发板”", size=15, opacity=.55)
-    gates = [("DRC", "规则 · 连通 · 几何", "可自动，退出码 0/5", "只证明规则"),
+    gates = [("DRC", "规则 · 连通 · 几何", "0 通过 / 5 违规", "只证明规则"),
              ("电气确认", "接得对 · 值对 · 回流顺", "人工走查 + 上电", "只证明意图"),
              ("工厂能力", "线宽 · 环宽 · 阻焊桥", "DFM 表 + 工厂确认", "只证明工艺")]
     for i, (title, l1, l2, tail) in enumerate(gates):
