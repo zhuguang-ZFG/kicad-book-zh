@@ -121,13 +121,13 @@
   },
   "github-jlcpcb-tools-issue-636": {
     "title": "Rotations incorrect on back side?",
-    "authority": "Bouni/kicad-jlcpcb-tools issue #636 and commenters",
+    "authority": "GitHub issue author and commenters",
     "kind": "community",
     "url": "https://github.com/Bouni/kicad-jlcpcb-tools/issues/636",
     "snapshot": "Opened 2025-07-22, updated 2025-08-22; open when checked 2026-11-23",
     "accessed": "2026-11-23",
-    "license": "GitHub issue discussion; cited as a non-normative incident report",
-    "scope": "Bottom-side CPL rotation disagreement and conflicting preview/engineer-view reports; no universal correction established",
+    "license": "No separate issue-content license asserted; factual report cited, not code reuse",
+    "scope": "Unresolved user report of bottom-side CPL rotation disagreement and conflicting preview/engineer-view reports; non-normative",
     "normative": false
   },
   "kicad-python": {
