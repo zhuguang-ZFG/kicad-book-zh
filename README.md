@@ -69,7 +69,7 @@ python ../tools/check_book.py
 ## 构建产物
 
 - HTML：`yuyu-book/dist/kicad-book-zh.html`（约 0.8MB，单文件可离线阅读）；
-- PDF：`yuyu-book/dist/kicad-book-zh.pdf`（163 页，约 9.0MB，带书签）；
+- PDF：`yuyu-book/dist/kicad-book-zh.pdf`（164 页，约 9.0MB，带书签）；
 - 插图：`yuyu-book/illustrations/`，所有 SVG 可独立引用；
 - 案例：`usb_breath_led` 为书中教学案例，不随书附带工程文件。
 
