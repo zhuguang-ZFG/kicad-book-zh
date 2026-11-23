@@ -108,6 +108,28 @@
     "scope": "BOM/CPL 整理与 JLCPCB 下单文件",
     "normative": false
   },
+  "jlcpcb-pos-help": {
+    "title": "Pick & Place File for PCB Assembly",
+    "authority": "JLCPCB Help Center",
+    "kind": "docs",
+    "url": "https://jlcpcb.com/help/article/pick-place-file-for-pcb-assembly",
+    "snapshot": "Last updated 2026-09-09",
+    "accessed": "2026-11-23",
+    "license": "JLCPCB Help Center content; cited for service-specific requirements",
+    "scope": "JLCPCB CPL requirements: centroid coordinates in mm, side, and positive counter-clockwise rotation; not a KiCad-wide convention",
+    "normative": false
+  },
+  "github-jlcpcb-tools-issue-636": {
+    "title": "Rotations incorrect on back side?",
+    "authority": "Bouni/kicad-jlcpcb-tools issue #636 and commenters",
+    "kind": "community",
+    "url": "https://github.com/Bouni/kicad-jlcpcb-tools/issues/636",
+    "snapshot": "Opened 2025-07-22, updated 2025-08-22; open when checked 2026-11-23",
+    "accessed": "2026-11-23",
+    "license": "GitHub issue discussion; cited as a non-normative incident report",
+    "scope": "Bottom-side CPL rotation disagreement and conflicting preview/engineer-view reports; no universal correction established",
+    "normative": false
+  },
   "kicad-python": {
     "title": "kicad-python (IPC API bindings)",
     "authority": "KiCad project",
