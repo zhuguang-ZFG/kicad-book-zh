@@ -193,6 +193,10 @@ figure.illu:not(.illu-photo) .illu-frame::after{right:6px;bottom:6px;
     inset 0 0 0 1px rgba(38,34,27,.07),
     inset 0 1px 0 rgba(255,255,255,.7)}
 .illu-photo img{display:block;width:100%;height:auto}
+/* Appendix screenshot plates: cap the height so two can share a page; the
+   full-width rule above would otherwise spend a sheet on one dialog. */
+figure.illu-photo.screenshot img{width:auto;max-width:100%;max-height:100mm;
+  margin:0 auto}
 @media screen{
   figure.illu-photo .illu-frame{
     transition:box-shadow .3s ease,transform .3s ease}

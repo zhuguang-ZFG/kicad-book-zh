@@ -114,3 +114,47 @@
 | 封装库浏览器 | `Tools → Footprint Library Browser` |
 
 > **提示：**快捷键冲突时，KiCad 会在 `Preferences → Hotkeys` 里标红。团队可以导出一份 `.hotkeys` 配置共享，但不要强制覆盖个人习惯。
+
+## A.7 官方界面截图
+
+下面 8 张图直接截自 KiCad 10 官方文档，用来和正文手绘图对照。截图按 CC BY 3.0 或 GPLv3+ 使用；逐张来源、访问日期与版本见 `yuyu-book/screenshots/README.md`，书末“来源与许可”也列出了 KiCad 文档条目。
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-dialog-erc.png" alt="ERC 对话框"></div>
+<figcaption><span class="fig-no">图 A-1</span><span class="fig-cap">ERC 对话框。左侧列出违规，右侧显示当前违规的对象与说明；底部可筛选错误、警告和排除项。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-erc-severity.png" alt="ERC 严重级别设置"></div>
+<figcaption><span class="fig-no">图 A-2</span><span class="fig-cap">ERC 的 Severity 页。每类检查可单独设为 Error、Warning 或 Ignore。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-board-setup-stackup.png" alt="Board Setup 叠层页"></div>
+<figcaption><span class="fig-no">图 A-3</span><span class="fig-cap">Board Setup 的 Physical Stackup 页。层数、材料、厚度和铜厚在这里定义；板厚由叠层参数计算。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-board-setup-constraints.png" alt="Board Setup 约束页"></div>
+<figcaption><span class="fig-no">图 A-4</span><span class="fig-cap">Board Setup 的 Constraints 页。板级最小值在这里；网类中的线宽、过孔尺寸是默认值，不等同于 DRC 下限。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-zone-properties.png" alt="铺铜区域属性"></div>
+<figcaption><span class="fig-no">图 A-5</span><span class="fig-cap">Copper Zone Properties。网络、间距、焊盘连接方式、热焊盘参数和孤岛移除都在这里设置。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-track-via-properties.png" alt="走线与过孔属性"></div>
+<figcaption><span class="fig-no">图 A-6</span><span class="fig-cap">Track &amp; Via Properties。选中走线或过孔后按 E 打开；可改网类、线宽、过孔尺寸和所在层。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-drc-violations.png" alt="DRC 违规列表"></div>
+<figcaption><span class="fig-no">图 A-7</span><span class="fig-cap">DRC 的 Violations 页。每条记录给出规则、对象、实测值与要求值；底部可排除、保存报告或重新运行。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-board-setup-violation-severity.png" alt="DRC 严重级别设置"></div>
+<figcaption><span class="fig-no">图 A-8</span><span class="fig-cap">Board Setup 的 Violation Severity 页。每类 DRC 违规可单独设为 Error、Warning 或 Ignore，决定是否阻塞发板。</span></figcaption>
+</figure>

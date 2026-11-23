@@ -23,6 +23,7 @@ yuyu-book/                   # yuyu-book 构建器
 ├── manifest.json            # 书结构定义
 ├── sources.json             # 来源与参考引用
 ├── illustrations/           # 所有手绘 SVG 插图
+├── screenshots/             # KiCad 10 官方界面截图（CC BY 3.0）
 └── dist/                    # 构建产物，不提交
 
 tools/                       # 开发脚本
