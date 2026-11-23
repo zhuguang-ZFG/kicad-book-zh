@@ -117,7 +117,7 @@
 
 ## A.7 官方界面截图
 
-下面 8 张图直接截自 KiCad 10 官方文档，用来和正文手绘图对照。截图按 CC BY 3.0 或 GPLv3+ 使用；逐张来源、访问日期与版本见 `yuyu-book/screenshots/README.md`，书末“来源与许可”也列出了 KiCad 文档条目。
+下面 15 张图直接截自 KiCad 10 官方文档，用来和正文手绘图对照。截图按 CC BY 3.0 或 GPLv3+ 使用；逐张来源、访问日期与版本见 `yuyu-book/screenshots/README.md`，书末“来源与许可”也列出了 KiCad 文档条目。
 
 <figure class="illu illu-photo screenshot">
 <div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-dialog-erc.png" alt="ERC 对话框"></div>
@@ -157,4 +157,39 @@
 <figure class="illu illu-photo screenshot">
 <div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-board-setup-violation-severity.png" alt="DRC 严重级别设置"></div>
 <figcaption><span class="fig-no">图 A-8</span><span class="fig-cap">Board Setup 的 Violation Severity 页。每类 DRC 违规可单独设为 Error、Warning 或 Ignore，决定是否阻塞发板。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-choose-symbol.png" alt="Choose Symbol 符号选择器"></div>
+<figcaption><span class="fig-no">图 A-9</span><span class="fig-cap">Choose Symbol 对话框。可按库、名称和描述筛选；右侧预览符号与封装，选中后点 OK 放入原理图。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-symbol-properties-footprint.png" alt="Symbol Properties 封装字段"></div>
+<figcaption><span class="fig-no">图 A-10</span><span class="fig-cap">Symbol Properties 的 Footprint 字段。符号与封装的对应关系在这里指定；字段值是可解析的封装库链接。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-setup-netclasses.png" alt="Schematic Setup 网类"></div>
+<figcaption><span class="fig-no">图 A-11</span><span class="fig-cap">Schematic Setup → Net Classes。可在原理图侧定义网类、成员和线宽；同一工程的 PCB 侧也能看到这组网类。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-board-setup-netclasses.png" alt="Board Setup 网类"></div>
+<figcaption><span class="fig-no">图 A-12</span><span class="fig-cap">Board Setup → Net Classes。线宽、间距、过孔尺寸和差分对参数按网类设置；这些是布线默认值，板级最小值仍是硬下限。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-update-from-schematic.png" alt="从原理图更新 PCB"></div>
+<figcaption><span class="fig-no">图 A-13</span><span class="fig-cap">Update PCB from Schematic。先看 Changes to Be Applied 列表，再点 Update PCB；封装、网络和位号改动都走这条同步链。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-plot-dialog.png" alt="Plot 制造文件对话框"></div>
+<figcaption><span class="fig-no">图 A-14</span><span class="fig-cap">Plot 对话框。选择 Gerber 格式、输出目录、层和选项；它是制造文件输出的 GUI 入口之一。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-3d-viewer.jpg" alt="3D Viewer"></div>
+<figcaption><span class="fig-no">图 A-15</span><span class="fig-cap">3D Viewer。用于检查板框、器件高度、丝印和连接器方向；它不能替代 DRC、DFM 或电气走查。</span></figcaption>
 </figure>
