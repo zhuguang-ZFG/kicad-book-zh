@@ -328,6 +328,20 @@ def ch05_netclass(a):
     a.text(360, 268, "基线用 Default / Power；USB* 仅数据版。", size=12, opacity=.55)
 
 
+def ch05_rule_floor(a):
+    a.text(360, 30, "规则从具体到通用，都不能穿过硬下限", size=15, opacity=.55)
+    a.rect(80, 216, 560, 38, width=2.2, radius=3)
+    a.text(360, 241, "板级 Constraints：最小值是硬下限", size=14)
+    for x, title, sub in ((110, "网类", "线宽 / 过孔 / 间距的规则值"),
+                          (400, "自定义规则", "例外 / 区域 / 条件")):
+        a.rect(x, 104, 210, 72, width=1.6, radius=3)
+        a.text(x + 105, 132, title, size=15)
+        a.text(x + 105, 155, sub, size=10, opacity=.55)
+        a.arrow(x + 105, 178, x + 105, 212, width=1.5, head=5)
+        a.text(x + 115, 198, "不能突破", size=9, anchor="start", opacity=.5)
+    a.text(360, 80, "网类给规则值；自定义规则处理例外", size=11, opacity=.55)
+
+
 # ---- chapter 6 ---------------------------------------------------------
 def ch06_floor(a):
     board(a, 90, 44, 540, 210)
@@ -453,6 +467,24 @@ def ch08_antenna(a):
     a.text(360, 278, "天线不是“放在板边就行”：净空、参考地和外壳，三者一起决定它能不能工作。", size=12, opacity=.55)
 
 
+def ch08_return_path(a):
+    a.text(360, 28, "同样的信号，地平面开槽后要绕路", size=13, opacity=.55)
+    board(a, 60, 48, 600, 190, r=8)
+    a.path("M110 112L180 112L240 152L430 152L480 112L610 112", width=2.4)
+    a.text(120, 100, "信号电流 →", size=10, anchor="start", opacity=.6)
+    for x, w in ((84, 250), (386, 250)):
+        a.rect(x, 190, w, 34, width=1.0, opacity=.35)
+        a.hatch(x, 190, w, 34, step=7, opacity=.12)
+    a.text(100, 214, "B.Cu GND", size=9, anchor="start", opacity=.55)
+    a.line(350, 184, 350, 230, width=2.0)
+    a.line(370, 184, 370, 230, width=2.0)
+    a.text(360, 248, "开槽", size=10)
+    a.path("M100 205L330 205L340 238L380 238L390 205L500 205L610 205",
+           width=1.6, dash="7 5", opacity=.8)
+    a.text(470, 198, "返回电流", size=9, anchor="end", opacity=.6)
+    a.text(360, 275, "绕行让环路面积变大；低频时它还肯绕，高频时它会找别的地。", size=12, opacity=.55)
+
+
 # ---- chapter 9 ---------------------------------------------------------
 def ch09_drc(a):
     # board with markers
@@ -493,6 +525,26 @@ def ch09_dfm(a):
     cross(a, 575, 160, 10, 1.8)
     a.text(575, 210, "丝印不要压焊盘", size=10, opacity=.6)
     a.text(360, 254, "DFM 不是“工厂的事”：孔环、阻焊、钢网和丝印都在你的文件里。", size=12, opacity=.55)
+
+
+def ch09_three_gates(a):
+    a.text(360, 30, "三道门都过，才叫“可以发板”", size=15, opacity=.55)
+    gates = [("DRC", "规则 · 连通 · 几何", "可自动，退出码 0/5", "只证明规则"),
+             ("电气确认", "接得对 · 值对 · 回流顺", "人工走查 + 上电", "只证明意图"),
+             ("工厂能力", "线宽 · 环宽 · 阻焊桥", "DFM 表 + 工厂确认", "只证明工艺")]
+    for i, (title, l1, l2, tail) in enumerate(gates):
+        x = 55 + i * 215
+        a.rect(x, 70, 180, 122, width=1.8, radius=4)
+        a.text(x + 90, 102, title, size=15)
+        a.text(x + 90, 130, l1, size=9, opacity=.6)
+        a.text(x + 90, 151, l2, size=9, opacity=.55)
+        a.line(x + 18, 164, x + 162, 164, width=.8, opacity=.25)
+        a.text(x + 90, 184, tail, size=8, opacity=.45)
+        a.line(x + 90, 192, x + 90, 220, width=1.3)
+    a.line(145, 220, 575, 220, width=1.3)
+    a.arrow(360, 220, 360, 246, width=1.5, head=5)
+    a.rect(300, 252, 120, 30, width=1.6, radius=3)
+    a.text(360, 272, "发板", size=12)
 
 
 # ---- chapter 10 --------------------------------------------------------
@@ -769,14 +821,17 @@ figs = {
     "kicad-ch04-bom": (720, 300, ch04_bom),
     "kicad-ch05-stackup": (720, 280, ch05_stack),
     "kicad-ch05-netclass": (720, 280, ch05_netclass),
+    "kicad-ch05-rule-floor": (720, 280, ch05_rule_floor),
     "kicad-ch06-floorplan": (720, 300, ch06_floor),
     "kicad-ch06-decouple": (720, 280, ch06_decouple),
     "kicad-ch07-route": (720, 280, ch07_route),
     "kicad-ch07-diffpair": (720, 280, ch07_diff),
     "kicad-ch08-pour": (720, 300, ch08_pour),
     "kicad-ch08-antenna": (720, 300, ch08_antenna),
+    "kicad-ch08-return-path": (720, 300, ch08_return_path),
     "kicad-ch09-drc": (720, 300, ch09_drc),
     "kicad-ch09-dfm": (720, 280, ch09_dfm),
+    "kicad-ch09-three-gates": (720, 300, ch09_three_gates),
     "kicad-ch10-fab-package": (720, 300, ch10_pkg),
     "kicad-ch10-cli": (720, 300, ch10_cli),
     "kicad-ch11-order": (720, 300, ch11_order),

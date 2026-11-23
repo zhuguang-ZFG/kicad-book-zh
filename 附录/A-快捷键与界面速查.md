@@ -117,7 +117,7 @@
 
 ## A.7 官方界面截图
 
-下面 15 张图直接截自 KiCad 10 官方文档，用来和正文手绘图对照。截图按 CC BY 3.0 或 GPLv3+ 使用；逐张来源、访问日期与版本见 `yuyu-book/screenshots/README.md`，书末“来源与许可”也列出了 KiCad 文档条目。
+下面 19 张图直接截自 KiCad 10 官方文档，用来和正文手绘图对照。截图按 CC BY 3.0 或 GPLv3+ 使用；逐张来源、访问日期与版本见 `yuyu-book/screenshots/README.md`，书末“来源与许可”也列出了 KiCad 文档条目。
 
 <figure class="illu illu-photo screenshot">
 <div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-dialog-erc.png" alt="ERC 对话框"></div>
@@ -146,7 +146,7 @@
 
 <figure class="illu illu-photo screenshot">
 <div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-track-via-properties.png" alt="走线与过孔属性"></div>
-<figcaption><span class="fig-no">图 A-6</span><span class="fig-cap">Track &amp; Via Properties。选中走线或过孔后按 E 打开；可改网类、线宽、过孔尺寸和所在层。</span></figcaption>
+<figcaption><span class="fig-no">图 A-6</span><span class="fig-cap">Track &amp; Via Properties。选中走线或过孔后按 E 打开；可改网络（Net）、线宽、过孔尺寸和所在层。</span></figcaption>
 </figure>
 
 <figure class="illu illu-photo screenshot">
@@ -171,12 +171,12 @@
 
 <figure class="illu illu-photo screenshot">
 <div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-setup-netclasses.png" alt="Schematic Setup 网类"></div>
-<figcaption><span class="fig-no">图 A-11</span><span class="fig-cap">Schematic Setup → Net Classes。可在原理图侧定义网类、成员和线宽；同一工程的 PCB 侧也能看到这组网类。</span></figcaption>
+<figcaption><span class="fig-no">图 A-11</span><span class="fig-cap">Schematic Setup → Net Classes。可在原理图侧定义网类、成员和原理图导线显示粗细（Wire Thickness）；同一工程的 PCB 侧也能看到这组网类。</span></figcaption>
 </figure>
 
 <figure class="illu illu-photo screenshot">
 <div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-board-setup-netclasses.png" alt="Board Setup 网类"></div>
-<figcaption><span class="fig-no">图 A-12</span><span class="fig-cap">Board Setup → Net Classes。线宽、间距、过孔尺寸和差分对参数按网类设置；这些是布线默认值，板级最小值仍是硬下限。</span></figcaption>
+<figcaption><span class="fig-no">图 A-12</span><span class="fig-cap">Board Setup → Net Classes。线宽、间距、过孔尺寸和差分对参数按网类设置；线宽与过孔尺寸是布线优选值，板级最小值仍是硬下限。</span></figcaption>
 </figure>
 
 <figure class="illu illu-photo screenshot">
@@ -192,4 +192,24 @@
 <figure class="illu illu-photo screenshot">
 <div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-3d-viewer.jpg" alt="3D Viewer"></div>
 <figcaption><span class="fig-no">图 A-15</span><span class="fig-cap">3D Viewer。用于检查板框、器件高度、丝印和连接器方向；它不能替代 DRC、DFM 或电气走查。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-editor-overview.jpg" alt="Schematic Editor 总览"></div>
+<figcaption><span class="fig-no">图 A-16</span><span class="fig-cap">Schematic Editor 总览。图中数字是官方文档的标注编号；常用区域是工具栏、绘图区、属性面板和底部状态栏。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-editor-overview.jpg" alt="PCB Editor 总览"></div>
+<figcaption><span class="fig-no">图 A-17</span><span class="fig-cap">PCB Editor 总览。官方文档用数字标出主要区域；这些数字是官方标注，不是本书的操作步骤编号。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/eeschema-footprint-chooser.png" alt="Footprint Chooser"></div>
+<figcaption><span class="fig-no">图 A-18</span><span class="fig-cap">Footprint Chooser。可按封装库、名称、引脚数和筛选条件查找封装；右侧预览焊盘与 3D 模型。</span></figcaption>
+</figure>
+
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-router-settings.png" alt="Interactive Router Settings"></div>
+<figcaption><span class="fig-no">图 A-19</span><span class="fig-cap">Interactive Router Settings。布线模式、走线角度、过孔和推挤选项在这里设置；不同模式会改变走线时对既有铜皮的处理方式。</span></figcaption>
 </figure>
