@@ -50,6 +50,9 @@ PRINT_CSS = r"""/* ------- print / PDF ------- */
   th{white-space:normal;word-break:keep-all;overflow-wrap:break-word}
   table{font-size:8.6pt}
   table td{overflow-wrap:break-word}
+  /* The preface's three-row reading ladder is a single idea; let it move as a
+     block rather than split its header from the last row. */
+  #kicad-front .table-scroll{break-inside:avoid}
   /* the screen drops to one index column below 52rem, but the printed page box
      is 665px of a much taller sheet — two columns is the book convention and
      halves the index */
