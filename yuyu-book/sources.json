@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "kicad-docs": {
+    "title": "KiCad 10.0 官方文档（Introduction / Schematic / PCB / CLI）",
+    "authority": "KiCad Documentation Contributors",
+    "kind": "docs",
+    "url": "https://docs.kicad.org/10.0/en/",
+    "snapshot": "10.0.8, documentation revision 8acc7624",
+    "accessed": "2026-11-21",
+    "license": "GPL-3.0-or-later / CC BY 3.0",
+    "scope": "术语、工作流、编辑器行为、kicad-cli 参数与文件格式"
+  },
+  "kicad-release-10": {
+    "title": "Version 10.0.0 Released",
+    "authority": "KiCad EDA",
+    "kind": "docs",
+    "url": "https://www.kicad.org/blog/2026/03/Version-10.0.0-Released/",
+    "snapshot": "2026-03-20 release announcement",
+    "accessed": "2026-11-21",
+    "license": "站点内容，引用性使用",
+    "scope": "KiCad 10 新功能：变体、跳线、图形 DRC 规则编辑器、时间域调谐、PCB Design Blocks"
+  },
+  "kicad-source": {
+    "title": "KiCad source mirror",
+    "authority": "KiCad project",
+    "kind": "community",
+    "url": "https://github.com/KiCad/kicad-source-mirror",
+    "snapshot": "10.0 branch",
+    "accessed": "2026-11-21",
+    "license": "GPL-3.0-or-later",
+    "scope": "源码结构、Python API 与发行说明的交叉核对",
+    "normative": false
+  },
+  "kicad-symbols": {
+    "title": "KiCad official symbol library",
+    "authority": "KiCad Library Team",
+    "kind": "community",
+    "url": "https://gitlab.com/kicad/libraries/kicad-symbols",
+    "snapshot": "10.0 库分支",
+    "accessed": "2026-11-21",
+    "license": "CC BY-SA 4.0（库文件）",
+    "scope": "符号命名、引脚类型与库结构示例",
+    "normative": false
+  },
+  "kicad-footprints": {
+    "title": "KiCad official footprint library",
+    "authority": "KiCad Library Team",
+    "kind": "community",
+    "url": "https://gitlab.com/kicad/libraries/kicad-footprints",
+    "snapshot": "10.0 库分支",
+    "accessed": "2026-11-21",
+    "license": "CC BY-SA 4.0（库文件）",
+    "scope": "封装命名、焊盘与 courtyard 约定",
+    "normative": false
+  },
+  "klc": {
+    "title": "KiCad Library Convention (KLC)",
+    "authority": "KiCad Library Team",
+    "kind": "community",
+    "url": "https://klc.kicad.org/",
+    "snapshot": "KLC 3.x 在线版",
+    "accessed": "2026-11-21",
+    "license": "CC BY-SA 4.0",
+    "scope": "符号与封装的命名、栅格、线宽、courtyard 规则",
+    "normative": false
+  },
+  "kicad-forum": {
+    "title": "KiCad user forum: Post-v9 new features and development news",
+    "authority": "KiCad community",
+    "kind": "community",
+    "url": "https://forum.kicad.info/t/post-v9-new-features-and-development-news/58848",
+    "snapshot": "2026-11 阅读",
+    "accessed": "2026-11-21",
+    "license": "论坛内容，引用性使用",
+    "scope": "KiCad 10 开发过程中的功能清单与社区讨论",
+    "normative": false
+  },
+  "ibom": {
+    "title": "InteractiveHtmlBom",
+    "authority": "openscopeproject",
+    "kind": "community",
+    "url": "https://github.com/openscopeproject/InteractiveHtmlBom",
+    "snapshot": "2026-11 仓库主分支",
+    "accessed": "2026-11-21",
+    "license": "MIT",
+    "scope": "交互式 BOM 的装配视图与插件用法",
+    "normative": false
+  },
+  "kikit": {
+    "title": "KiKit",
+    "authority": "yaqwsx",
+    "kind": "community",
+    "url": "https://github.com/yaqwsx/KiKit",
+    "snapshot": "2026-11 仓库主分支",
+    "accessed": "2026-11-21",
+    "license": "MIT",
+    "scope": "拼板、面板化与制造输出自动化",
+    "normative": false
+  },
+  "jlcpcb-tools": {
+    "title": "kicad-jlcpcb-tools",
+    "authority": "Bouni and contributors",
+    "kind": "community",
+    "url": "https://github.com/Bouni/kicad-jlcpcb-tools",
+    "snapshot": "2026-11 仓库主分支",
+    "accessed": "2026-11-21",
+    "license": "MIT",
+    "scope": "BOM/CPL 整理与 JLCPCB 下单文件",
+    "normative": false
+  },
+  "kicad-python": {
+    "title": "kicad-python (IPC API bindings)",
+    "authority": "KiCad project",
+    "kind": "community",
+    "url": "https://gitlab.com/kicad/code/kicad-python",
+    "snapshot": "10.0 分支",
+    "accessed": "2026-11-21",
+    "license": "GPL-3.0-or-later",
+    "scope": "KiCad IPC API 的 Python 客户端与示例",
+    "normative": false
+  },
+  "kicad-cli-docker": {
+    "title": "KiCad CLI Docker image",
+    "authority": "KiCad project",
+    "kind": "community",
+    "url": "https://github.com/KiCad/kicad-docker/tree/131ab51f246671f73ce4be97d13a71fcb54d6795",
+    "snapshot": "README tag policy and Dockerfile.10.0-stable at commit 131ab51f; Docker Hub tag 10.0.8 digest sha256:3f4a01786dfbe803a65f345c3342b765db9add913f5e9448f8356793714ddc34",
+    "accessed": "2026-11-22",
+    "license": "GPL-3.0-or-later",
+    "scope": "Version-pinned kicad-cli container workflow for CI; community deployment reference, not a substitute for CLI manual",
+    "normative": false
+  },
+  "github-kicad10-seven-steps": {
+    "title": "KiCad 10 in 7 steps",
+    "authority": "DesignGraveyard",
+    "kind": "community",
+    "url": "https://github.com/DesignGraveyard/V002_KiCAD10_in_7_steps/blob/496c0cc879909456ff2a3f1d0bef716623eec5c3/README.md",
+    "snapshot": "README and project artifact inventory at commit 496c0cc879909456ff2a3f1d0bef716623eec5c3",
+    "accessed": "2026-11-22",
+    "license": "MIT",
+    "scope": "Learning-project milestone and artifact-inventory structure only; no technical claims, prose, or visual assets reused",
+    "normative": false
+  }
+}

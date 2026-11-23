@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "product": "kicad",
+  "version": "0.1.0",
+  "date": "2026-11-21",
+  "author": "KKiCad 教学组",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+  },
+  "title": {"zh": "KiCad 从原理到制板"},
+  "title_lines": {"zh": ["KiCad", "从原理到制板"]},
+  "subtitle": {"zh": "从原理图到 Gerber 的一条完整教学路线 · 技术试读版"},
+  "kicker": {"zh": "开源 EDA · 电子设计自动化"},
+  "notice": {"zh": "本书依据 KiCad 10.0.x 官方文档与公开社区资料编写；书中命令与检查步骤按官方文档核对，示例工程由读者按章节自行建立。书中不包含任何厂商的未公开资料。"},
+  "epigraph": {"zh": "先让电路说清楚，再让铜箔把它做出来。"},
+  "langs": ["zh"],
+  "output_prefix": "kicad-book",
+  "revisions_registry": "",
+  "subject_index_registry": "",
+  "plain_optional": true,
+  "front": {"id": "kicad-front", "zh": "00-前言.md"},
+  "parts": [
+    {
+      "id": "kicad-p1",
+      "no": {"zh": "第一篇"},
+      "title": {"zh": "把电路画成图"},
+      "motto": {"zh": "符号、连线、封装，先把意图说清楚。"},
+      "goal": {"zh": "独立完成一张可检查、可交接的原理图。"},
+      "units": [
+        {"id": "kicad-ch01", "zh": "第一部分-入门篇/01-认识KiCad.md"},
+        {"id": "kicad-ch02", "zh": "第一部分-入门篇/02-原理图第一笔.md"},
+        {"id": "kicad-ch03", "zh": "第一部分-入门篇/03-让原理图可检查.md"},
+        {"id": "kicad-ch04", "zh": "第一部分-入门篇/04-从符号到封装.md"}
+      ]
+    },
+    {
+      "id": "kicad-p2",
+      "no": {"zh": "第二篇"},
+      "title": {"zh": "把图变成板"},
+      "motto": {"zh": "布局决定回流，布线决定余量。"},
+      "goal": {"zh": "完成一块能通过 DRC、能交付打样的 PCB。"},
+      "units": [
+        {"id": "kicad-ch05", "zh": "第二部分-设计篇/05-板框与叠层.md"},
+        {"id": "kicad-ch06", "zh": "第二部分-设计篇/06-布局.md"},
+        {"id": "kicad-ch07", "zh": "第二部分-设计篇/07-布线.md"},
+        {"id": "kicad-ch08", "zh": "第二部分-设计篇/08-铺铜与电磁兼容.md"},
+        {"id": "kicad-ch09", "zh": "第二部分-设计篇/09-DRC与可制造性.md"}
+      ]
+    },
+    {
+      "id": "kicad-p3",
+      "no": {"zh": "第三篇"},
+      "title": {"zh": "把板做出来"},
+      "motto": {"zh": "文件正确，板子才会正确。"},
+      "goal": {"zh": "独立完成投板、组装、上电与首件验证。"},
+      "units": [
+        {"id": "kicad-ch10", "zh": "第三部分-制造篇/10-输出制造文件.md"},
+        {"id": "kicad-ch11", "zh": "第三部分-制造篇/11-打样与组装.md"},
+        {"id": "kicad-ch12", "zh": "第三部分-制造篇/12-焊接调试与返修.md"}
+      ]
+    },
+    {
+      "id": "kicad-p4",
+      "no": {"zh": "第四篇"},
+      "title": {"zh": "把流程做成系统"},
+      "motto": {"zh": "能复现，才算真正掌握。"},
+      "goal": {"zh": "把仿真、库管理和自动化接进日常设计。"},
+      "units": [
+        {"id": "kicad-ch13", "zh": "第四部分-进阶篇/13-仿真与电路验证.md"},
+        {"id": "kicad-ch14", "zh": "第四部分-进阶篇/14-自定义库与团队规范.md"},
+        {"id": "kicad-ch15", "zh": "第四部分-进阶篇/15-自动化与插件.md"}
+      ]
+    }
+  ],
+  "appendices": [
+    {"id": "kicad-apxa", "zh": "附录/A-快捷键与界面速查.md"},
+    {"id": "kicad-apxb", "zh": "附录/B-文件格式与工程结构.md"},
+    {"id": "kicad-apxc", "zh": "附录/C-常见错误与排查表.md"},
+    {"id": "kicad-apxd", "zh": "附录/D-术语表.md"}
+  ]
+}

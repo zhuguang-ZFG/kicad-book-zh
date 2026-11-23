@@ -1,0 +1,367 @@
+#!/usr/bin/env python3
+"""Content checks for the KiCad book.
+
+This is deliberately narrower than the HTML assembler: it checks facts that
+the assembler cannot know (pin maps, figure references, SVG contracts) and
+fails loudly instead of producing a pretty but wrong book.
+"""
+from __future__ import annotations
+
+import json
+import re
+import sys
+from urllib.parse import unquote, urlsplit
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+BOOK = ROOT / "yuyu-book"
+ART = BOOK / "illustrations"
+MANIFEST = json.loads((BOOK / "manifest.json").read_text(encoding="utf-8"))
+
+errors: list[str] = []
+
+
+def md_files() -> list[Path]:
+    out = []
+    for p in ROOT.rglob("*.md"):
+        if "yuyu-book" in p.parts or "node_modules" in p.parts or ".git" in p.parts:
+            continue
+        out.append(p)
+    return sorted(out)
+
+
+def check_units() -> None:
+    units = [MANIFEST["front"]]
+    for part in MANIFEST["parts"]:
+        units.extend(part["units"])
+    units.extend(MANIFEST["appendices"])
+    for u in units:
+        p = ROOT / u["zh"]
+        if not p.exists():
+            errors.append(f"missing unit file: {p}")
+            continue
+        text = p.read_text(encoding="utf-8")
+        first = next((ln for ln in text.splitlines() if ln.startswith("# ")), "")
+        if not first:
+            errors.append(f"{p}: no H1")
+        if len(text.strip()) < 1200:
+            errors.append(f"{p}: too short ({len(text.strip())} chars)")
+        if p.parent.name.startswith("第") and "第" in first and "章" not in first:
+            errors.append(f"{p}: chapter H1 lacks 章")
+
+
+def check_ills() -> None:
+    names = set()
+    for p in md_files():
+        text = p.read_text(encoding="utf-8")
+        for name in re.findall(r"```ill\n([^\n]+)\n```", text):
+            names.add(name.strip())
+            svg = ART / f"{name.strip()}.svg"
+            if not svg.exists():
+                errors.append(f"{p}: ill references missing {svg.name}")
+    for svg in ART.glob("*.svg"):
+        text = svg.read_text(encoding="utf-8")
+        if "viewBox" not in text.split(">", 1)[0]:
+            errors.append(f"{svg.name}: no viewBox")
+        if "currentColor" not in text:
+            errors.append(f"{svg.name}: no currentColor")
+        for bad in ("<script", "<style", " id=", "href=", "url("):
+            if bad in text:
+                errors.append(f"{svg.name}: banned {bad!r}")
+        if len(text.encode("utf-8")) > 24000:
+            errors.append(f"{svg.name}: too large for inline")
+    print(f"illustrations referenced: {len(names)}; files: {len(list(ART.glob('*.svg')))}")
+
+
+def check_attiny_pinmap() -> None:
+    text = (ROOT / "第一部分-入门篇/02-原理图第一笔.md").read_text(encoding="utf-8")
+    required = {
+        "1": "PB5",
+        "2": "PB3",
+        "3": "PB4",
+        "4": "GND",
+        "5": "PB0",
+        "6": "PB1",
+        "7": "PB2",
+        "8": "VCC",
+    }
+    for pin, name in required.items():
+        row = re.search(rf"^\|\s*{pin}\s*\|\s*([^|]+)\|", text, re.M)
+        if not row:
+            errors.append(f"ATtiny table: missing row {pin}")
+            continue
+        if name not in row.group(1):
+            errors.append(f"ATtiny table: pin {pin} should be {name}, got {row.group(1).strip()}")
+    # ISP mapping must be explicit and correct
+    if not re.search(r"PB0（pin 5）.*PB1（pin 6）.*PB2（pin 7）", text):
+        errors.append("ATtiny: ISP mapping sentence is missing or out of order")
+    # Catch the old, wrong mapping in prose.
+    for bad in (r"PB3[^\n]{0,30}MOSI", r"PB4[^\n]{0,30}MISO", r"PB2[^\n]{0,30}RESET"):
+        if re.search(bad, text):
+            errors.append(f"ATtiny: stale wrong mapping matches {bad!r}")
+    fig = (ART / "kicad-ch02-symbol-anatomy.svg").read_text(encoding="utf-8")
+    for token in ("RESET", "PB3", "PB4", "GND", "PB0/MOSI", "PB1/MISO", "PB2/SCK", "VCC"):
+        if token not in fig:
+            errors.append(f"symbol figure missing label {token!r}")
+
+
+def check_sources() -> None:
+    data = json.loads((BOOK / "sources.json").read_text(encoding="utf-8"))
+    for key, src in data.items():
+        if key == "schema_version":
+            continue
+        for field in ("title", "authority", "kind", "url", "snapshot", "accessed", "license", "scope"):
+            if not str(src.get(field, "")).strip():
+                errors.append(f"source {key}: empty {field}")
+        if not str(src.get("url", "")).startswith("https://"):
+            errors.append(f"source {key}: url must be https")
+        if src.get("kind") == "community" and src.get("normative") is not False:
+            errors.append(f"source {key}: community must set normative:false")
+
+
+def check_cli_claims() -> None:
+    # BOM: the quantity field is QUANTITY, not the display label Qty.
+    found_fields = False
+    for p in md_files():
+        text = p.read_text(encoding="utf-8")
+        for match in re.finditer(r'--fields "([^"]+)"', text):
+            found_fields = True
+            fields = [f.strip() for f in match.group(1).split(",")]
+            if "Qty" in fields:
+                errors.append(f"{p}: BOM --fields uses display name Qty")
+            if "QUANTITY" not in fields:
+                errors.append(f"{p}: BOM --fields must include QUANTITY")
+    if not found_fields:
+        errors.append("no BOM --fields example found")
+
+    # jobset --output is a destination selector, not a directory.
+    # Scope the check to fenced bash examples so prose cannot satisfy it.
+    ch10 = (ROOT / "第三部分-制造篇/10-输出制造文件.md").read_text(encoding="utf-8")
+    jobset_blocks = [b for b in re.findall(r"```bash\n([\s\S]*?)```", ch10) if "jobset run" in b]
+    if not jobset_blocks:
+        errors.append("ch10: no jobset run example")
+    for block in jobset_blocks:
+        for match in re.finditer(r"--output\s+(\S+)", block):
+            if match.group(1).endswith("/"):
+                errors.append("ch10: jobset --output looks like a directory")
+    if "不是输出目录" not in ch10:
+        errors.append("ch10: jobset --output semantics not explained")
+
+    # The DRC exit code figure must say that 5 requires the flag.
+    fig = (ART / "kicad-ch10-cli.svg").read_text(encoding="utf-8")
+    claims_exit_codes = ("0 = 通过" in fig or "5 = 有违规" in fig)
+    if claims_exit_codes and "--exit-code-violations" not in fig:
+        errors.append("ch10-cli figure: exit code 5 needs --exit-code-violations")
+    if "只有加 `--exit-code-violations`" not in ch10:
+        errors.append("ch10: DRC exit code not qualified in prose")
+
+
+def check_lib_table_examples() -> None:
+    """Every sym-lib-table example must put its version first."""
+    for p in md_files():
+        text = p.read_text(encoding="utf-8")
+        for block in re.findall(r"```text\n([\s\S]*?)```", text):
+            if "(sym_lib_table" in block and not re.search(
+                    r"\(sym_lib_table\s*\(version\s+\d+\)", block):
+                errors.append(f"{p}: sym-lib-table example lacks (version ...) after opener")
+
+
+def check_trace_width_table() -> None:
+    """Chapter 7's table claims IPC-2221 values; recompute them."""
+    text = (ROOT / "第二部分-设计篇/07-布线.md").read_text(encoding="utf-8")
+    rows = re.findall(
+        r"^\|\s*([0-9.]+)\s*A\s*\|\s*约\s*([0-9.]+)\s*mm\s*\|"
+        r"\s*约\s*([0-9.]+)\s*mm\s*\|",
+        text, re.M)
+    if len(rows) != 4:
+        errors.append(f"ch07: expected 4 trace-width rows, got {len(rows)}")
+        return
+    thickness_mil = 1.378  # 1 oz copper
+    for current, outer_mm, inner_mm in rows:
+        i = float(current)
+        for layer, k, claimed in (("outer", 0.048, float(outer_mm)),
+                                  ("inner", 0.024, float(inner_mm))):
+            area = (i / (k * 10 ** 0.44)) ** (1 / 0.725)  # mil^2
+            expected = area / thickness_mil * 0.0254       # mm
+            if abs(claimed - expected) > max(0.05, expected * 0.08):
+                errors.append(
+                    f"ch07: {i} A {layer} width {claimed} mm, IPC-2221 gives "
+                    f"{expected:.2f} mm")
+
+
+def check_file_header_examples() -> None:
+    """Each KiCad 10 header quotes its generator and carries its version."""
+    expected = (("kicad_sch", "eeschema"), ("kicad_pcb", "pcbnew"))
+    for p in md_files():
+        text = p.read_text(encoding="utf-8")
+        for block in re.findall(r"```text\n([\s\S]*?)```", text):
+            for file_type, generator in expected:
+                starts = [m.start() for m in re.finditer(
+                    rf"\({file_type}\s+\(version", block)]
+                header = re.compile(
+                    rf"\({file_type}\s+\(version\s+\d+\)\s+"
+                    rf"\(generator\s+\"{generator}\"\)\s+"
+                    r"\(generator_version\s+\"[^\"]+\"\)")
+                if any(not header.match(block, start) for start in starts):
+                    errors.append(f"{p}: {file_type} header must quote {generator} and include generator_version")
+
+
+def check_power_only_usb() -> None:
+    """Reject USB data-enumeration diagnostics for the power-only example."""
+    ch12 = (ROOT / "第三部分-制造篇/12-焊接调试与返修.md").read_text(encoding="utf-8")
+    appendix = (ROOT / "附录/C-常见错误与排查表.md").read_text(encoding="utf-8")
+    enumeration = re.compile(r"不识别|无法识别|无法枚举|枚举")
+    not_required = re.compile(
+        r"(?:不需要|无需|不必|不用)(?:进行)?[^。！？；;，,、:：\n|]*?枚举")
+    data_checks = re.compile(
+        r"(?:检查|测(?:量)?|确认|排查|验证)[^。\n|]{0,12}(?:D\+/D-|D\+|D-)")
+    disconnected = re.compile(
+        r"(?:D\+/D-|D\+|D-)[^。\n|]{0,16}(?:悬空|不接|不用于数据)")
+
+    def has_data_diagnostic(text: str) -> bool:
+        return bool(data_checks.search(disconnected.sub("", text)))
+
+    def has_enumeration_diagnostic(text: str) -> bool:
+        return bool(enumeration.search(not_required.sub("", text)))
+
+    for section in re.split(r"(?m)(?=^### )", ch12):
+        lines = section.splitlines()
+        if lines and lines[0].startswith("### USB"):
+            if has_enumeration_diagnostic(section) or has_data_diagnostic(section):
+                errors.append("ch12: USB power-only diagnostics must not require data enumeration")
+    for line in appendix.splitlines():
+        if not line.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in line.strip("|").split("|")]
+        if cells and "USB" in cells[0] and (has_enumeration_diagnostic(line) or has_data_diagnostic(line)):
+            errors.append("appendix C: USB power-only row must not require data enumeration")
+
+
+def readme_link_problems(readme: str, root: Path) -> list[str]:
+    """Find broken local Markdown links in README, ignoring code and URLs."""
+    visible_lines: list[str] = []
+    fence_char = ""
+    fence_length = 0
+    for line in readme.splitlines():
+        fence = re.match(r"^\s*(`{3,}|~{3,})", line)
+        if fence_char:
+            visible_lines.append("")
+            if fence:
+                marker = fence.group(1)
+                if marker[0] == fence_char and len(marker) >= fence_length:
+                    fence_char = ""
+            continue
+        if fence:
+            marker = fence.group(1)
+            fence_char, fence_length = marker[0], len(marker)
+            visible_lines.append("")
+            continue
+        visible_lines.append(line)
+
+    visible = "\n".join(visible_lines)
+    visible = re.sub(r"(?<!`)`+[^`\n]*`+(?!`)", "", visible)
+    link_pattern = re.compile(r"(?<!!)\[[^\]]*\]\(\s*(<[^>]+>|[^)\s]+)(?:\s+[^)]*)?\)")
+    problems: list[str] = []
+    for match in link_pattern.finditer(visible):
+        target = match.group(1)
+        if target.startswith("<") and target.endswith(">"):
+            target = target[1:-1]
+        parsed = urlsplit(target)
+        if parsed.scheme or parsed.netloc or not parsed.path:
+            continue
+        base = root.resolve()
+        destination = (base / unquote(parsed.path)).resolve()
+        try:
+            destination.relative_to(base)
+        except ValueError:
+            problems.append(f"README: local link escapes repository root {target!r}")
+        else:
+            if not destination.is_file():
+                problems.append(f"README: broken local link {target!r}")
+    reference_pattern = re.compile(r"(?m)^[ \t]{0,3}\[[^\]]+\]:[ \t]*(<[^>]+>|[^\s]+)")
+    for match in reference_pattern.finditer(visible):
+        target = match.group(1)
+        if target.startswith("<") and target.endswith(">"):
+            target = target[1:-1]
+        parsed = urlsplit(target)
+        if parsed.scheme or parsed.netloc or not parsed.path:
+            continue
+        base = root.resolve()
+        destination = (base / unquote(parsed.path)).resolve()
+        try:
+            destination.relative_to(base)
+        except ValueError:
+            problems.append(f"README: local link escapes repository root {target!r}")
+        else:
+            if not destination.is_file():
+                problems.append(f"README: broken local link {target!r}")
+    return problems
+
+
+def check_artifact_claims() -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    errors.extend(readme_link_problems(readme, ROOT))
+    if "完整工程" in readme and not list(ROOT.glob("*.kicad_pro")):
+        errors.append("README: claims a complete KiCad project but none exists")
+    if "本次未生成" not in readme and re.search(r"PDF", readme):
+        # A PDF claim is only acceptable if a PDF actually exists.
+        if not list((ROOT / "yuyu-book/dist").glob("*.pdf")):
+            errors.append("README: mentions PDF but dist/ has no PDF")
+
+
+
+def claim_problems(preamble: str, notice: str, structure: str) -> list[str]:
+    """Return problems with claims that would imply verification we did not do."""
+    problems: list[str] = []
+    if "CLI 上核对" in preamble:
+        problems.append("preface: commands claimed to be executed on CLI")
+    if "按 KiCad 10.0.8 的 CLI 文档核对" not in preamble:
+        problems.append("preface: missing docs-based CLI wording")
+    if "本地构建链" in notice:
+        problems.append("manifest notice: claims local build-chain verification")
+    if "按官方文档核对" not in notice:
+        problems.append("manifest notice: missing docs-based verification wording")
+    if "usb_breath_led/" in structure and "不随书附带" not in structure:
+        problems.append("STRUCTURE: presents usb_breath_led/ as existing")
+    return problems
+
+
+def check_unverified_claims() -> None:
+    preamble = (ROOT / "00-前言.md").read_text(encoding="utf-8")
+    notice = json.loads((BOOK / "manifest.json").read_text(encoding="utf-8"))["notice"]["zh"]
+    structure = (ROOT / "STRUCTURE.md").read_text(encoding="utf-8")
+    errors.extend(claim_problems(preamble, notice, structure))
+
+
+def check_placeholders() -> None:
+    for p in md_files():
+        text = p.read_text(encoding="utf-8")
+        for token in ("TODO", "TBD", "lorem ipsum", "PLACEHOLDER"):
+            if token.lower() in text.lower():
+                errors.append(f"{p}: leftover {token}")
+
+
+def main() -> int:
+    check_units()
+    check_ills()
+    check_attiny_pinmap()
+    check_sources()
+    check_cli_claims()
+    check_lib_table_examples()
+    check_file_header_examples()
+    check_trace_width_table()
+    check_power_only_usb()
+    check_artifact_claims()
+    check_unverified_claims()
+    check_placeholders()
+    if errors:
+        print("CONTENT CHECK FAILED")
+        for e in errors:
+            print(" -", e)
+        return 1
+    print("CONTENT CHECK OK")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
