@@ -1,4 +1,5 @@
 import sys
+import math
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from ink import Ink, save
@@ -81,20 +82,21 @@ def learning_path(a):
 
 # ---- chapter 1 ---------------------------------------------------------
 def ch01_flow(a):
-    items = [("工程", ".kicad_pro"), ("原理图", ".kicad_sch"), ("电路板", ".kicad_pcb"),
-             ("库", ".kicad_sym / .kicad_mod"), ("制造", "Gerber / Drill")]
-    widths = [112, 112, 112, 178, 112]
-    xs = [11]
-    for width in widths[:-1]:
-        xs.append(xs[-1] + width + 18)
-    for i, (lab, sub) in enumerate(items):
-        box(a, xs[i], 86, widths[i], 86, lab, sub, fs=15)
-        if i < 4:
-            a.arrow(xs[i] + widths[i] + 1, 129, xs[i + 1] - 2, 129,
-                    width=1.8, head=4)
-    a.text(360, 46, "一个工程，五种文件，一条链路", size=19, opacity=.55)
-    a.line(28, 205, 692, 205, width=1.0, opacity=.25, dash="2 6")
-    a.text(360, 228, "源文件是文本；制造文件是投板前最后一次“翻译”。", size=13, opacity=.5)
+    a.text(360, 30, "制造文件有两个直接来源：板图输出制造数据，原理图输出 BOM", size=14,
+           opacity=.62)
+    box(a, 24, 76, 192, 82, "原理图", "电气连接 · 器件字段", fs=15)
+    box(a, 252, 76, 192, 82, "PCB", "封装 · 板框 · 铜与规则", fs=15)
+    box(a, 484, 48, 212, 75, "制造数据", "Gerber · Drill · POS", fs=14)
+    box(a, 484, 148, 212, 68, "BOM", "Reference · Value · MPN", fs=14)
+    a.arrow(218, 116, 248, 116, width=1.8, head=5)
+    a.arrow(446, 94, 480, 84, width=1.8, head=4)
+    a.arrow(216, 148, 236, 203, width=1.4, head=4)
+    a.arrow(238, 203, 480, 187, width=1.4, head=4)
+    box(a, 256, 236, 184, 46, "符号库 / 封装库", fs=14)
+    a.arrow(280, 233, 176, 163, width=1.3, head=4)
+    a.arrow(416, 233, 404, 163, width=1.3, head=4)
+    a.text(360, 322, "库提供设计对象定义；同步、导出后，仍须核对规则、装配范围与工厂模板。", size=12,
+           opacity=.55)
 
 
 def ch01_toolmap(a):
@@ -344,43 +346,50 @@ def ch05_rule_floor(a):
 
 # ---- chapter 6 ---------------------------------------------------------
 def ch06_floor(a):
-    board(a, 90, 44, 540, 210)
-    zones = [(105, 60, 100, 80, "USB / 电源"), (225, 60, 150, 70, "MCU / 晶振"),
-             (395, 60, 110, 80, "可选射频"), (105, 160, 120, 74, "接口 / ESD"),
-             (245, 150, 130, 84, "传感器"), (395, 160, 105, 74, "调试 / 测试点")]
-    for x, y, w, h, lab in zones:
-        a.rect(x, y, w, h, width=1.2, opacity=.45, radius=2)
-        a.text(x + w / 2, y + h / 2, lab, size=11, opacity=.65)
-    a.arrow(205, 100, 225, 100, width=1.4); a.arrow(375, 95, 395, 95, width=1.4)
-    a.arrow(165, 140, 165, 160, width=1.4); a.arrow(305, 130, 305, 150, width=1.4)
-    a.text(360, 282, "先摆“必须靠边”的接口，再摆“必须靠近”的电源与去耦，最后才是信号。", size=12, opacity=.55)
+    board(a, 84, 48, 552, 202, r=8)
+    # Relative placement concept for the book's USB-C power-only teaching board.
+    box(a, 94, 101, 70, 82, "USB-C", "J1", fs=12, r=5)
+    box(a, 181, 77, 105, 58, "入口保护", "保险丝 / TVS", fs=12, r=5)
+    box(a, 181, 155, 105, 64, "LDO", "+5V → +3V3", fs=13, r=5)
+    box(a, 331, 77, 110, 77, "ATtiny85", "MCU", fs=13, r=5)
+    box(a, 316, 172, 140, 47, "去耦 / RESET", fs=11, r=5)
+    box(a, 481, 77, 140, 58, "LED / 按键", "用户接口", fs=12, r=5)
+    box(a, 481, 164, 140, 55, "ISP / 测试点", fs=12, r=5)
+    a.arrow(166, 120, 177, 108, width=1.5, head=3)
+    a.arrow(233, 139, 233, 151, width=1.5, head=3)
+    a.arrow(289, 182, 326, 146, width=1.5, head=3)
+    a.arrow(445, 115, 477, 106, width=1.5, head=3)
+    a.arrow(399, 158, 450, 181, width=1.5, head=3)
+    a.text(360, 276, "按连接器、外壳与电流回路定位置；箭头仅表示相邻功能关系。", size=12, opacity=.55)
 
 
 def ch06_decouple(a):
-    # left: tight loop
-    a.text(170, 38, "good · 小环路", size=15, opacity=.6)
-    chip(a, 100, 80, 80, 90, "MCU", pins=3, fs=12)
-    a.line(180, 100, 220, 100, width=1.4)
-    a.line(220, 100, 220, 130, width=1.4)
-    a.line(220, 130, 180, 130, width=1.4)
-    a.text(238, 100, "VCC", size=10, anchor="start")
-    a.text(238, 130, "GND", size=10, anchor="start")
-    a.path("M150 100q0 0 0 0", width=1)
-    a.circle(220, 115, 12, width=1.4)
-    a.line(214, 115, 226, 115, width=1.0); a.line(220, 109, 220, 121, width=1.0)
-    a.text(220, 158, "C1", size=9, opacity=.5)
-    # right: long loop
-    a.text(530, 38, "bad · 大环路", size=15, opacity=.6)
-    chip(a, 420, 80, 80, 90, "MCU", pins=3, fs=12)
-    a.line(500, 100, 620, 100, width=1.4)
-    a.line(620, 100, 620, 190, width=1.4)
-    a.line(620, 190, 500, 190, width=1.4)
-    a.text(628, 100, "VCC", size=10, anchor="start")
-    a.text(628, 190, "GND", size=10, anchor="start")
-    a.rect(596, 130, 26, 14, width=1.2)
-    a.text(609, 158, "C1", size=9, opacity=.5)
-    a.path("M520 100q30 0 30 30", width=1.0, opacity=.3, dash="3 5")
-    a.text(360, 250, "去耦电容不是“放在板子上”，而是“让电流的回路尽量小”。", size=12, opacity=.55)
+    # Same MCU pinout and same 100 nF capacitor in both concept diagrams.
+    a.text(170, 38, "靠近 VCC / GND 引脚", size=14, opacity=.62)
+    chip(a, 72, 80, 108, 100, "MCU", pins=3, fs=13, side="right")
+    a.text(190, 81, "VCC pin", size=9, anchor="start", opacity=.62)
+    a.text(190, 186, "GND pin", size=9, anchor="start", opacity=.62)
+    a.line(180, 90, 220, 90, width=1.5)
+    a.line(220, 90, 220, 127, width=1.5)
+    a.line(210, 127, 230, 127, width=1.5, amp=.1)
+    a.line(210, 138, 230, 138, width=1.5, amp=.1)
+    a.line(220, 138, 220, 170, width=1.5)
+    a.line(220, 170, 180, 170, width=1.5)
+    a.text(235, 136, "100 nF", size=9, anchor="start", opacity=.62)
+
+    a.text(540, 38, "远离 VCC / GND 引脚", size=14, opacity=.62)
+    chip(a, 400, 80, 108, 100, "MCU", pins=3, fs=13, side="right")
+    a.text(518, 104, "VCC", size=10, anchor="start")
+    a.text(518, 154, "GND", size=10, anchor="start")
+    a.line(508, 90, 650, 90, width=1.5)
+    a.line(650, 90, 650, 150, width=1.5)
+    a.line(640, 150, 660, 150, width=1.5, amp=.1)
+    a.line(640, 161, 660, 161, width=1.5, amp=.1)
+    a.line(650, 161, 650, 226, width=1.5)
+    a.line(650, 226, 508, 226, width=1.5)
+    a.line(508, 226, 508, 170, width=1.5)
+    a.text(665, 158, "100 nF", size=9, opacity=.62, anchor="start")
+    a.text(360, 266, "同一电容值；减小 VCC—电容—GND 回路面积，才能降低连接寄生电感。", size=12, opacity=.55)
 
 
 # ---- chapter 7 ---------------------------------------------------------
@@ -550,23 +559,23 @@ def ch09_three_gates(a):
 
 # ---- chapter 10 --------------------------------------------------------
 def ch10_pkg(a):
-    a.rect(40, 44, 300, 204, width=1.4, radius=3)
-    a.text(190, 68, "fab/", size=15, anchor="start", opacity=.65)
-    items = [("board-F_Cu.gbr", "顶层铜"), ("board-B_Cu.gbr", "底层铜"), ("board-F_Mask.gbr", "阻焊"),
-             ("board-Edge_Cuts.gbr", "板框"), ("board.drl", "钻孔"), ("board-pos.csv", "贴片坐标"),
-             ("bom.csv", "物料"), ("board.step", "3D")]
-    for i, (f, d) in enumerate(items):
-        y = 86 + i * 20
-        a.text(58, y, f, size=10, anchor="start")
-        a.text(300, y, d, size=9, anchor="end", opacity=.45)
-    a.arrow(350, 146, 410, 146, width=2.0)
-    a.text(380, 132, "打包", size=10, opacity=.5)
-    a.path("M430 78h180v136H430z", width=1.6, opacity=.5, dash="3 4")
-    a.path("M430 78l-18 18v136h180V96l-18-18", width=1.6, opacity=.6)
-    a.line(412, 96, 610, 96, width=1.0, opacity=.4)
-    a.text(520, 160, "fab.zip", size=18, opacity=.7)
-    a.text(520, 186, "一次投板的最小完整集", size=10, opacity=.45)
-    a.text(360, 278, "Gerber 描述铜与阻焊，钻孔描述孔，坐标描述贴片；少一样，工厂就要来问你。", size=12, opacity=.55)
+    # Separate the minimum fab package from files used only by assembly or
+    # mechanical review; their inclusion depends on the factory and workflow.
+    a.text(178, 40, "投板所需", size=14, opacity=.62)
+    a.rect(30, 55, 310, 190, width=1.5, radius=4)
+    a.text(55, 78, "fab/gerbers/", size=12, anchor="start", opacity=.72)
+    for i, lab in enumerate(("F.Cu / B.Cu", "F.Mask / B.Mask", "F.SilkS / B.SilkS", "Edge.Cuts")):
+        a.text(58, 96 + i * 22, lab, size=11, anchor="start")
+    a.line(48, 187, 322, 187, width=1.0, opacity=.28)
+    a.text(55, 209, "钻孔文件 · fab/README.txt", size=11,
+           anchor="start")
+    a.text(533, 40, "按需加入", size=14, opacity=.62)
+    a.rect(378, 55, 310, 190, width=1.5, radius=4)
+    for i, lab in enumerate(("POS / CPL + BOM：委托组装", "STEP：结构检查",
+                              "IPC-2581 / ODB++：工厂要求")):
+        a.text(398, 104 + i * 39, lab, size=11, anchor="start")
+    a.text(360, 278, "先按本次板厂 / 组装厂清单核对；可选文件不是每单都要交付。", size=12,
+           opacity=.55)
 
 
 def ch10_cli(a):
@@ -713,43 +722,105 @@ def ch12_power(a):
 
 
 # ---- chapter 13 --------------------------------------------------------
+def rc_rise_path(x0, y0, width, height, duration_tau=5, samples=80):
+    """Sample the exact first-order RC step response for an illustrative curve."""
+    points = []
+    for i in range(samples + 1):
+        ratio = i / samples
+        t_tau = duration_tau * ratio
+        x = x0 + width * ratio
+        y = y0 - height * (1 - math.exp(-t_tau))
+        points.append((x, y))
+
+    def fmt(value):
+        return f"{value:.2f}".rstrip("0").rstrip(".")
+
+    return "M" + "L".join(f"{fmt(x)} {fmt(y)}" for x, y in points)
+
+
 def ch13_sim(a):
-    # source - resistor - cap
-    a.circle(90, 120, 20, width=2.0)
-    a.text(90, 126, "V1", size=11)
-    a.line(110, 120, 170, 120, width=1.8)
-    a.poly([(170, 106), (180, 134), (190, 106), (200, 134), (210, 106), (220, 120)], width=1.8)
-    a.line(220, 120, 280, 120, width=1.8)
-    a.line(280, 104, 280, 136, width=2.2)
-    a.line(292, 104, 292, 136, width=2.2)
-    a.line(292, 120, 350, 120, width=1.8)
-    a.circle(350, 120, 3.0, width=1.2)
-    a.line(90, 140, 90, 190, width=1.8)
-    a.line(90, 190, 350, 190, width=1.8)
-    a.line(350, 120, 350, 190, width=1.8)
-    a.text(360, 100, "Vout", size=10, anchor="start", opacity=.6)
-    # plot
-    a.rect(400, 54, 270, 150, width=1.2, radius=2)
-    a.line(420, 180, 650, 180, width=1.0, opacity=.3)
-    a.line(420, 180, 420, 70, width=1.0, opacity=.3)
-    a.path("M420 180Q470 70 520 100T650 120", width=1.8)
-    a.text(535, 224, "t", size=10, opacity=.5)
-    a.text(405, 70, "V", size=10, anchor="end", opacity=.5)
-    a.text(535, 250, "DC / AC / TRAN", size=12, opacity=.6)
-    a.text(360, 280, "仿真是“在铜之前问问题”：工作点、瞬态、频率响应，各有各的用途。", size=12, opacity=.55)
+    # First-order RC low-pass: pulse source -> R -> Vout; C and source return to GND.
+    a.circle(75, 128, 18, width=2.0)
+    a.text(75, 125, "+", size=9)
+    a.text(75, 141, "−", size=9)
+    a.text(43, 122, "V1", size=9, anchor="end")
+    a.text(43, 140, "VPULSE", size=8, anchor="end")
+    a.line(75, 110, 75, 94, width=1.8)
+    a.line(75, 94, 132, 94, width=1.8)
+    a.poly([(132, 94), (142, 80), (152, 108), (162, 80),
+            (172, 108), (182, 80), (192, 94)], width=1.8)
+    a.text(162, 76, "R", size=10)
+    a.line(192, 94, 270, 94, width=1.8)
+    a.dot(270, 94, 2.8)
+    a.text(270, 82, "Vout", size=10)
+    a.line(270, 94, 270, 123, width=1.8)
+    a.line(254, 123, 286, 123, width=2.0)
+    a.line(254, 137, 286, 137, width=2.0)
+    a.line(270, 137, 270, 178, width=1.8)
+    a.line(75, 146, 75, 178, width=1.8)
+    a.line(75, 178, 270, 178, width=1.8)
+    a.line(270, 178, 270, 190, width=1.8)
+    a.line(258, 190, 282, 190, width=1.6)
+    a.line(263, 196, 277, 196, width=1.4)
+    a.line(267, 202, 273, 202, width=1.2)
+    a.text(286, 198, "GND", size=9, anchor="start", opacity=.6)
+
+    # Monotonic response of the output voltage to a 0 -> 3.3 V step.
+    a.rect(385, 64, 282, 151, width=1.2, radius=2)
+    x0, x1, y0 = 415, 645, 178
+    response_height = 82
+    a.text(416, 55, "Vout", size=10, anchor="start", opacity=.65)
+    a.text(645, 55, "TRAN", size=10, anchor="end", opacity=.55)
+    a.line(x0, 84, x0, y0, width=1.0, opacity=.35)
+    a.line(x0, y0, x1, y0, width=1.0, opacity=.35)
+    a.line(x0, y0 - response_height, x1, y0 - response_height,
+           width=1.0, opacity=.25, dash="2 4")
+    a.text(410, y0 - response_height + 3, "3.3 V", size=8,
+           anchor="end", opacity=.55)
+    a.path(rc_rise_path(x0, y0, x1 - x0, response_height), width=1.8)
+    for t_tau, label in ((1, "τ"), (3, "3τ"), (5, "5τ")):
+        ratio = t_tau / 5
+        x = x0 + (x1 - x0) * ratio
+        y = y0 - response_height * (1 - math.exp(-t_tau))
+        a.line(x, y, x, y0, width=1.0, opacity=.28, dash="2 4")
+        a.dot(x, y, 2.0)
+        a.line(x, y0, x, y0 + 5, width=1.0, opacity=.4)
+        a.text(x, y0 + 17, label, size=9, opacity=.55)
+    a.text(530, 230, "对 0 → 3.3 V 阶跃的输出响应", size=10, opacity=.55)
+    a.text(360, 280, "仿真回答的是模型与拓扑问题；PCB 铜皮、过孔和回流几何需另行验证。", size=11, opacity=.55)
 
 
 def ch13_wave(a):
-    a.line(70, 190, 660, 190, width=1.6)
-    a.line(70, 190, 70, 60, width=1.6)
-    a.path("M70 190C160 190 180 80 300 80C420 80 440 190 660 190", width=2.2)
-    for x, lab in ((70, "0"), (250, "τ"), (430, "2τ"), (610, "3τ")):
-        a.line(x, 190, x, 198, width=1.0, opacity=.4)
-        a.text(x, 214, lab, size=10, opacity=.55)
-    a.line(250, 80, 250, 190, width=1.0, opacity=.3, dash="2 4")
-    a.line(430, 80, 430, 190, width=1.0, opacity=.3, dash="2 4")
-    a.text(360, 52, "V(t) = V0 (1 - e^(-t/RC))", size=14, opacity=.65)
-    a.text(360, 242, "时间常数 τ = R × C：它决定“多快算稳定”，不是“最终到多少”。", size=12, opacity=.55)
+    x0, x1, y0 = 70, 660, 190
+    response_height = 110
+    a.line(x0, y0, x1, y0, width=1.6)
+    a.line(x0, 190, x0, 60, width=1.6)
+    a.text(360, 43, "Vout(t) = 3.3 V × (1 - e^(-t/τ))", size=13, opacity=.65)
+    a.line(x0, y0 - response_height, x1, y0 - response_height,
+           width=1.0, opacity=.22, dash="2 4")
+    a.text(654, y0 - response_height - 7, "3.3 V", size=9,
+           anchor="end", opacity=.5)
+    a.path(rc_rise_path(x0, y0, x1 - x0, response_height), width=2.2)
+
+    for i in range(6):
+        x = x0 + (x1 - x0) * i / 5
+        a.line(x, y0, x, y0 + 7, width=1.0, opacity=.4)
+        a.text(x, 214, "0" if i == 0 else ("τ" if i == 1 else f"{i}τ"),
+               size=10, opacity=.55)
+
+    for t_tau, pct in ((1, "63.2%"), (3, "95.0%"), (5, "99.3%")):
+        ratio = t_tau / 5
+        x = x0 + (x1 - x0) * ratio
+        y = y0 - response_height * (1 - math.exp(-t_tau))
+        a.line(x, y, x, y0, width=1.0, opacity=.25, dash="2 4")
+        a.dot(x, y, 2.6)
+        if t_tau == 1:
+            a.text(x + 10, y + 21, pct, size=9, anchor="start", opacity=.55)
+        elif t_tau == 3:
+            a.text(x + 10, y + 21, pct, size=9, anchor="start", opacity=.55)
+        else:
+            a.text(x - 8, y + 21, pct, size=9, anchor="end", opacity=.55)
+    a.text(360, 242, "时间常数 τ = R × C：响应按指数趋近终值。", size=12, opacity=.55)
 
 
 # ---- chapter 14 --------------------------------------------------------
@@ -811,7 +882,7 @@ def ch15_plugin(a):
 
 figs = {
     "kicad-learning-path": (720, 260, learning_path),
-    "kicad-ch01-flow": (720, 260, ch01_flow),
+    "kicad-ch01-flow": (720, 340, ch01_flow),
     "kicad-ch01-toolmap": (720, 300, ch01_toolmap),
     "kicad-ch02-symbol-anatomy": (720, 280, ch02_symbol),
     "kicad-ch02-net-label": (720, 280, ch02_net),

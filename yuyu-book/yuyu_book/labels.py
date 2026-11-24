@@ -31,9 +31,10 @@ _LABELS = {
              "availability depend on build and runtime configuration."},
     "sources_page": {"zh": "来源与许可", "en": "Sources & Licenses"},
     "sources_note": {
-        "zh": "本书不转载来源正文；GitHub 参考钉住 tag/commit，社区材料标注访问日期且非规范。",
+        "zh": "本书不转载来源正文；GitHub 仓库固定到 tag/commit，社区材料仅作非规范参考；访问日期见项目的 sources.json。",
         "en": "The book does not republish source texts; GitHub references are pinned to "
-             "tags/commits, community material carries access dates and is non-normative."},
+              "tags/commits, and community material is non-normative. Access dates are "
+              "recorded in the project's sources.json."},
     "index_page": {"zh": "主题索引", "en": "Subject Index"},
     "principles_page": {"zh": "原理札记", "en": "Why It Works This Way"},
     "notes_page": {"zh": "按语集", "en": "The Keeper's Notes"},

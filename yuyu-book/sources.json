@@ -162,5 +162,82 @@
     "license": "MIT",
     "scope": "Learning-project milestone and artifact-inventory structure only; no technical claims, prose, or visual assets reused",
     "normative": false
+  },
+  "forum-wire-endpoint-61538": {
+    "title": "KiCad Forum #61538: Same-page net with same wire label not connected",
+    "authority": "KiCad forum participants",
+    "kind": "community",
+    "url": "https://forum.kicad.info/t/same-page-net-with-same-wire-label-not-connected/61538",
+    "snapshot": "2025 年 6 月讨论，原帖使用 KiCad 9.0.2",
+    "accessed": "2026-11-24",
+    "license": "论坛内容；仅引用事实，不转载截图或帖文",
+    "scope": "第 2 章：已接入的标签与悬空线端是两项独立检查；KiCad 10 行为另核对官方手册",
+    "normative": false
+  },
+  "oshpark-board-outline": {
+    "title": "OSH Park: Board Outline",
+    "authority": "OSH Park",
+    "kind": "docs",
+    "url": "https://docs.oshpark.com/submitting-orders/board-outline/",
+    "snapshot": "在线版的 Board Cutouts 与 Milling Size 小节",
+    "accessed": "2026-11-24",
+    "license": "厂家文档；仅作工艺说明引用",
+    "scope": "第 5 章：闭合挖空、铣刀与内角要求；仅适用于该服务，不作通用工厂规格",
+    "normative": false
+  },
+  "github-kibot-issue-811": {
+    "title": "KiBot issue #811: DRC Exclusion not working",
+    "authority": "KiBot maintainers and issue participants",
+    "kind": "community",
+    "url": "https://github.com/INTI-CMNB/KiBot/issues/811",
+    "snapshot": "2026 年 5 月讨论，涉及 KiCad 9.0.8 / 10.0.1；后续提到 10.0.4 修复标记",
+    "accessed": "2026-11-24",
+    "license": "GitHub issue 内容；仅引用复现事实，不复用代码",
+    "scope": "第 15 章：用原生 CLI 报告区分 DRC 自身和上层工具；不用于断定 10.0.8 行为",
+    "normative": false
+  },
+  "elektor-kicad-like-a-pro-preview": {
+    "title": "KiCad Like a Pro: Fundamentals and Projects — public preview",
+    "authority": "Peter Dalmaris / Elektor",
+    "kind": "community",
+    "url": "https://api.pageplace.de/preview/DT0400.9783895766275_A49833762/preview-9783895766275_A49833762.pdf",
+    "snapshot": "2024，封面标第 4 版、覆盖 KiCad 8；电子书 ISBN 978-3-89576-627-5",
+    "accessed": "2026-11-24",
+    "license": "版权所有；仅引用公开试读的目录与书目信息",
+    "scope": "前言：提供另一套从原理图到 Gerber 的练习路线，不作为 KiCad 10 的行为依据",
+    "normative": false
+  },
+  "ngspice-manual-scale-factors": {
+    "title": "Ngspice User's Manual, Version 47+",
+    "authority": "ngspice project",
+    "kind": "docs",
+    "url": "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml",
+    "snapshot": "Version 47+ development manual; scale factor table and SPICE3 compatibility note",
+    "accessed": "2026-11-24",
+    "license": "CC BY-SA 4.0",
+    "scope": "第 13 章：m/M 表示 milli；Meg 表示 mega。适用于 ngspice 数值语法，不等同于 SI 前缀大小写规则",
+    "normative": false
+  },
+  "tektronix-probe-safety": {
+    "title": "ABCs of Probes Primer (60W-6053-17)",
+    "authority": "Tektronix",
+    "kind": "docs",
+    "url": "https://download.tek.com/document/ABCs-of-Probes-Primer-60W-6053-17.pdf",
+    "snapshot": "Sections 1 and 3: probe grounding and floating measurements",
+    "accessed": "2026-11-24",
+    "license": "Tektronix material; cited for safety requirements",
+    "scope": "第 12 章：探头参考端接地、保护地不可移除；浮地测量须用明确额定的设备",
+    "normative": false
+  },
+  "microchip-an2648-crystal-measurement": {
+    "title": "AN2648: Selecting and Testing 32.768 kHz Crystal Oscillators for AVR Microcontrollers",
+    "authority": "Microchip Technology",
+    "kind": "docs",
+    "url": "https://onlinedocs.microchip.com/oxy/GUID-E1A9010A-4FFF-4CCD-912A-926ED28D22D6-en-US-8/GUID-A218AC70-8FDC-4008-A164-8BB9BF9C2278.html",
+    "snapshot": "AN2648 §3.1 Introduction，在线版",
+    "accessed": "2026-11-24",
+    "license": "Microchip 版权所有；引用性使用",
+    "scope": "第 12 章：AVR 低功耗 32.768 kHz 晶振的探头负载与缓冲时钟输出测量",
+    "normative": false
   }
 }
