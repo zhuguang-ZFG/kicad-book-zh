@@ -144,9 +144,8 @@ def chapter_article(lang: str, unit_id: str = CHAPTER) -> str:
     notes = plain.load_notes(manifest)
     layer = plain.Layer(glosses, lang)
     mapping = {u["id"]: u["id"] for u, _k, _p in unit_stream(manifest)}
-    for unit_def, kind, part in unit_stream(manifest):
+    for unit_def, kind, _part in unit_stream(manifest):
         unit = load_unit(unit_def, kind, lang, REPO_ROOT)
-        unit.part = part
         if unit.id == unit_id:
             captions = mermaid.captions_for(
                 read_text(REPO_ROOT / unit.path), unit.blocks)

@@ -44,11 +44,13 @@ def main(argv=None):
     args = ap.parse_args(argv)
 
     try:
-        if "volumes" in registry.load(args.manifest):
+        spec = registry.load(args.manifest)
+        if not isinstance(spec, dict):
+            raise BuildError("manifest must be a JSON object")
+        if "volumes" in spec:
             # a collected edition: every volume brings its own manifest,
             # sources and registries, so --sources does not apply here
             from .collected import load_collection
-            spec = registry.load(args.manifest)
             volumes = load_collection(spec)
             langs = [args.lang]
             out_dir = Path(args.out_dir)

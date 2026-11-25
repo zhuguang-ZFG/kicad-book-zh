@@ -288,7 +288,9 @@ def photo_figures(doc: str) -> str:
         number = re.match(r"(图(?:[A-Za-z]|\d+)-\d+)", alt)
         number = number.group(1) if number else ""
         label = caption or alt
-        label = re.sub(r"^图(?:[A-Za-z]|\d+)-\d+\s*[：:]\s*", "", label)
+        # the caption may hand-write the number with a space ("图 4-3：…");
+        # strip it too or the printed figure shows the number twice
+        label = re.sub(r"^图\s*(?:[A-Za-z]|\d+)-\d+\s*[：:]\s*", "", label)
         head = f'<span class="fig-no">{number}</span>' if number else ""
         tail = (f'<figcaption>{head}<span class="fig-cap">{label}</span>'
                 f"</figcaption>") if label else ""
