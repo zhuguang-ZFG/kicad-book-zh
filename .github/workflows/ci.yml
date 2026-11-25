@@ -40,6 +40,7 @@ jobs:
           python tools/test_usb_diagnostics.py
           python tools/test_readme_links.py
           python tools/test_book_metadata.py
+          python tools/test_si_numbers.py
 
       - name: Build HTML and PDF
         working-directory: yuyu-book

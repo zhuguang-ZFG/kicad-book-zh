@@ -34,10 +34,12 @@ tools/                       # 开发脚本
 ├── make_emblems.py          # 生成章节徽章
 ├── make_plates.py           # 生成篇题与封面
 ├── make_figures.py          # 生成正文插图
-├── check_book.py            # 内容事实检查
+├── check_book.py            # 内容事实检查（含信号完整性数字反算）
 ├── test_claims.py           # 声明措辞回归测试
 ├── test_usb_diagnostics.py  # USB 诊断措辞回归测试
-└── test_readme_links.py     # README 相对链接回归测试
+├── test_book_metadata.py    # HTML 元数据与图号回归测试
+├── test_readme_links.py     # README 相对链接回归测试
+└── test_si_numbers.py       # 信号完整性数字闸门的变异测试
 
 docs/                        # 预览、截图、发布包
 .gitignore
@@ -56,11 +58,15 @@ STRUCTURE.md                 # 本文件
    - `python tools/test_claims.py`
    - `python tools/test_usb_diagnostics.py`
    - `python tools/test_readme_links.py`
+   - `python tools/test_book_metadata.py`
+   - `python tools/test_si_numbers.py`
    - `python tools/check_book.py`
    - `cd yuyu-book && PYTHONPATH=. python -m yuyu_book --check --mermaid source`
 5. 版本更新时更新 `manifest.json` 中的日期和版本号。
 6. 关键词式事实检查必须同时覆盖应拒绝的诊断用语与应接受的否定/解释用语；否定用例应包含自然长表述，并确认同段后续独立诊断仍会触发。
 7. README 的本地 Markdown 链接必须由 `check_book.py` 验证目标存在；回归覆盖损坏路径、编码路径与应忽略的外链/代码示例。
+8. 书中出现的可计算数字（带宽、时延门限、拐角/残桩电容、阻抗、参考面宽度）必须在 `check_book.py` 里由同一组常数反算；新增这类数字时同时补 `tools/test_si_numbers.py` 的变异用例，证明闸门会红。
+9. 第三方 action 的版本必须与官方发行说明核对；主版本、运行时前提与破坏性变更要写进正文，不要只改 YAML。
 
 ## 内容规范
 

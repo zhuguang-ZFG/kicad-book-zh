@@ -393,5 +393,27 @@
     "license": "CC BY 4.0",
     "scope": "第 12 章：示波器实物与波形显示；波形出现不等于测量正确",
     "normative": false
+  },
+  "bogatin-spi-3e": {
+    "title": "Signal and Power Integrity - Simplified, Third edition",
+    "authority": "Eric Bogatin / Prentice Hall",
+    "kind": "community",
+    "url": "https://www.pearson.com/store/p/signal-and-power-integrity-simplified/P100001004142",
+    "snapshot": "2018 年第 3 版，ISBN 9780134512228；引用带宽—边沿关系、拐角与过孔残桩电容估算、参考面宽度与间距阈值",
+    "accessed": "2026-11-25",
+    "license": "版权书；本书只引用概念与量级估算式，不复刻正文与图",
+    "scope": "第 7、8 章：BW = 0.35/RT、TD > 0.2·RT 的传输线判据、拐角电容 C ≈ 2·w(mil) fF、过孔残桩 5 fF/mil、参考面每侧 3h、间距 3w 时耦合约 1%",
+    "normative": false
+  },
+  "johnson-hsdd": {
+    "title": "High-Speed Digital Design: A Handbook of Black Magic",
+    "authority": "Howard Johnson, Martin Graham / Prentice Hall",
+    "kind": "community",
+    "url": "https://www.pearson.com/store/p/high-speed-digital-design-a-handbook-of-black-magic/P100000870465",
+    "snapshot": "1993 年版，ISBN 9780133957242；用于交叉核对回流路径与传输线的工程判断",
+    "accessed": "2026-11-25",
+    "license": "版权书；本书只引用概念框架，不复刻正文与图",
+    "scope": "第 7、8 章：回流路径、传输线判据与拐角的工程处理方式",
+    "normative": false
   }
 }

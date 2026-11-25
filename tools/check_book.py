@@ -8,6 +8,7 @@ fails loudly instead of producing a pretty but wrong book.
 from __future__ import annotations
 
 import json
+import math
 import re
 import sys
 from urllib.parse import unquote, urlsplit
@@ -236,6 +237,113 @@ def check_file_header_examples() -> None:
                     errors.append(f"{p}: {file_type} header must quote {generator} and include generator_version")
 
 
+def check_si_numbers() -> None:
+    """Recompute every signal-integrity number quoted in chapters 7 and 8.
+
+    These figures are easy to copy wrong and hard for a reader to spot, so the
+    table values are derived here from the same constants the prose states
+    (BW = 0.35/RT, 6.7 ps/mm on FR4, TD > 0.2*RT, C_corner = 2*w(mil) fF,
+    stub = 5 fF/mil, reference copper 3h, spacing 3w). If a constant and a
+    table drift apart, the check fails instead of the book lying quietly.
+    """
+    ch07 = (ROOT / "第二部分-设计篇/07-布线.md").read_text(encoding="utf-8")
+    ch08 = (ROOT / "第二部分-设计篇/08-铺铜与电磁兼容.md").read_text(encoding="utf-8")
+    delay_ps_per_mm = 6.7
+
+    # -- 7.3 bandwidth / length threshold table -------------------------
+    rows = re.findall(
+        r"^\|\s*([0-9.]+)\s*ns\s*\|\s*约\s*([0-9.]+)\s*(MHz|GHz)\s*\|\s*约\s*([0-9.]+)\s*mm\s*\|",
+        ch07, re.M)
+    if len(rows) != 4:
+        errors.append(f"ch07: expected 4 SI threshold rows, got {len(rows)}")
+    for rt_ns, bw, unit, length_mm in rows:
+        rt = float(rt_ns) * 1e-9
+        want_bw = 0.35 / rt / 1e6
+        stated_bw = float(bw) * (1000 if unit == "GHz" else 1)
+        want_len = 0.2 * rt * 1e12 / delay_ps_per_mm
+        if abs(stated_bw - want_bw) > max(1.0, want_bw * 0.06):
+            errors.append(
+                f"ch07: RT {rt_ns} ns bandwidth {bw} {unit}, 0.35/RT gives {want_bw:.0f} MHz")
+        if abs(float(length_mm) - want_len) > max(1.0, want_len * 0.06):
+            errors.append(
+                f"ch07: RT {rt_ns} ns threshold {length_mm} mm, 0.2*RT/{delay_ps_per_mm} ps/mm gives {want_len:.0f} mm")
+
+    # -- 7.3 corner capacitance ----------------------------------------
+    corners = re.findall(r"([0-9.]+)\s*mm（约\s*([0-9]+)\s*mil）线宽\s*→\s*约\s*([0-9]+)\s*fF", ch07)
+    if len(corners) != 2:
+        errors.append(f"ch07: expected 2 corner-capacitance examples, got {len(corners)}")
+    for w_mm, mil, ff in corners:
+        if abs(float(w_mm) / 0.0254 - float(mil)) > 1.0:
+            errors.append(f"ch07: {w_mm} mm is not {mil} mil")
+        want = 2 * float(mil)
+        if abs(float(ff) - want) > max(2.0, want * 0.1):
+            errors.append(f"ch07: corner at {mil} mil gives {ff} fF, 2*w(mil) gives {want:.0f} fF")
+
+    # -- 7.3 via stub --------------------------------------------------
+    stub = re.search(r"([0-9.]+)\s*mm\s*板厚（约\s*([0-9]+)\s*mil）.*?约\s*([0-9]+)\s*fF", ch07)
+    if not stub:
+        errors.append("ch07: via-stub example missing")
+    else:
+        t_mm, mil, ff = stub.groups()
+        if abs(float(t_mm) / 0.0254 - float(mil)) > 1.5:
+            errors.append(f"ch07: {t_mm} mm is not {mil} mil")
+        want = 5 * float(mil)
+        if abs(float(ff) - want) > max(5.0, want * 0.1):
+            errors.append(f"ch07: stub {mil} mil gives {ff} fF, 5 fF/mil gives {want:.0f} fF")
+
+    # -- 7.3 microstrip impedance table --------------------------------
+    zrows = re.findall(r"^\|\s*([0-9.]+)\s*mm\s*\|\s*约\s*([0-9.]+)\s*mm\s*\|\s*约\s*([0-9]+)\s*Ω\s*\|",
+                       ch07, re.M)
+    if len(zrows) != 3:
+        errors.append(f"ch07: expected 3 microstrip impedance rows, got {len(zrows)}")
+    for w_mm, h_mm, z in zrows:
+        want = microstrip_z0(float(w_mm), float(h_mm))
+        if abs(float(z) - want) > max(4.0, want * 0.08):
+            errors.append(
+                f"ch07: {w_mm} mm over {h_mm} mm claims {z} Ω, microstrip estimate gives {want:.0f} Ω")
+
+    # -- 8.4 reference copper and spacing -------------------------------
+    hrows = re.findall(r"^\|\s*([^|]+?)\s*\|\s*约\s*([0-9.]+)\s*mm\s*\|\s*约\s*([0-9.]+)\s*mm\s*\|",
+                       ch08, re.M)
+    if len(hrows) != 2:
+        errors.append(f"ch08: expected 2 reference-width rows, got {len(hrows)}")
+    for stack, h_mm, copper_mm in hrows:
+        want = 3 * float(h_mm)
+        if abs(float(copper_mm) - want) > max(0.2, want * 0.08):
+            errors.append(
+                f"ch08: {stack.strip()} h={h_mm} mm needs {want:.1f} mm of copper, table says {copper_mm} mm")
+    if "4.5 mm" not in ch08:
+        errors.append("ch08: prose must state the 3h result for the 1.6 mm two-layer board")
+
+    # Scope the 3h/3w rules to section 8.4 so a passing mention elsewhere in the
+    # chapter cannot satisfy the check while the actual rule was deleted.
+    section = re.search(r"(?ms)^## 8\.4 .*?(?=^## )", ch08)
+    if not section:
+        errors.append("ch08: section 8.4 (return path) is missing")
+    else:
+        body = section.group(0)
+        if "3 倍介质厚度" not in body:
+            errors.append("ch08: 8.4 must state the 3h reference-copper rule")
+        if not re.search(r"3 倍线宽", body):
+            errors.append("ch08: 8.4 must state the 3w spacing rule")
+        if not re.search(r"3 倍线宽[^。]{0,60}?1%", body) and not re.search(
+                r"1%[^。]{0,60}?3 倍线宽", body):
+            errors.append("ch08: 8.4 must tie the 3w spacing to the ~1% coupling claim")
+
+
+def microstrip_z0(w_mm: float, h_mm: float, er: float = 4.3) -> float:
+    """Microstrip characteristic impedance, Hammerstad-Jensen style estimate.
+
+    Same closed form the chapter uses for its 86-138 ohm claim: not a field
+    solver, but accurate enough to catch a wrong table entry.
+    """
+    u = w_mm / h_mm
+    ee = (er + 1) / 2 + (er - 1) / 2 / math.sqrt(1 + 12 / u)
+    if u <= 1:
+        return 60 / math.sqrt(ee) * math.log(8 / u + u / 4)
+    return 120 * math.pi / (math.sqrt(ee) * (u + 1.393 + 0.667 * math.log(u + 1.444)))
+
+
 def check_power_only_usb() -> None:
     """Reject USB data-enumeration diagnostics for the power-only example."""
     ch12 = (ROOT / "第三部分-制造篇/12-焊接调试与返修.md").read_text(encoding="utf-8")
@@ -404,6 +512,7 @@ def main() -> int:
     check_lib_table_examples()
     check_file_header_examples()
     check_trace_width_table()
+    check_si_numbers()
     check_power_only_usb()
     check_readme_stats()
     check_artifact_claims()
