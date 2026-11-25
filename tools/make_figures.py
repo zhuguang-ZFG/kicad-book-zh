@@ -1,10 +1,12 @@
-import sys
 import math
+import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent))
-from ink import Ink, save
 
-OUT = Path(r"D:/Users/kkicad/yuyu-book/illustrations")
+sys.path.insert(0, str(Path(__file__).parent))
+from ink import Ink, save  # noqa: E402
+
+# Repo-relative so the script works from any git worktree, not just one checkout.
+OUT = Path(__file__).resolve().parents[1] / "yuyu-book" / "illustrations"
 MONO = "Noto Serif CJK SC, Songti SC, SimSun, serif"
 
 
@@ -410,6 +412,46 @@ def ch07_route(a):
     check(a, 500, 140, 9, 2.2)
     a.text(360, 258, "高速信号怕的不是“拐弯”，而是拐弯处突然改变线宽与参考面。", size=12, opacity=.55)
 
+
+def ch07_highspeed_gate(a):
+    """One 30 mm trace, three edge times: where the lumped model stops working.
+
+    Thresholds are TD > 0.2*RT with 6.7 ps/mm on FR4, so
+    L = 0.2*RT/6.7ps. 20 ns -> 600 mm, 2 ns -> 60 mm, 0.1 ns -> 3 mm.
+    """
+    x0, x1 = 168, 660
+    def lx(mm):
+        return x0 + (math.log10(mm) / 3) * (x1 - x0)
+
+    a.text(360, 26, "同一条 30 mm 走线，三种边沿时间", size=17, opacity=.55)
+    a.text(168, 50, "横轴：走线长度（对数刻度）", size=11, anchor="start", opacity=.5)
+
+    # decade ticks
+    for mm in (1, 10, 100, 1000):
+        x = lx(mm)
+        a.line(x, 66, x, 268, width=.8, dash="3 6", opacity=.22)
+        a.text(x, 288, f"{mm} mm", size=10, opacity=.5)
+
+    rows = [("RT = 20 ns", 600, "本板量级"),
+            ("RT = 2 ns", 60, "加晶振/串口"),
+            ("RT = 0.1 ns", 3, "高速链路")]
+    for i, (label, thr, note) in enumerate(rows):
+        y = 100 + i * 62
+        a.text(158, y + 4, label, size=12, anchor="end")
+        a.text(158, y + 20, note, size=9, anchor="end", opacity=.45)
+        a.line(lx(1), y, lx(thr), y, width=3.0)
+        a.line(lx(thr), y, lx(1000), y, width=1.4, dash="5 5", opacity=.45)
+        a.circle(lx(thr), y, 4.6, width=1.6)
+        a.text(lx(thr), y - 12, f"{thr} mm", size=10, opacity=.6)
+
+    # the board's longest trace
+    xs = lx(30)
+    a.line(xs, 76, xs, 262, width=1.6, opacity=.7)
+    a.text(xs + 7, 72, "本板 ≈ 30 mm", size=10, anchor="start", opacity=.65)
+
+    a.text(300, 316, "阈值左侧：可当集总电路", size=10, opacity=.45)
+    a.text(556, 316, "阈值右侧：必须当传输线", size=10, opacity=.45)
+    a.text(360, 334, "判据 TD > 0.2 × RT，FR4 约 6.7 ps/mm；边沿变快，门限向短走线移动。", size=11, opacity=.5)
 
 def ch07_diff(a):
     a.text(360, 36, "可选扩展：带 USB 数据的版本", size=12, opacity=.55)
@@ -897,6 +939,7 @@ figs = {
     "kicad-ch06-floorplan": (720, 300, ch06_floor),
     "kicad-ch06-decouple": (720, 280, ch06_decouple),
     "kicad-ch07-route": (720, 280, ch07_route),
+    "kicad-ch07-highspeed-gate": (720, 350, ch07_highspeed_gate),
     "kicad-ch07-diffpair": (720, 280, ch07_diff),
     "kicad-ch08-pour": (720, 300, ch08_pour),
     "kicad-ch08-antenna": (720, 300, ch08_antenna),
