@@ -18,11 +18,14 @@ usb_breath_led/             # 读者按章节建立的工程（不随书附带�
 第四部分-进阶篇/             # 第四篇章节
 附录/                       # 附录
 
+.github/workflows/ci.yml      # 测试、检查与 HTML/PDF 构建
+
 yuyu-book/                   # yuyu-book 构建器
 ├── yuyu_book/               # Python 包
 ├── manifest.json            # 书结构定义
 ├── sources.json             # 来源与参考引用
-├── illustrations/           # 所有手绘 SVG 插图
+├── requirements.txt         # 构建与 PDF 依赖
+├── illustrations/           # 手绘 SVG、实物照片与许可说明
 ├── screenshots/             # KiCad 10 官方界面截图（CC BY 3.0）
 └── dist/                    # 构建产物，不提交
 

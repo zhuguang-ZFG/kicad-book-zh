@@ -381,7 +381,9 @@ def build_edition(lang: str, manifest: dict, sources: dict, *,
         body_class += " vibe"
     html_text = page(lang, f'{manifest["title"][lang]} — {manifest["author"]}',
                      CSS, body_class, body_html,
-                     "\n".join(asm.rail) + "</nav>", "")
+                     "\n".join(asm.rail) + "</nav>", "",
+                     author=manifest.get("author", ""),
+                     description=(manifest.get("subtitle") or {}).get(lang, ""))
     counts = _audit(html_text, units=asm.units, payloads=asm.payloads,
                     part_ids=[f'part-{p["id"]}' for p in manifest["parts"]],
                     notes=notes or {}, lang=lang, plain_layer=plain_layer,
@@ -551,7 +553,9 @@ def build_collected(lang: str, spec: dict, volumes, *,
     body_html = render.soften_long_names("\n".join(body))
     html_text = page(lang, f'{spec["title"][lang]} — {spec["author"]}',
                      CSS, f"lang-{lang} collected", body_html,
-                     "\n".join(rail) + "</nav>", "")
+                     "\n".join(rail) + "</nav>", "",
+                     author=spec.get("author", ""),
+                     description=(spec.get("subtitle") or {}).get(lang, ""))
     guide_units = sum(
         1 for vol in volumes
         for guide in (vol.manifest.get("guides") or {}).values()

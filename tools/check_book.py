@@ -73,6 +73,36 @@ def check_ills() -> None:
     print(f"illustrations referenced: {len(names)}; files: {len(list(ART.glob('*.svg')))}")
 
 
+def check_photos() -> None:
+    """Every offline photograph must exist, fit the inline budget and be credited."""
+    names: set[str] = set()
+    photo_types = {".jpg", ".jpeg", ".png", ".webp"}
+    for p in md_files():
+        text = p.read_text(encoding="utf-8")
+        for name in re.findall(r"!\[[^\]]*\]\(illustrations/([^)]+)\)", text):
+            names.add(name)
+            photo = ART / name
+            if not photo.is_file():
+                errors.append(f"{p}: photograph missing {name}")
+                continue
+            if photo.suffix.lower() not in photo_types:
+                errors.append(f"{p}: unsupported photograph type {name}")
+            if photo.stat().st_size > 300_000:
+                errors.append(
+                    f"{name}: {photo.stat().st_size} bytes, over the 300000-byte inline budget")
+    credits_path = ART / "README.md"
+    credits = credits_path.read_text(encoding="utf-8") if credits_path.exists() else ""
+    if not credits:
+        errors.append("illustrations/README.md: missing photograph credits")
+    for name in sorted(names):
+        if name not in credits:
+            errors.append(f"illustrations/README.md: no credit row for {name}")
+    shipped = {p.name for p in ART.glob("photo-*") if p.suffix.lower() in photo_types}
+    for name in sorted(shipped - names):
+        errors.append(f"{name}: shipped photograph is not referenced")
+    print(f"photographs referenced: {len(names)}; files: {len(shipped)}")
+
+
 def check_attiny_pinmap() -> None:
     text = (ROOT / "第一部分-入门篇/02-原理图第一笔.md").read_text(encoding="utf-8")
     required = {
@@ -298,6 +328,29 @@ def readme_link_problems(readme: str, root: Path) -> list[str]:
     return problems
 
 
+def check_readme_stats() -> None:
+    """README's word-count claim must track the chapter sources."""
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    claims = re.findall(r"约\s*([0-9.]+)\s*万字符（([0-9.]+)\s*万汉字", readme)
+    if not claims:
+        return
+    chars = 0
+    han = 0
+    for p in md_files():
+        if p.name in ("README.md", "STRUCTURE.md"):
+            continue
+        text = p.read_text(encoding="utf-8")
+        chars += len(text)
+        han += len(re.findall(r"[\u4e00-\u9fff]", text))
+    for claim_chars, claim_han in claims:
+        if abs(chars - float(claim_chars) * 10000) > chars * 0.05:
+            errors.append(
+                f"README: claims {claim_chars} 万字符, sources have {chars / 10000:.2f} 万")
+        if abs(han - float(claim_han) * 10000) > han * 0.05:
+            errors.append(
+                f"README: claims {claim_han} 万汉字, sources have {han / 10000:.2f} 万")
+
+
 def check_artifact_claims() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     errors.extend(readme_link_problems(readme, ROOT))
@@ -344,6 +397,7 @@ def check_placeholders() -> None:
 def main() -> int:
     check_units()
     check_ills()
+    check_photos()
     check_attiny_pinmap()
     check_sources()
     check_cli_claims()
@@ -351,6 +405,7 @@ def main() -> int:
     check_file_header_examples()
     check_trace_width_table()
     check_power_only_usb()
+    check_readme_stats()
     check_artifact_claims()
     check_unverified_claims()
     check_placeholders()

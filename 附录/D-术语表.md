@@ -108,4 +108,5 @@
 | USB-C | USB Type-C | 可正反插的 USB 接口 |
 | V-Cut | V-shaped scoring | 拼板时在板边切 V 形槽 |
 | via stitching | stitching via | 缝合过孔，连接地平面 |
-| 邮票孔 | castellated hole | 拼板/模块边缘的半孔 |
+| 邮票孔（分板） | mouse bites / stamp holes | 拼板连接桥上一排小孔，辅助分板 |
+| 半孔 / 城堡孔 | castellated hole | 模块板边的半镀通孔，可焊接到母板 |

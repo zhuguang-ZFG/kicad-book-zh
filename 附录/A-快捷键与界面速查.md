@@ -1,7 +1,7 @@
 # 附录 A：快捷键与界面速查
 
-> 本附录按“在哪个编辑器里做什么”组织。快捷键以 KiCad 10.0.x 的默认配置为准；不同平台、不同主题可能略有差异，最终以 `Preferences → Hotkeys` 为准。
-> 表中“无默认键”表示 KiCad 10 默认配置下未绑定该动作：请用菜单/工具栏执行，或在 `Preferences → Hotkeys` 里自行绑定。
+> 本附录按“在哪个编辑器里做什么”组织，快捷键以 KiCad 10.0.8 官方手册 Actions Reference 与对应平台的源码默认值为准。手册使用标准 PC 键名；常见修饰键在 macOS 上以 `Cmd` 代替 `Ctrl`、`Option` 代替 `Alt`，但个别动作有不同的平台绑定，表中会单独注明。自定义设置以 `Preferences → Hotkeys` 中显示的值为准。
+> 表中“无默认键”表示 KiCad 10.0.8 官方动作表未列默认绑定；可用菜单/工具栏执行，或在 `Preferences → Hotkeys` 里自行设置。
 
 ## A.1 通用
 
@@ -9,15 +9,14 @@
 | --- | --- | --- |
 | 保存 | `Ctrl+S` | 当前文件 |
 | 另存为 | `Ctrl+Shift+S` | 当前文档另存到别处 |
-| 撤销/重做 | `Ctrl+Z` / `Ctrl+Y` | 对话框内也支持（KiCad 10）；部分平台重做是 `Ctrl+Shift+Z` |
-| 删除 | `Delete` | 删除选中对象 |
+| 撤销/重做 | Windows/Linux：`Ctrl+Z` / `Ctrl+Y`；macOS：`Cmd+Z` / `Cmd+Shift+Z` | macOS 重做键不同于其他平台 |
+| 删除 | Windows/Linux：`Del`；macOS：`Backspace` | 删除选中对象 |
 | 复制/粘贴 | `Ctrl+C` / `Ctrl+V` | 跨图纸粘贴时注意参考号 |
 | 查找 | `Ctrl+F` | 打开查找对话框；搜索面板是 `Ctrl+G` |
 | 缩放 | 滚轮 | 以光标为中心 |
-| 全屏 | `F11` | 部分平台 |
-| 切换单位 | `Ctrl+U` | mm / mil |
-| 取消当前动作 | `Esc` | 第一次取消动作，第二次退出工具 |
-| 显示热键表 | `Ctrl+F1` | List Hotkeys；`F1` 是“以光标为中心放大”，不是帮助 |
+| 切换单位 | `Ctrl+U` | 在英制与公制单位间切换 |
+| 取消当前动作 | `Esc` | 取消当前工具或操作；PCB 编辑器中返回选择工具 |
+| 显示热键表 | `Ctrl+F1`（macOS：`Cmd+F1`） | List Hotkeys；Windows/Linux 的 `F1` 是“以光标为中心放大”；macOS 的放大键为 `Cmd++`，`F1` 是“重复上一个绘制项” |
 
 ## A.2 原理图编辑器
 
@@ -31,11 +30,12 @@
 | 放置层次图 | `S` | Draw Hierarchical Sheets |
 | 放置总线 | `B` | Draw Buses |
 | 放置结点 | `J` | Place Junctions |
-| 复制 / 重复 | `Ctrl+C` / `Ctrl+D` | `C` 是“从总线展开”，不是复制 |
+| 复制 / 复制所选对象 | `Ctrl+C` / `Ctrl+D` | Copy / Duplicate；`C` 是“从总线展开”，不是复制 |
+| 重复上一个绘制项 | Windows/Linux：`Ins`；macOS：`F1` | Repeat Last Item |
 | 旋转 | `R` | 逆时针 90° |
 | 镜像 | `X` / `Y` | 水平/垂直 |
 | 属性 | `E` | Edit properties |
-| 编辑封装（选中符号） | `F` | 打开封装编辑器；批量分配走 `Tools → Assign Footprints`，无默认键 |
+| 编辑封装字段（选中符号） | `F` | 编辑 Footprint 字段并打开封装选择器；批量分配走 `Tools → Assign Footprints`，无默认键 |
 | ERC | 无默认键 | `Inspect → Electrical Rules Checker`；命令行 `kicad-cli sch erc` |
 | 仿真 | 无默认键 | `Inspect → Simulator`；模拟器里 `R` = Run Simulation |
 | 高亮网络 | `` ` `` | 反引号键，不是 `~` |
@@ -52,10 +52,11 @@
 | 角度吸附模式 | `Shift+Space` | 切换线模式的吸附角度，不是布线推挤模式 |
 | 选择工具 | 无默认键 | 按 `Esc` 退出当前工具即回到选择工具 |
 | 移动 | `M` | Move |
-| 拖动 | `G` | Drag（保持连接） |
+| 拖动走线（45°模式） | `D` | 使用交互路由器拖动走线并保持连接；行为受路由模式影响 |
+| 自由角度拖动走线节点 | `G` | 拆分线段并移动新拐角；不自动避让或推挤障碍 |
 | 旋转 | `R` | 旋转封装/对象 |
 | 翻转 | `F` | Flip，顶层/底层翻转 |
-| 铺铜 | `Ctrl+Shift+Z` | Draw Filled Zones |
+| 绘制铺铜区域 | Windows/Linux：`Ctrl+Shift+Z`；macOS：`Option+Z` | Draw Filled Zones |
 | 填充所有铺铜 | `B` | Fill All Zones |
 | DRC | 无默认键 | `Inspect → Design Rules Checker` |
 | 测量 | `Ctrl+Shift+M` | 两点距离；`Ctrl+M` 不是测量 |
@@ -66,32 +67,45 @@
 
 ## A.4 符号/封装编辑器
 
+### 符号编辑器
+
 | 操作 | 快捷键 | 说明 |
 | --- | --- | --- |
-| 新建符号/封装 | `Ctrl+N` | 在现有库中新建 |
-| 放置引脚 | `P` | 符号编辑器 Draw Pins |
-| 放置焊盘 | 无默认键 | 封装编辑器：工具栏或 `Place → Add Pad` |
-| 放置线条 | 无默认键 | 绘图工具栏 |
-| 放置矩形 | 无默认键 | 绘图工具栏 |
-| 放置圆 | 无默认键 | 绘图工具栏 |
-| 放置文本 | 无默认键 | 绘图工具栏；原理图中的 Draw Text 是 `T` |
-| 编辑属性 | `E` | 选中对象 |
+| 新建符号 | `Ctrl+N` | 在现有库中新建符号 |
+| 放置引脚 | `P` | Draw Pins |
+| 绘制线条、矩形、圆或文本 | 无默认键 | 使用符号编辑器绘图工具栏 |
+| 引脚表 | 无默认键 | Pin Table |
+| 属性、旋转、镜像 | `E` / `R` / `Shift+R` / `X` / `Y` | 符号编辑器复用原理图编辑器的属性、旋转和镜像动作；`R` 逆时针、`Shift+R` 顺时针、`X` 水平镜像、`Y` 垂直镜像。按当前热键配置确认 |
+
+### 封装编辑器
+
+| 操作 | 快捷键 | 说明 |
+| --- | --- | --- |
+| 新建封装 | `Ctrl+N` | 新建空封装 |
+| 放置焊盘 | 无默认键 | Add Pad；可用工具栏或菜单 |
+| 绘制线条 | `Ctrl+Shift+L` | Draw Lines |
+| 绘制矩形 | 无默认键 | Draw Rectangles |
+| 绘制圆 | `Ctrl+Shift+C` | Draw Circles |
+| 绘制文本 | `Ctrl+Shift+T` | Draw Text |
+| 编辑属性 | `E` | Properties |
 | 旋转 | `R` | 逆时针 90° |
-| 镜像 | `X` / `Y` | 水平/垂直 |
-| 引脚表 / 焊盘表 | 无默认键 | 右侧工具栏的表格按钮 |
-| 3D 模型预览 | `Alt+3` | 封装编辑器中打开 3D Viewer |
+| 水平/垂直镜像 | 无默认键 | Mirror Horizontally / Mirror Vertically |
+| 焊盘表 | 无默认键 | Pad Table |
+| 3D 视图 | `Alt+3` | 3D Viewer |
 
 ## A.5 选择与拖拽的方向
 
-| 操作 | 行为 |
-| --- | --- |
-| 从左向右拖框 | 只选中完全在框内的对象 |
-| 从右向左拖框 | 选中碰到框的对象 |
-| 单击 | 选择光标下最上层对象 |
-| `Shift+单击` | 添加/移除选择 |
-| `Ctrl+单击` | 选择同一网络/同类对象（部分编辑器） |
-| 拖动封装 | 移动封装，保留连接（`G`） |
-| 拖动导线 | 改变走向，保持端点（`G`） |
+| 操作 | 快捷键 | 行为 |
+| --- | --- | --- |
+| 从左向右拖框 | — | 只选中完全在框内的对象 |
+| 从右向左拖框 | — | 选中碰到框的对象 |
+| 单击 | — | 选择光标下的对象 |
+| 添加到选择 | `Shift+单击` | 将对象加入当前选择 |
+| 切换选择 | `Ctrl+单击` | PCB 编辑器中切换该对象的选择状态；该键可被设置为高亮网络 |
+| 从选择中移除 | `Ctrl+Shift+单击` | PCB 编辑器 |
+| 拖动封装 | `D` | 仅在 Highlight Collisions 路由模式下带动连接到焊盘原点的走线 |
+| 拖动走线（45°模式） | `D` | 交互路由器在 Shove 模式推挤障碍，在 Walk Around 模式绕行或停止 |
+| 自由角度拖动走线 | `G` | 拆分线段并移动新拐角，不自动避让或推挤障碍 |
 
 ## A.6 常用菜单路径
 

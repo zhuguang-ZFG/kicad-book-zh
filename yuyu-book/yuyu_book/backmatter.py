@@ -8,17 +8,19 @@ from .labels import esc, ui
 
 KIND_GROUP = {
     "zh": {"github": "GitHub 仓库与发布", "docs": "官方文档", "blog": "工程博客",
-           "spec": "协议规范", "npm": "npm 包", "community": "社区材料（非规范）"},
+           "spec": "协议规范", "npm": "npm 包", "community": "社区材料（非规范）",
+           "image": "实物照片与许可"},
     "en": {"github": "GitHub repositories & releases", "docs": "Official docs",
            "blog": "Engineering blog", "spec": "Protocol specs",
-           "npm": "npm packages", "community": "Community (non-normative)"},
+           "npm": "npm packages", "community": "Community (non-normative)",
+           "image": "Photographs & licenses"},
 }
 
 
 def source_registry(sources: dict, lang: str, anchor: str = "sources") -> str:
     from .pages import src_field
 
-    order = ["github", "npm", "docs", "blog", "spec", "community"]
+    order = ["github", "npm", "docs", "blog", "spec", "community", "image"]
     groups: dict[str, list] = {k: [] for k in order}
     for sid, src in sources.items():
         groups.setdefault(src.get("kind", "docs"), []).append((sid, src))
