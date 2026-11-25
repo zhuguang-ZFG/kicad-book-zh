@@ -73,6 +73,36 @@ def check_ills() -> None:
     print(f"illustrations referenced: {len(names)}; files: {len(list(ART.glob('*.svg')))}")
 
 
+def check_photos() -> None:
+    """Every offline photograph must exist, fit the inline budget and be credited."""
+    names: set[str] = set()
+    photo_types = {".jpg", ".jpeg", ".png", ".webp"}
+    for p in md_files():
+        text = p.read_text(encoding="utf-8")
+        for name in re.findall(r"!\[[^\]]*\]\(illustrations/([^)]+)\)", text):
+            names.add(name)
+            photo = ART / name
+            if not photo.is_file():
+                errors.append(f"{p}: photograph missing {name}")
+                continue
+            if photo.suffix.lower() not in photo_types:
+                errors.append(f"{p}: unsupported photograph type {name}")
+            if photo.stat().st_size > 300_000:
+                errors.append(
+                    f"{name}: {photo.stat().st_size} bytes, over the 300000-byte inline budget")
+    credits_path = ART / "README.md"
+    credits = credits_path.read_text(encoding="utf-8") if credits_path.exists() else ""
+    if not credits:
+        errors.append("illustrations/README.md: missing photograph credits")
+    for name in sorted(names):
+        if name not in credits:
+            errors.append(f"illustrations/README.md: no credit row for {name}")
+    shipped = {p.name for p in ART.glob("photo-*") if p.suffix.lower() in photo_types}
+    for name in sorted(shipped - names):
+        errors.append(f"{name}: shipped photograph is not referenced")
+    print(f"photographs referenced: {len(names)}; files: {len(shipped)}")
+
+
 def check_attiny_pinmap() -> None:
     text = (ROOT / "第一部分-入门篇/02-原理图第一笔.md").read_text(encoding="utf-8")
     required = {
@@ -367,6 +397,7 @@ def check_placeholders() -> None:
 def main() -> int:
     check_units()
     check_ills()
+    check_photos()
     check_attiny_pinmap()
     check_sources()
     check_cli_claims()

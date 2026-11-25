@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Regression coverage for product metadata in the generated HTML shell."""
+import re
 import sys
 from tempfile import TemporaryDirectory
 from pathlib import Path
@@ -11,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "yuyu-book"))
 
 from yuyu_book import app  # noqa: E402
+from yuyu_book.render import photo_figures, renumber_figures  # noqa: E402
 from yuyu_book.style import page  # noqa: E402
 
 
@@ -82,8 +84,27 @@ def test_build_edition_passes_manifest_metadata_to_page_shell() -> None:
         assert "cover.png" not in html
 
 
+def test_photos_share_document_order_figure_numbers() -> None:
+    doc = (
+        '<figure class="diagram"><figcaption>'
+        '<span class="fig-no">图 2-9</span><span class="fig-cap">先</span>'
+        '</figcaption></figure>'
+        '<p><img alt="图2-1 实物" src="illustrations/example.jpg"></p>'
+        '<p><em>图 2-1：中间</em></p>'
+        '<figure class="illu illu-line"><figcaption>'
+        '<span class="fig-no">图 2-1</span><span class="fig-cap">后</span>'
+        '</figcaption></figure>'
+    )
+    doc = photo_figures(doc)
+    doc, count = renumber_figures(doc, prefix="2", lang="zh")
+    assert count == 3
+    numbers = re.findall(r'<span class="fig-no">([^<]+)</span>', doc)
+    assert numbers == ["图 2-1", "图 2-2", "图 2-3"]
+
+
 if __name__ == "__main__":
     test_page_shell_does_not_embed_foreign_product_metadata()
     test_page_shell_uses_and_escapes_product_metadata()
     test_build_edition_passes_manifest_metadata_to_page_shell()
+    test_photos_share_document_order_figure_numbers()
     print("book metadata regression: OK")

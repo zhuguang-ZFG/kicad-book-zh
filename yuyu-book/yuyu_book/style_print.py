@@ -171,6 +171,10 @@ PRINT_CSS = r"""/* ------- print / PDF ------- */
   .illu-photo .illu-frame::after{display:none}
   .illu-photo .illu-frame{background:none;border:0;border-radius:0;
     padding:0;overflow:visible}
+  /* Real photographs share the screenshot height cap: a square component
+     photo stays legible without spending most of a sheet on one image. */
+  .illu-photo img{display:block;width:auto;max-width:100%;max-height:100mm;
+    margin:0 auto}
   .part-divider{background:none}
   .pd-ghost{opacity:.12}
   .cover-seal{print-color-adjust:exact;-webkit-print-color-adjust:exact}

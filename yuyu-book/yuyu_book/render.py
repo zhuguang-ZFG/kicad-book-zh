@@ -297,12 +297,42 @@ def photo_figures(doc: str) -> str:
     return _PHOTO_PARA_RE.sub(repl, doc)
 
 
+_FIGURE_RE = re.compile(
+    r'<figure class="(?:illu|diagram)[^"]*"[^>]*>.*?</figure>', re.S)
+_FIG_NO_RE = re.compile(r'<span class="fig-no">.*?</span>', re.S)
+
+
+def renumber_figures(doc: str, *, prefix: str, lang: str) -> tuple[str, int]:
+    """Give photographs and drawings one document-order number series.
+
+    The old pass numbered only ``ill``/Mermaid placeholders. A real photograph
+    inserted between two drawings therefore stole a number or left the plates
+    out of order. This final pass numbers every rendered figure, so captions
+    and cross-references stay stable regardless of which fence produced it.
+    """
+    word = "图" if lang == "zh" else "Figure"
+    count = 0
+
+    def repl(m):
+        nonlocal count
+        count += 1
+        block = m.group(0)
+        number = f"{word} {prefix}-{count}"
+        if _FIG_NO_RE.search(block):
+            return _FIG_NO_RE.sub(f'<span class="fig-no">{number}</span>',
+                                  block, count=1)
+        return block.replace(
+            "<figcaption>", f'<figcaption><span class="fig-no">{number}</span>', 1)
+
+    return _FIGURE_RE.sub(repl, doc), count
+
+
 # An `ill` fence gets a placeholder caption from the nearest H2, while the
 # actual descriptive line ("图 4-2 ...") stays in the body. That renders as two
 # captions: an H2 label and the real one. Merge the body line into the figure's
 # figcaption and drop the duplicate paragraph.
 _ILL_CAPTION_RE = re.compile(
-    r'(<figure class="illu[^"]*"[^>]*>.*?<figcaption>'
+    r'(<figure class="illu(?! illu-photo)[^"]*"[^>]*>.*?<figcaption>'
     r'<span class="fig-no">(图|Figure)\s*([^<]+)</span>'
     r'<span class="fig-cap">)(.*?)'
     r'(</span>(?:<span class="fig-hint">.*?</span>)?</figcaption></figure>)'
@@ -471,6 +501,15 @@ def render_unit(unit: Unit, mapping: dict[str, str], *,
     doc = inline_images(doc, unit.path)
     doc = photo_figures(doc)
     doc = absorb_ill_captions(doc, md)
+    if unit.kind == "chapter":
+        fig_prefix = ch_num
+    elif unit.kind == "front":
+        fig_prefix = "0"
+    else:
+        fig_prefix = apx_letter
+    doc, figure_count = renumber_figures(
+        doc, prefix=fig_prefix, lang=unit.lang)
+    fig_seq[0] = figure_count
 
     doc = prefix_ids(doc, unit.id)
     if local_targets is not None:
