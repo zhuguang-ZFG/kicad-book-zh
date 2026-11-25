@@ -298,6 +298,29 @@ def readme_link_problems(readme: str, root: Path) -> list[str]:
     return problems
 
 
+def check_readme_stats() -> None:
+    """README's word-count claim must track the chapter sources."""
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    claims = re.findall(r"约\s*([0-9.]+)\s*万字符（([0-9.]+)\s*万汉字", readme)
+    if not claims:
+        return
+    chars = 0
+    han = 0
+    for p in md_files():
+        if p.name in ("README.md", "STRUCTURE.md"):
+            continue
+        text = p.read_text(encoding="utf-8")
+        chars += len(text)
+        han += len(re.findall(r"[\u4e00-\u9fff]", text))
+    for claim_chars, claim_han in claims:
+        if abs(chars - float(claim_chars) * 10000) > chars * 0.05:
+            errors.append(
+                f"README: claims {claim_chars} 万字符, sources have {chars / 10000:.2f} 万")
+        if abs(han - float(claim_han) * 10000) > han * 0.05:
+            errors.append(
+                f"README: claims {claim_han} 万汉字, sources have {han / 10000:.2f} 万")
+
+
 def check_artifact_claims() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     errors.extend(readme_link_problems(readme, ROOT))
@@ -351,6 +374,7 @@ def main() -> int:
     check_file_header_examples()
     check_trace_width_table()
     check_power_only_usb()
+    check_readme_stats()
     check_artifact_claims()
     check_unverified_claims()
     check_placeholders()
