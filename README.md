@@ -1,5 +1,7 @@
 # KiCad 从原理到制板
 
+[![CI](https://github.com/zhuguang-ZFG/kicad-book-zh/actions/workflows/ci.yml/badge.svg)](https://github.com/zhuguang-ZFG/kicad-book-zh/actions/workflows/ci.yml)
+
 *CC BY-NC-SA 4.0 © KKiCad 教学组 2026*
 
 ## 概览

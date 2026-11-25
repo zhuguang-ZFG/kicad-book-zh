@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: yuyu-book/requirements.txt
+
+      - name: Install Python dependencies
+        run: python -m pip install -r yuyu-book/requirements.txt
+
+      - name: Install Chromium and CJK fonts
+        run: |
+          python -m playwright install --with-deps chromium
+          sudo apt-get install -y fonts-noto-cjk
+
+      - name: Run regression tests
+        run: |
+          python tools/test_claims.py
+          python tools/test_usb_diagnostics.py
+          python tools/test_readme_links.py
+          python tools/test_book_metadata.py
+
+      - name: Build HTML and PDF
+        working-directory: yuyu-book
+        env:
+          PYTHONPATH: .
+        run: python -m yuyu_book --mermaid source --pdf
+
+      - name: Run content and build checks
+        run: |
+          python tools/check_book.py
+          cd yuyu-book
+          PYTHONPATH=. python -m yuyu_book --check --mermaid source
+
+      - name: Upload book artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kicad-book-zh
+          path: |
+            yuyu-book/dist/kicad-book-zh.html
+            yuyu-book/dist/kicad-book-zh.pdf
+          if-no-files-found: warn
+          retention-days: 7
