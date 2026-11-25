@@ -6,7 +6,7 @@
     "kind": "docs",
     "url": "https://docs.kicad.org/10.0/en/",
     "snapshot": "10.0.8, documentation revision 8acc7624",
-    "accessed": "2026-11-21",
+    "accessed": "2026-11-25",
     "license": "GPL-3.0-or-later / CC BY 3.0",
     "scope": "术语、工作流、编辑器行为、kicad-cli 参数与文件格式"
   },
@@ -24,11 +24,11 @@
     "title": "KiCad source mirror",
     "authority": "KiCad project",
     "kind": "community",
-    "url": "https://github.com/KiCad/kicad-source-mirror",
-    "snapshot": "10.0 branch",
-    "accessed": "2026-11-21",
+    "url": "https://github.com/KiCad/kicad-source-mirror/tree/e432beac2668303194ba2040274f9e5efe773fc0",
+    "snapshot": "KiCad 10.0.8 tag, commit e432beac2668303194ba2040274f9e5efe773fc0; editor action registrations and platform-specific defaults",
+    "accessed": "2026-11-25",
     "license": "GPL-3.0-or-later",
-    "scope": "源码结构、Python API 与发行说明的交叉核对",
+    "scope": "附录 A：编辑器快捷键默认值与 macOS 特定绑定；源码结构和发行说明交叉核对",
     "normative": false
   },
   "kicad-symbols": {
@@ -57,11 +57,11 @@
     "title": "KiCad Library Convention (KLC)",
     "authority": "KiCad Library Team",
     "kind": "community",
-    "url": "https://klc.kicad.org/",
-    "snapshot": "KLC 3.x 在线版",
-    "accessed": "2026-11-21",
+    "url": "https://gitlab.com/kicad/libraries/klc/-/tree/6e8cbad9556359879d2b91f904d6df82517d97d1",
+    "snapshot": "Official source revision 6e8cbad9556359879d2b91f904d6df82517d97d1 (2026-10-04): general guidance, S3.3, S4.1, S6.2, F5.1, F5.3",
+    "accessed": "2026-11-25",
     "license": "CC BY-SA 4.0",
-    "scope": "符号与封装的命名、栅格、线宽、courtyard 规则",
+    "scope": "第14章：KLC 指南性质、符号主体线宽、引脚栅格/长度、字段可见性、丝印和 courtyard 间隙",
     "normative": false
   },
   "kicad-forum": {
@@ -146,10 +146,43 @@
     "authority": "KiCad project",
     "kind": "community",
     "url": "https://github.com/KiCad/kicad-docker/tree/131ab51f246671f73ce4be97d13a71fcb54d6795",
-    "snapshot": "README tag policy and Dockerfile.10.0-stable at commit 131ab51f; Docker Hub tag 10.0.8 digest sha256:3f4a01786dfbe803a65f345c3342b765db9add913f5e9448f8356793714ddc34",
-    "accessed": "2026-11-22",
+    "snapshot": "README tag policy and Dockerfile.10.0-stable at commit 131ab51f; Dockerfile default USER_UID/GID 1000, creates and chowns /home/kicad KiCad config and library tables. Docker Hub tag 10.0.8 checked 2026-11-25: active, pushed 2026-10-30, Linux amd64; manifest digest sha256:3f4a01786dfbe803a65f345c3342b765db9add913f5e9448f8356793714ddc34, amd64 image digest sha256:05f6ac957e351bbbd9e1f9c996be997f61948ed9f94e0c3cab336bfcaf60161c. Static metadata only; image not pulled or run.",
+    "accessed": "2026-11-25",
     "license": "GPL-3.0-or-later",
     "scope": "Version-pinned kicad-cli container workflow for CI; community deployment reference, not a substitute for CLI manual",
+    "normative": false
+  },
+  "docker-run-reference": {
+    "title": "Docker run CLI reference",
+    "authority": "Docker, Inc.",
+    "kind": "docs",
+    "url": "https://docs.docker.com/reference/cli/docker/container/run/",
+    "snapshot": "--user UID:GID, --env, --volume and --workdir option semantics",
+    "accessed": "2026-11-25",
+    "license": "Docker documentation; cited for command semantics",
+    "scope": "第15章：容器用户、环境变量、工作目录与工作区挂载",
+    "normative": false
+  },
+  "github-actions-upload-artifact": {
+    "title": "actions/upload-artifact v4",
+    "authority": "GitHub Actions",
+    "kind": "docs",
+    "url": "https://github.com/actions/upload-artifact/tree/ea165f8d65b6e75b540449e92b4886f43607fa02",
+    "snapshot": "v4 tag resolved on 2026-11-25 to commit ea165f8d65b6e75b540449e92b4886f43607fa02; action.yml path, if-no-files-found and retention-days inputs",
+    "accessed": "2026-11-25",
+    "license": "MIT",
+    "scope": "第15章：上传 CI 报告和制造输出",
+    "normative": false
+  },
+  "github-actions-expressions": {
+    "title": "GitHub Actions expressions: status check functions",
+    "authority": "GitHub Actions",
+    "kind": "docs",
+    "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#status-check-functions",
+    "snapshot": "Status check functions section; always() status-check function semantics",
+    "accessed": "2026-11-25",
+    "license": "GitHub documentation; cited for workflow semantics",
+    "scope": "第15章：CI 前序步骤失败后的报告上传条件",
     "normative": false
   },
   "github-kicad10-seven-steps": {
@@ -213,7 +246,7 @@
     "kind": "docs",
     "url": "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml",
     "snapshot": "Version 47+ development manual; scale factor table and SPICE3 compatibility note",
-    "accessed": "2026-11-24",
+    "accessed": "2026-11-25",
     "license": "CC BY-SA 4.0",
     "scope": "第 13 章：m/M 表示 milli；Meg 表示 mega。适用于 ngspice 数值语法，不等同于 SI 前缀大小写规则",
     "normative": false
