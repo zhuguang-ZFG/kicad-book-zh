@@ -415,5 +415,44 @@
     "license": "版权书；本书只引用概念框架，不复刻正文与图",
     "scope": "第 7、8 章：回流路径、传输线判据与拐角的工程处理方式",
     "normative": false
+  },
+  "github-actions-checkout-v7": {
+    "title": "actions/checkout v7 release notes and action.yml",
+    "authority": "GitHub",
+    "kind": "github",
+    "url": "https://github.com/actions/checkout/releases/tag/v7.0.0",
+    "snapshot": "v7.0.0（2026-06-18）新增 allow-unsafe-pr-checkout，默认 false；v7.0.1（2026-07-20）为当前补丁版",
+    "accessed": "2026-11-25",
+    "license": "MIT",
+    "scope": "第 15 章：checkout 主版本、pull_request_target 下的 fork 检出限制",
+    "pinned": {
+      "tag": "v7.0.1"
+    }
+  },
+  "github-actions-setup-python-v7": {
+    "title": "actions/setup-python v7 release notes",
+    "authority": "GitHub",
+    "kind": "github",
+    "url": "https://github.com/actions/setup-python/releases/tag/v7.0.0",
+    "snapshot": "v7.0.0 起迁移到 ESM 并移除 pip-install 输入；v7.1.0（2026-10-22）为当前补丁版",
+    "accessed": "2026-11-25",
+    "license": "MIT",
+    "scope": "本书 CI：setup-python 主版本升级与构建环境版本记录",
+    "pinned": {
+      "tag": "v7.1.0"
+    }
+  },
+  "github-actions-upload-artifact-v7": {
+    "title": "actions/upload-artifact v7 release notes",
+    "authority": "GitHub",
+    "kind": "github",
+    "url": "https://github.com/actions/upload-artifact/releases/tag/v7.0.0",
+    "snapshot": "v7.0.0（2026-02-26）新增 archive:false 直传，仅支持单文件；v6.0.0 起默认 Node 24 并要求 runner >= 2.327.1；v7.0.2（2026-10-07）为当前补丁版",
+    "accessed": "2026-11-25",
+    "license": "MIT",
+    "scope": "第 15 章：upload-artifact 主版本、Node 24 运行时前提与单文件直传限制",
+    "pinned": {
+      "tag": "v7.0.2"
+    }
   }
 }
