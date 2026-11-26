@@ -41,6 +41,12 @@ Full raw review, verbatim: [round-4-review.md](round-4-review.md). Post-fix rech
 - Final gate: `test_claims`, `test_usb_diagnostics`, `test_readme_links`, `test_book_metadata`, `test_si_numbers` (16 mutations), `check_book`, and builder `--check` all OK.
 - Build used the installed Chrome via `--browser "C:/Program Files/Google/Chrome/Application/chrome.exe"`; 71.77 s.
 
+### Post-merge Correction (PDF browser cleanup)
+
+- `yuyu_book/pdf.py:_print_pdf()` now closes the launched browser in a `finally` block. Previously `launched.close()` ran only after a successful `page.pdf()`; a print failure left Chromium alive, which matches the observed `Page.printToPDF: Printing failed` followed by a hung retry.
+- Added `tools/test_pdf_cleanup.py`: a fake Playwright page raises from `pdf()` and asserts the browser still closes; wired into CI and the STRUCTURE pre-commit list.
+- Success path re-verified after the change: PDF 204 pages, 25 bookmarks, 0 index folios; all checks green.
+
 ## Round 3 Cross-Checks (before review)
 
 - **Baseline duplication (deferred Round-2 MINOR #3)**: added `## 基线范围与可选扩展` to `00-前言.md` as the single table for schematic/PCB/manufacturing/verification baseline vs optional extensions; compressed the reading path and restatements in `07-布线.md`, `08-铺铜与电磁兼容.md` §8.5–8.7, and `13-仿真与电路验证.md` §13.6. Kept every safety, negative-relation and measurement-boundary sentence, including §8.7's "本板无射频模块，此项不适用".

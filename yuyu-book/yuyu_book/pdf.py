@@ -99,17 +99,19 @@ def _print_pdf(html_path: Path, raw: Path, browser: str | None) -> None:
         raise BuildError("playwright required for PDF") from e
     with sync_playwright() as p:
         launched = _launch(p, browser)
-        page = launched.new_page(viewport={"width": 1280, "height": 900})
-        page.goto(html_path.resolve().as_uri(), wait_until="load")
         try:
-            page.evaluate("() => document.fonts.ready.then(() => true)")
-        except Exception:
-            pass
-        page.emulate_media(media="print")
-        page.pdf(path=str(raw), format="A4", print_background=True,
-                 prefer_css_page_size=True, margin={"top": "0", "bottom": "0",
-                                                    "left": "0", "right": "0"})
-        launched.close()
+            page = launched.new_page(viewport={"width": 1280, "height": 900})
+            page.goto(html_path.resolve().as_uri(), wait_until="load")
+            try:
+                page.evaluate("() => document.fonts.ready.then(() => true)")
+            except Exception:
+                pass
+            page.emulate_media(media="print")
+            page.pdf(path=str(raw), format="A4", print_background=True,
+                     prefer_css_page_size=True, margin={"top": "0", "bottom": "0",
+                                                        "left": "0", "right": "0"})
+        finally:
+            launched.close()
 
 
 def _destinations(doc, anchors: list[str]) -> dict[str, int]:

@@ -72,6 +72,9 @@
   ],
   "round4_review": "docs/book-improvement/round-4-review.md",
   "round4_recheck": "docs/book-improvement/round-4-recheck.md",
+  "round4_postmerge_fixes": [
+    "pdf.py:_print_pdf closes the launched browser in finally; added tools/test_pdf_cleanup.py and wired it into CI/STRUCTURE"
+  ],
   "started": "2026-11-25T13:20:00Z",
-  "updated": "2026-11-26T01:46:21Z"
+  "updated": "2026-11-26T01:56:21Z"
 }
