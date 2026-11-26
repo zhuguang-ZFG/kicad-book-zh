@@ -128,7 +128,6 @@ def ch01_flow(a):
     a.rect(170, 190, 60, 10, width=1.2, radius=2)
     a.text(200, 214, "BOM", size=12)
     a.line(132, 224, 268, 224, width=.8, opacity=.4)
-    a.line(132, 238, 268, 238, width=.8, opacity=.4)
     a.text(200, 246, "Ref · Value · MPN", size=8.5, opacity=.75)
 
     a.path("M390 212V202h48l12 10h150", width=1.6)
