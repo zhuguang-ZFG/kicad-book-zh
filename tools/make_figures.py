@@ -620,6 +620,47 @@ def ch10_pkg(a):
            opacity=.55)
 
 
+def ch10_handoff(a):
+    a.text(360, 28, "从 fab.zip 到工厂验包台", size=15, opacity=.62)
+    a.text(150, 55, "你：导出制造包", size=13, opacity=.68)
+    a.rect(58, 72, 184, 112, width=2.0, radius=4)
+    a.rect(70, 84, 160, 80, width=1.0, opacity=.42, radius=2)
+    a.rect(92, 96, 116, 56, width=1.8, radius=3)
+    a.line(108, 124, 192, 124, width=1.0, opacity=.5)
+    a.line(150, 104, 150, 144, width=1.0, opacity=.5)
+    for x, y in ((104, 108), (196, 108), (104, 140), (196, 140)):
+        a.circle(x, y, 3, width=1.0)
+    a.path("M42 198 L258 198 L236 212 L64 212 Z", width=1.8)
+    a.text(150, 235, "同一版本 · 同一原点", size=11, opacity=.55)
+
+    a.path("M286 119 L326 119 L338 131 L380 131 L380 169 L286 169 Z", width=1.8)
+    a.text(333, 154, "fab.zip", size=11)
+    a.arrow(386, 144, 418, 144, width=2.0, head=7)
+
+    a.text(558, 55, "工厂：解压、叠加、抽查", size=13, opacity=.68)
+    for dx, dy in ((14, 10), (7, 5), (0, 0)):
+        a.rect(438 + dx, 80 + dy, 138, 92, width=1.0, opacity=.3, radius=3)
+    a.rect(438, 80, 138, 92, width=2.0, radius=4)
+    a.line(454, 126, 560, 126, width=1.0, opacity=.45)
+    a.line(507, 94, 507, 158, width=1.0, opacity=.45)
+    for x, y in ((460, 102), (554, 102), (460, 150), (554, 150)):
+        a.circle(x, y, 4, width=1.2)
+    a.circle(596, 164, 25, width=2.2)
+    a.line(576, 183, 556, 204, width=3.0)
+
+    a.circle(660, 91, 18, width=1.8)
+    a.path("M642 116 Q660 106 678 116 L692 246 L628 246 Z", width=1.8)
+    a.path("M643 132 Q620 139 607 158", width=1.8)
+    a.circle(605, 160, 3, width=1.0)
+    a.line(410, 278, 700, 278, width=1.8)
+    a.rect(430, 207, 126, 62, width=1.2, radius=2)
+    for i, lab in enumerate(("版本", "原点", "装配范围")):
+        yy = 222 + i * 18
+        a.path(f"M442 {yy}l4 4 7-8", width=1.3)
+        a.text(462, yy + 4, lab, size=10, anchor="start", opacity=.72)
+    a.text(555, 310, "文件能打开，不等于能一起生产", size=12, opacity=.55)
+
+
 def ch10_cli(a):
     a.rect(40, 44, 640, 200, width=1.8, radius=4)
     a.line(40, 76, 680, 76, width=1.0, opacity=.4)
@@ -997,6 +1038,7 @@ figs = {
     "kicad-ch09-dfm": (720, 280, ch09_dfm),
     "kicad-ch09-three-gates": (720, 300, ch09_three_gates),
     "kicad-ch10-fab-package": (720, 300, ch10_pkg),
+    "kicad-ch10-handoff": (720, 330, ch10_handoff),
     "kicad-ch10-cli": (720, 300, ch10_cli),
     "kicad-ch11-order": (720, 300, ch11_order),
     "kicad-ch11-assembly": (720, 300, ch11_assembly),
