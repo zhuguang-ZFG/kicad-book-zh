@@ -39,6 +39,14 @@
 - Verification: regenerating twice is byte-identical; only `kicad-ch08-pour.svg` changes. The rebuilt PDF remains 210 pages / 228 bookmarks, and a 72-dpi whole-book comparison isolates the sole render change to p80. `test_claims`, `test_book_metadata`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass.
 - Boundary: no manuscript text, technical value, command, warning, section order, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
 
+## Illustration Action — Chapter 12 Power Measurement
+
+- Evidence: Figure 12-3 showed the power chain and three result cards, but the caption’s physical action—black probe fixed at GND, red probe visiting three test points—existed only in prose.
+- Change: redrew `ch12_power` with a hand-drawn multimeter, black return lead, red probe path and numbered 1→2→3 test badges linked to three measurement rows. The USB-C → F1 → LDO → ATtiny85 topology, GND returns, voltage values, failure hints, caption, figure number and 720×340 viewBox are preserved.
+- Verification: the deterministic SVG is 15,345 bytes, below the 20 KB inline-plate limit; regenerating twice is byte-identical and only `kicad-ch12-power.svg` changes. The rebuilt PDF remains 210 pages / 228 bookmarks, and a 72-dpi whole-book comparison isolates the sole render change to p121. `test_claims`, `test_book_metadata`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass.
+- Contrast: every text node uses opacity ≥ .70. Measured worst-case ratios across the frame gradient are 5.51:1 on print paper, 5.37:1 on the light sheet and 6.88:1 in dark mode, all above the 4.5:1 delivery gate.
+- Boundary: no manuscript text, technical value, command, warning, section order, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
+
 ## Prose De-AI Passes (after Round 7)
 
 ### First Pass

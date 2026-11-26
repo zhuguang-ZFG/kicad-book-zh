@@ -779,73 +779,90 @@ def ch12_debug(a):
 
 
 def ch12_power(a):
-    a.text(360, 34, "上电后先测这三段，再插 ISP", size=14, opacity=.6)
+    a.text(360, 28, "上电后先测这三段，再插 ISP", size=14, opacity=.7)
 
-    # USB-C input
+    # Power chain. Numbered badges link each test point to the measurement rows.
     a.rect(28, 92, 74, 60, width=2.0, radius=4)
     a.text(65, 118, "USB-C", size=11)
-    a.text(65, 136, "VBUS/GND", size=10, opacity=.55)
-    a.line(102, 116, 160, 116, width=2.0)
+    a.text(65, 136, "VBUS/GND", size=10, opacity=.7)
+    a.line(102, 122, 166, 122, width=2.0)
+    a.circle(166, 122, 5, width=1.4)
+    a.line(166, 117, 166, 88, width=1.0, opacity=.5)
+    a.circle(166, 78, 9, width=1.4)
+    a.text(166, 82, "1", size=10)
+    a.text(166, 58, "VBUS", size=11, opacity=.75)
 
-    # VBUS test point
-    a.circle(166, 116, 5, width=1.4)
-    a.line(166, 111, 166, 98, width=1.0, opacity=.5)
-    a.text(166, 80, "VBUS", size=11, opacity=.7)
-    a.text(166, 94, "≈5 V", size=10, opacity=.5)
+    a.line(171, 122, 188, 122, width=1.8)
+    a.rect(188, 108, 58, 28, width=1.8, radius=2)
+    a.text(217, 127, "F1", size=12)
+    a.line(246, 122, 284, 122, width=2.0)
+    a.circle(284, 122, 5, width=1.4)
+    a.line(284, 117, 284, 88, width=1.0, opacity=.5)
+    a.circle(284, 78, 9, width=1.4)
+    a.text(284, 82, "2", size=10)
+    a.text(284, 58, "+5V", size=11, opacity=.75)
 
-    # fuse
-    a.rect(188, 102, 58, 28, width=1.8, radius=2)
-    a.text(217, 121, "F1", size=12)
-    a.line(171, 116, 188, 116, width=1.8)
-    a.line(246, 116, 278, 116, width=2.0)
+    a.line(289, 122, 326, 122, width=1.8)
+    a.rect(326, 90, 98, 64, width=2.0, radius=3)
+    a.text(375, 118, "U2", size=13)
+    a.text(375, 138, "LDO", size=10, opacity=.7)
+    a.line(424, 122, 464, 122, width=2.0)
+    a.circle(464, 122, 5, width=1.4)
+    a.line(464, 117, 464, 88, width=1.0, opacity=.5)
+    a.circle(464, 78, 9, width=1.4)
+    a.text(464, 82, "3", size=10)
+    a.text(464, 58, "+3V3", size=11, opacity=.75)
 
-    # +5V test point
-    a.circle(284, 116, 5, width=1.4)
-    a.line(284, 111, 284, 98, width=1.0, opacity=.5)
-    a.text(284, 80, "+5V", size=11, opacity=.7)
-    a.text(284, 94, "≈5 V", size=10, opacity=.5)
+    a.line(469, 122, 514, 122, width=1.8)
+    a.rect(514, 90, 156, 64, width=2.0, radius=3)
+    a.text(592, 118, "ATtiny85", size=12)
+    a.text(592, 138, "+ LED", size=10, opacity=.7)
 
-    # LDO
-    a.rect(326, 84, 98, 64, width=2.0, radius=3)
-    a.text(375, 112, "U2", size=13)
-    a.text(375, 132, "LDO", size=10, opacity=.5)
-    a.line(289, 116, 326, 116, width=1.8)
-    a.line(424, 116, 458, 116, width=2.0)
-
-    # +3V3 test point
-    a.circle(464, 116, 5, width=1.4)
-    a.line(464, 111, 464, 98, width=1.0, opacity=.5)
-    a.text(464, 80, "+3V3", size=11, opacity=.7)
-    a.text(464, 94, "3.3 V", size=10, opacity=.5)
-
-    # load
-    a.rect(514, 84, 156, 64, width=2.0, radius=3)
-    a.text(592, 112, "ATtiny85", size=12)
-    a.text(592, 132, "+ LED", size=10, opacity=.5)
-    a.line(469, 116, 514, 116, width=1.8)
-
-    # ground rail and symbol
+    # Ground rail and returns.
     a.line(52, 192, 650, 192, width=2.0)
-    for x, y0 in ((65, 152), (375, 148), (592, 148)):
+    for x, y0 in ((65, 152), (375, 154), (592, 154)):
         a.line(x, y0, x, 192, width=1.2, opacity=.7)
-    a.line(360, 192, 360, 204, width=2.0)
-    a.line(344, 204, 376, 204, width=1.6)
-    a.line(350, 210, 370, 210, width=1.4)
-    a.line(356, 216, 364, 216, width=1.2)
-    a.text(386, 214, "GND", size=10, anchor="start", opacity=.5)
+    a.line(375, 192, 375, 204, width=2.0)
+    a.line(359, 204, 391, 204, width=1.6)
+    a.line(365, 210, 385, 210, width=1.4)
+    a.line(371, 216, 379, 216, width=1.2)
+    a.text(401, 208, "GND", size=10, anchor="start", opacity=.7)
 
-    # three measurement cards
-    cards = (
-        (40, "VBUS → GND", "≈5 V", "无：查 USB-C / 线缆"),
-        (250, "F1 后 → GND", "≈5 V", "无：查 F1 / 焊点"),
-        (460, "+3V3 → GND", "3.3 V", "无：查 LDO / EN / 负载"),
+    # Hand-drawn meter: black lead returns to GND, red lead visits 1 → 2 → 3.
+    a.rect(24, 218, 190, 100, width=1.2, radius=3, opacity=.7)
+    a.text(119, 236, "万用表", size=12, opacity=.7)
+    a.rect(52, 244, 124, 44, width=1.8, radius=4)
+    a.rect(66, 252, 96, 16, width=1.0, radius=1, opacity=.6)
+    a.text(114, 265, "V", size=13)
+    a.text(154, 265, "DC", size=8, anchor="end", opacity=.7)
+    a.circle(146, 276, 7, width=1.2)
+    a.line(146, 276, 151, 270, width=1.2)
+    a.circle(78, 286, 2.5, width=1.2)
+    a.circle(108, 286, 2.5, width=1.2)
+    a.line(78, 290, 78, 300, width=1.4)
+    a.line(70, 300, 86, 300, width=1.2)
+    a.line(73, 305, 83, 305, width=1.0)
+    a.line(76, 310, 80, 310, width=.9)
+    a.text(96, 307, "黑笔 → GND", size=9.5, anchor="start", opacity=.7)
+    a.path("M108 290 L108 298 L220 298 L220 264", width=1.4, opacity=.7)
+    a.arrow(220, 264, 238, 264, width=1.4, head=5)
+    a.text(229, 254, "红笔", size=9.5, opacity=.7)
+
+    rows = (
+        ("1", "VBUS → GND", "≈5 V", "无：查 USB-C / 线缆"),
+        ("2", "F1 后 → GND", "≈5 V", "无：查 F1 / 焊点"),
+        ("3", "+3V3 → GND", "3.3 V", "无：查 LDO / EN / 负载"),
     )
-    for x, lab, val, hint in cards:
-        a.rect(x, 232, 192, 82, width=1.2, radius=3, opacity=.7)
-        a.text(x + 96, 252, lab, size=10, opacity=.55)
-        a.text(x + 96, 282, val, size=22, opacity=.85)
-        a.text(x + 96, 302, hint, size=10, opacity=.45)
-    a.text(360, 332, "黑笔固定 GND，红笔逐点；先断电再换档。", size=11, opacity=.5)
+    for i, (num, lab, val, hint) in enumerate(rows):
+        y = 218 + i * 34
+        a.rect(240, y, 452, 32, width=1.0, radius=2, opacity=.55)
+        a.circle(258, y + 16, 8, width=1.2)
+        a.text(258, y + 20, num, size=10)
+        a.text(278, y + 13, lab, size=11, anchor="start", opacity=.75)
+        a.text(452, y + 16, val, size=16, anchor="start", opacity=.85)
+        a.text(278, y + 29, hint, size=9.5, anchor="start", opacity=.7)
+
+    a.text(360, 332, "黑笔固定 GND，红笔逐点；先断电再换档。", size=11, opacity=.7)
 
 
 # ---- chapter 13 --------------------------------------------------------
