@@ -63,6 +63,15 @@
 - Review hardening: the first p15 render exposed three geometry collisions—footprint library over the folder, schematic chip over the sheet edge, and PCB traces over the caption. The folder now ends at x600, the chip stays inside the sheet, and the lower trace was raised. A print-specific follow-up also removed the second BOM rule, which crossed the enlarged `Ref · Value · MPN` glyph box; the rebuilt p15 was visually and geometrically rechecked before delivery.
 - Boundary: no manuscript text, technical relationship, command, warning, section order, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
 
+## Illustration Evidence — Chapter 9 Release Gates
+
+- Evidence: Figure 9-4 used three undifferentiated boxes; its secondary labels had opacity as low as .45, and the drawing did not show what evidence each independent gate requires.
+- Change: redrew `ch09_three_gates` as three evidence cards with distinct hand-drawn symbols: DRC board markers, an electrical network, and an annular ring under caliper jaws. The DRC/电气确认/工厂能力 titles, scope terms, `0 通过 / 5 违规`, schematic/component review, DFM/factory confirmation, caption, figure number and 720×300 viewBox are preserved; the boundary labels now state what each gate does and does not cover.
+- Contrast and budget: every text node uses opacity ≥ .75; measured worst-case ratios are 6.47:1 on print paper, 6.29:1 on the light sheet and 7.67:1 in dark mode. The deterministic SVG is 7,930 bytes, below the 20 KB inline-plate limit.
+- Verification: regenerating twice is byte-identical and only `kicad-ch09-three-gates.svg` changes. The rebuilt PDF remains 210 pages / 228 bookmarks; a 72-dpi comparison against a clean `origin/main` build isolates the sole render change to p93. Printed figure text has no bounding-box collisions. `test_claims`, `test_book_metadata`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass.
+- Boundary: no manuscript text, technical value, command, warning, section order, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
+
+
 ## Prose De-AI Passes (after Round 7)
 
 ### First Pass
