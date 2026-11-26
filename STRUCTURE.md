@@ -39,6 +39,7 @@ tools/                       # 开发脚本
 ├── test_usb_diagnostics.py  # USB 诊断措辞回归测试
 ├── test_book_metadata.py    # HTML 元数据与图号回归测试
 ├── test_readme_links.py     # README 相对链接回归测试
+├── test_pdf_cleanup.py      # PDF 浏览器异常关闭回归测试
 └── test_si_numbers.py       # 信号完整性数字闸门的变异测试
 
 docs/                        # 预览、截图、发布包
@@ -59,6 +60,7 @@ STRUCTURE.md                 # 本文件
    - `python tools/test_usb_diagnostics.py`
    - `python tools/test_readme_links.py`
    - `python tools/test_book_metadata.py`
+   - `python tools/test_pdf_cleanup.py`
    - `python tools/test_si_numbers.py`
    - `python tools/check_book.py`
    - `cd yuyu-book && PYTHONPATH=. python -m yuyu_book --check --mermaid source`
