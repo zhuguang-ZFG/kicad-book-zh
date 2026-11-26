@@ -225,5 +225,5 @@
 
 <figure class="illu illu-photo screenshot">
 <div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-router-settings.png" alt="Interactive Router Settings"></div>
-<figcaption><span class="fig-no">图 A-19</span><span class="fig-cap">Interactive Router Settings。布线模式、走线角度、过孔和推挤选项在这里设置；不同模式会改变走线时对既有铜皮的处理方式。</span></figcaption>
+<figcaption><span class="fig-no">图 A-19</span><span class="fig-cap">Interactive Router Settings。Mode 里选 Highlight collisions、Shove 或 Walk around，右侧控制过孔推挤、冗余走线清理等选项；自由角度模式只在 Highlight collisions 下可用，图中因选中 Shove 而灰显。</span></figcaption>
 </figure>

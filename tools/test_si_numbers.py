@@ -35,6 +35,8 @@ MUTATIONS: list[tuple] = [
      "| 0.25 mm | 约 1.5 mm | 约 138 Ω |", "| 0.25 mm | 约 1.5 mm | 约 50 Ω |"),
     ("microstrip 112 -> 75 ohm", CH07,
      "| 0.5 mm | 约 1.5 mm | 约 112 Ω |", "| 0.5 mm | 约 1.5 mm | 约 75 Ω |"),
+    ("0.20 mm default impedance 146 -> 50 ohm", CH07,
+     "0.20 mm，按同一近似式约 146 Ω", "0.20 mm，按同一近似式约 50 Ω"),
     ("3h result 4.5 -> 1.5 mm", CH08,
      "| 1.6 mm 两层板 | 约 1.5 mm | 约 4.5 mm |",
      "| 1.6 mm 两层板 | 约 1.5 mm | 约 1.5 mm |"),

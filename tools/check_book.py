@@ -533,6 +533,21 @@ def check_si_numbers() -> None:
             errors.append(
                 f"ch07: {w_mm} mm over {h_mm} mm claims {z} Ω, microstrip estimate gives {want:.0f} Ω")
 
+    # -- 7.3 default netclass width ------------------------------------
+    # Chapter 5 puts ordinary GPIO/LED on a 0.20 mm Default netclass, which
+    # is narrower than the table's first row. 7.3 must state that width's
+    # impedance separately instead of folding it into the 0.25-1.0 mm range.
+    default_w, default_h = 0.20, 1.5
+    defaults = re.findall(r"0\.20\s*mm[^。]{0,60}?约\s*([0-9]+)\s*Ω", ch07)
+    if not defaults:
+        errors.append("ch07: 7.3 must state the 0.20 mm Default netclass impedance")
+    for stated in defaults:
+        want = microstrip_z0(default_w, default_h)
+        if abs(float(stated) - want) > max(3.0, want * 0.05):
+            errors.append(
+                f"ch07: 0.20 mm over {default_h} mm claims {stated} Ω, "
+                f"microstrip estimate gives {want:.0f} Ω")
+
     # -- 8.4 reference copper and spacing -------------------------------
     hrows = re.findall(r"^\|\s*([^|]+?)\s*\|\s*约\s*([0-9.]+)\s*mm\s*\|\s*约\s*([0-9.]+)\s*mm\s*\|",
                        ch08, re.M)
