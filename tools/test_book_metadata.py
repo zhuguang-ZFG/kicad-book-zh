@@ -11,8 +11,10 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "yuyu-book"))
+sys.path.insert(0, str(ROOT / "tools"))
 
 app = importlib.import_module("yuyu_book.app")
+check_book = importlib.import_module("check_book")
 source_registry = importlib.import_module("yuyu_book.backmatter").source_registry
 photo_figures = importlib.import_module("yuyu_book.render").photo_figures
 renumber_figures = importlib.import_module("yuyu_book.render").renumber_figures
@@ -125,10 +127,27 @@ def test_source_registry_separates_books_and_deep_links() -> None:
     assert "官方库与指南" in html
 
 
+def test_source_figure_captions_are_sequential() -> None:
+    # Source captions must be 1..N per chapter even though the renderer
+    # renumbers figures; duplicates hide a future renderer regression.
+    assert check_book.source_figure_number_problems() == []
+
+
+def test_structure_html_limit_covers_readme_claim() -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    structure = (ROOT / "STRUCTURE.md").read_text(encoding="utf-8")
+    claim = re.search(r"HTML：.*?约\s*([0-9.]+)\s*MB", readme)
+    limit = re.search(r"HTML 构建大小 <\s*([0-9.]+)\s*MB", structure)
+    assert claim and limit, "README/STRUCTURE must state the HTML size and limit"
+    assert float(claim.group(1)) < float(limit.group(1))
+
+
 if __name__ == "__main__":
     test_page_shell_does_not_embed_foreign_product_metadata()
     test_page_shell_uses_and_escapes_product_metadata()
     test_build_edition_passes_manifest_metadata_to_page_shell()
     test_photos_share_document_order_figure_numbers()
+    test_source_figure_captions_are_sequential()
+    test_structure_html_limit_covers_readme_claim()
     test_source_registry_separates_books_and_deep_links()
     print("book metadata regression: OK")
