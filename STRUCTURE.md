@@ -40,6 +40,7 @@ tools/                       # 开发脚本
 ├── test_book_metadata.py    # HTML 元数据与图号回归测试
 ├── test_readme_links.py     # README 相对链接回归测试
 ├── test_pdf_cleanup.py      # PDF 浏览器异常关闭回归测试
+├── test_pdf_layout.py       # 构建后 PDF 版式回归（孤立尾页/表格代码名）
 └── test_si_numbers.py       # 信号完整性数字闸门的变异测试
 
 docs/                        # 预览、截图、发布包
@@ -63,6 +64,7 @@ STRUCTURE.md                 # 本文件
    - `python tools/test_pdf_cleanup.py`
    - `python tools/test_si_numbers.py`
    - `python tools/check_book.py`
+   - `python tools/test_pdf_layout.py`（先构建 PDF）
    - `cd yuyu-book && PYTHONPATH=. python -m yuyu_book --check --mermaid source`
 5. 版本更新时更新 `manifest.json` 中的日期和版本号。
 6. 关键词式事实检查必须同时覆盖应拒绝的诊断用语与应接受的否定/解释用语；否定用例应包含自然长表述，并确认同段后续独立诊断仍会触发。

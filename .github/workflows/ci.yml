@@ -52,6 +52,7 @@ jobs:
       - name: Run content and build checks
         run: |
           python tools/check_book.py
+          python tools/test_pdf_layout.py
           cd yuyu-book
           PYTHONPATH=. python -m yuyu_book --check --mermaid source
 

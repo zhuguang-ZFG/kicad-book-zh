@@ -94,8 +94,18 @@ _TABLE_RE = re.compile(r"<table>.*?</table>", re.S)
 def wrap_tables(doc: str) -> str:
     def repl(m):
         t = m.group(0)
-        cols = t.count("<th") or t.count("<td") or 1
-        return f'<div class="table-scroll" data-cols="{cols}" tabindex="0">{t}</div>'
+        # A code token with no spaces is one unbreakable name: `.kicad_mod`
+        # must not print as `.kicad_mo` / `d` when a table column is narrow.
+        # Tokens with spaces keep normal wrapping, so menu paths still fit.
+        t = re.sub(r"<code>([^<\s]+)</code>", r'<code class="nw">\1</code>', t)
+        cols = len(re.findall(r"<th[\s>]", t)) or len(re.findall(r"<td[\s>]", t)) or 1
+        # The appendix B.2 file table has five content-heavy columns and a
+        # short distribution column. Auto layout gives the last column two
+        # characters per line; fixed proportional widths keep every column
+        # readable without changing any other table.
+        kind = ' file-table' if "<th>扩展名</th>" in t and "<th>分发</th>" in t else ''
+        return (f'<div class="table-scroll{kind}" data-cols="{cols}" '
+                f'tabindex="0">{t}</div>')
     return _TABLE_RE.sub(repl, doc)
 
 
