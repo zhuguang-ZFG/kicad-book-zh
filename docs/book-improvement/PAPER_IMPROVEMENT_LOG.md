@@ -7,6 +7,36 @@
 | Round 0 (original) | — | — | Baseline: 194 pages, 25 bookmarks |
 | Round 1 | 6/10 | Almost / BLOCK | Fixed the LED net contract, added breathing firmware and toolchain prerequisites, aligned CLI origins, narrowed the impedance claim, locked component selection, repaired source classification |
 | Round 2 | 6/10 | Almost / BLOCK | Reviewer (fresh, independent): Round-1's five MAJORs all closed; new MAJOR = duplicated figure numbers on 6 PDF pages from photo captions; 2 MINORs |
+| Round 3 | 8/10 | Accept / ALLOW | Closed the deferred baseline-duplication MINOR (preface table + ch7/8/13 compression); added §15.7 KiBot direct reuse (pinned action + schema-validated config + version/AGPL boundaries); 0 MAJOR, 2 MINOR fixed post-review |
+
+## Round 3 Cross-Checks (before review)
+
+- **Baseline duplication (deferred Round-2 MINOR #3)**: added `## 基线范围与可选扩展` to `00-前言.md` as the single table for schematic/PCB/manufacturing/verification baseline vs optional extensions; compressed the reading path and restatements in `07-布线.md`, `08-铺铜与电磁兼容.md` §8.5–8.7, and `13-仿真与电路验证.md` §13.6. Kept every safety, negative-relation and measurement-boundary sentence, including §8.7's "本板无射频模块，此项不适用".
+- **GitHub OSS reuse (KiBot)**: pinned upstream facts by direct fetch, not by memory: KiBot `v1.9.1` annotated tag → commit `8a5106ecdbdaa0057255496fe768766df493221d`; GitHub Action `v2_k10` annotated tag → commit `5c78b746f9076d54242aeeeae7f364f360e21f30`; action inputs `config`/`schema`/`board`/`dir` confirmed in `action.yml`; action Dockerfile still uses `ghcr.io/inti-cmnb/kicad10_auto_full:latest`; image `/etc/kiauto_tag` = `1.9.1-2_k10.0.5_d13.2_b4.2.4LTS` (KiCad 10.0.5, not the book's 10.0.8); index digest `sha256:96e75f885b15617c6b38aef11db7856a93f4367cab7a0b6c2b30465557619330`.
+- **Config validation**: extracted the chapter's `.kibot.yaml` and validated it against the official KiBot v1.9.1 schema with `jsonschema` Draft7 → 0 errors; workflow YAML parses; `${QUANTITY}` confirmed against upstream `ColumnList.COL_QUANTITY`. No Docker locally, so the pipeline was **not** executed; the book states this boundary explicitly.
+- **Stats gate**: `tools/check_book.py` `md_files()` now excludes `.tmp`, so downloaded CLI/reference Markdown cannot inflate the manuscript word count; README refreshed to 205 pages / 14.0 MB / 16 SI mutation cases.
+
+## Round 3 Review
+
+Full raw review, verbatim: [round-3-review.md](round-3-review.md).
+
+- **Score: 8/10**, **Verdict: Accept**, **Merge: ALLOW**, 0 MAJOR, 2 MINOR, confidence 0.88.
+- Independently confirmed the Round-2 figure-number MAJOR stays closed in the shipped 205-page PDF (48 unique figure numbers, 0 duplicates), and that the baseline de-duplication preserved all safety/negative/measurement boundaries.
+- Independently verified the KiBot action tag/SHA, inputs, schema strictness (bogus-key injection), image tag and AGPL wording.
+
+### Fixes After the Round-3 Review (same session)
+
+1. **KiBot `dir` is a prefix (MINOR)** — action input changed from `dir: fab` to `dir: .`; the prose now says it is an output prefix concatenated with each output's `dir`, so `fab/gerbers` and `fab/` stay as documented instead of becoming `fab/fab/...`.
+2. **Ch2 still restated the baseline (MINOR)** — `02-原理图第一笔.md` now points to the preface table and keeps only the chapter-local instruction ("本章只画最小系统") plus the optional-expansion note.
+
+## Round 3 Artifacts
+
+- Final artifact: `yuyu-book/dist/kicad-book-zh-round3.pdf` — **205 pages, 25 bookmarks, 14.0 MB**, rebuilt after both MINOR fixes.
+- PDF text-layer re-check: **0 blank pages**; 48 unique figure numbers, **0 duplicate numbers**, including the Round-2 regression set.
+- Preface baseline table on page 9; Ch2 pointer on page 21; Ch7 pointer on page 67; KiBot `dir: .` and "输出前缀" explanation on page 157.
+- HTML: 5.6 MB, 20 units, 67 plates, 44 cited links — unit/plate counts unchanged from Round 2.
+- Final gate: `test_claims`, `test_usb_diagnostics`, `test_readme_links`, `test_book_metadata`, `test_si_numbers` (16 mutations), `check_book`, and builder `--check` all OK.
+- Build note: the bundled Chromium raised `Page.printToPDF: Printing failed` once and then hung on retry; the final build used the installed Chrome via `--browser "C:/Program Files/Google/Chrome/Application/chrome.exe"` and completed in 107 s.
 
 ## Round 2 Cross-Checks (before review)
 

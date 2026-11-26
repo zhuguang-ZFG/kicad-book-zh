@@ -506,5 +506,19 @@
     "pinned": {
       "tag": "v7.0.2"
     }
+  },
+  "kibot": {
+    "title": "KiBot: KiCad automation tool and GitHub Action",
+    "authority": "INTI-CMNB / KiBot maintainers",
+    "kind": "github",
+    "url": "https://github.com/INTI-CMNB/KiBot/tree/8a5106ecdbdaa0057255496fe768766df493221d",
+    "snapshot": "KiBot v1.9.1（tag commit 8a5106ecdbdaa0057255496fe768766df493221d）；GitHub Action v2_k10（commit 5c78b746f9076d54242aeeeae7f364f360e21f30）引用镜像 ghcr.io/inti-cmnb/kicad10_auto_full:latest；2026-11-26 检查镜像 /etc/kiauto_tag 为 1.9.1-2_k10.0.5_d13.2_b4.2.4LTS，index digest sha256:96e75f885b15617c6b38aef11db7856a93f4367cab7a0b6c2b30465557619330",
+    "accessed": "2026-11-26",
+    "license": "AGPL-3.0",
+    "scope": "第 15 章：直接复用 KiBot GitHub Action 与 .kibot.yaml 配置；版本、镜像 digest 与 AGPL 边界；不内嵌其源码",
+    "pinned": {
+      "tag": "v1.9.1",
+      "commit": "8a5106ecdbdaa0057255496fe768766df493221d"
+    }
   }
 }
