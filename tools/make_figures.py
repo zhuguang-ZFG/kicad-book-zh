@@ -478,6 +478,7 @@ def ch07_diff(a):
 
 # ---- chapter 8 ---------------------------------------------------------
 def ch08_pour(a):
+    a.text(360, 28, "GND 铺铜与缝合过孔", size=13, opacity=.55)
     board(a, 80, 44, 560, 200, r=8)
     # zone boundary
     a.path("M100 64Q110 58 122 64L600 64Q620 66 620 84L620 220Q618 232 604 232L110 232Q96 230 96 216L96 80Q96 66 100 64Z", width=1.0, opacity=.35, dash="4 5")
@@ -494,6 +495,17 @@ def ch08_pour(a):
         x1 = 330 + 5 * math.cos(math.radians(ang)); y1 = 210 + 5 * math.sin(math.radians(ang))
         x2 = 330 + 14 * math.cos(math.radians(ang)); y2 = 210 + 14 * math.sin(math.radians(ang))
         a.line(x1, y1, x2, y2, width=1.2)
+    # Symbol key: decode the three repeated marks without changing the board.
+    a.line(64, 258, 96, 258, width=1.0, dash="3 4", opacity=.55)
+    a.text(106, 262, "铺铜边界", size=10, anchor="start", opacity=.6)
+    a.circle(286, 258, 2.8, width=.8, opacity=.55)
+    a.circle(286, 258, .8, width=.6, fill="currentColor")
+    a.text(300, 262, "缝合过孔", size=10, anchor="start", opacity=.6)
+    a.circle(470, 258, 4.0, width=1.2)
+    a.line(466, 258, 474, 258, width=1.0)
+    a.line(470, 254, 470, 262, width=1.0)
+    a.text(492, 262, "热焊盘", size=10, anchor="start", opacity=.6)
+
     a.text(360, 278, "铺铜是“回流路径”，不是“把空白填满”；过孔缝合让地平面真正连成一片。", size=12, opacity=.55)
 
 

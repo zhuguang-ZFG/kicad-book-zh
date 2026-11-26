@@ -31,6 +31,14 @@
 - Native-outline experiment: installed Chromium 158 reports `CSS.supports("bookmark-level", "1") == false`, and `page.pdf(outline=True)` produces an empty outline on a minimal H1/H2 fixture. The text-position fallback remains necessary, but is no longer allowed to mask missing chapter/part/appendix destinations.
 - Boundary: no manuscript text, figure, command, warning, page geometry, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
 
+## Illustration Clarity — Chapter 8 Copper Pour
+
+- Evidence: `kicad-ch08-pour` was the largest teaching SVG but had only two text labels; the dashed zone, 80 stitching-via circles and thermal-relief symbol had no in-figure key.
+- Change: added the title “GND 铺铜与缝合过孔” and a three-item symbol key for the copper boundary, stitching vias and thermal pad. Board geometry, via array, MCU, thermal spokes, caption, figure number and 720×300 viewBox are unchanged.
+- Budget: the first 20,100-byte build exceeded the renderer’s 20,000-byte inline-plate limit. Shortening the title/key labels and simplifying the legend’s thermal sample reduced the deterministic output to 19,926 bytes; the full PDF build now passes.
+- Verification: regenerating twice is byte-identical; only `kicad-ch08-pour.svg` changes. The rebuilt PDF remains 210 pages / 228 bookmarks, and a 72-dpi whole-book comparison isolates the sole render change to p80. `test_claims`, `test_book_metadata`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass.
+- Boundary: no manuscript text, technical value, command, warning, section order, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
+
 ## Prose De-AI Passes (after Round 7)
 
 ### First Pass
