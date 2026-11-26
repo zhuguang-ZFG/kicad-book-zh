@@ -144,6 +144,13 @@ PRINT_CSS = r"""/* ------- print / PDF ------- */
      the tail of its last page, so the mark has to be big enough to be the
      reason the page stops there rather than a stray that fell into the void. */
   .ch-close{break-inside:avoid}
+  /* The closing mark inherits the list's bottom margin plus a paragraph's
+     leading. On CI's Noto CJK metrics that combination was a couple of
+     points too tall for Ch8's last page, so the whole pair moved to a sheet
+     of its own. Drop the preceding sibling's trailing margin only where a
+     closing mark follows; the mark keeps its size. */
+  .chapter-body > :has(+ .ch-close){margin-bottom:0}
+  .ch-close p:first-child{margin-top:0}
   /* The bridge and the ruts are one closing mark. The old 1.6rem gap did
      not fit after Ch6's acceptance list and spent a whole sheet on two
      lines; a tighter gap lets them close the page they belong to. */
