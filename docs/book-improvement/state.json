@@ -154,9 +154,9 @@
   "round7_baseline_pdf": "yuyu-book/dist/kicad-book-zh-round6.pdf",
   "round7_pages": 210,
   "round7_pdf": "yuyu-book/dist/kicad-book-zh-round7.pdf",
-  "round7_pdf_bytes": 14864057,
-  "round7_pdf_md5": "4ee2494704c2f2135901fc47849ed284",
-  "round7_html_bytes": 6621762,
+  "round7_pdf_bytes": 14863999,
+  "round7_pdf_md5": "a0d5f4529c511bce31d2f7cc2a241e48",
+  "round7_html_bytes": 6622216,
   "round7_bookmarks": 25,
   "round7_blank_pages": 0,
   "round7_captions": 78,
@@ -193,6 +193,18 @@
     "new_empty_card_strips": [],
     "river_gate": "clusters rawdict line fragments by baseline, flags prose fragment gaps > 3.5 pt outside filled table cards; synthetic spaced-CJK PDF fails, contiguous-CJK PDF passes, final PDF passes, blocked 7c185 build failed on the five pages above"
   },
+  "round7_ci_repair": {
+    "first_run": 45771597642,
+    "failure": "pages with a lone body sentence/bullet: [85] on Ubuntu Noto CJK",
+    "fix": ".chapter-body > :has(+ .ch-close){margin-bottom:0} and .ch-close p:first-child{margin-top:0}; closing mark size and gate unchanged",
+    "rerun": 45776337209,
+    "rerun_conclusion": "success",
+    "ci_pdf_pages": 209,
+    "ci_pdf_bytes": 26378991,
+    "ci_pdf_md5": "1689331ed1266d3479b449f0bffdefe4",
+    "ci_b2_pages": [184, 185],
+    "local_pre_repair_pdf_md5": "4ee2494704c2f2135901fc47849ed284"
+  },
   "started": "2026-11-25T13:20:00Z",
-  "updated": "2026-11-26T06:52:47Z"
+  "updated": "2026-11-26T07:40:45Z"
 }

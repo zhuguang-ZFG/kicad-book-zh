@@ -11,7 +11,7 @@
 | Round 4 | 9/10 | Accept / ALLOW | Fresh review found 1 MAJOR (STRUCTURE HTML limit `< 1MB` vs 5.6MB artifact) and 3 MINOR; fixed the MAJOR, refreshed stats, made source captions sequential, added artifact gates; recheck closed the MAJOR, 1 new gate-hardening MINOR fixed, reference-depth MINOR deferred |
 | Round 5 | 9/10 | Accept / ALLOW | Added 8 official KiCad screenshots to body chapters (27 total with Appendix A.7), 3 OSS workflow diagrams, screenshot provenance gates and figure-number ordering fix; fresh review found 2 caption/pixel mismatches (1 MAJOR, 1 MINOR), both fixed; recheck 9/10 with 0 MAJOR, 0 MINOR |
 | Round 6 | 9/10 | Accept / ALLOW | Fresh technical/reproducibility audit of the 211-page artifact: all CLI flags, DRC semantics, menu paths and 19 Appendix A.7 screenshots verified against KiCad 10.0.8; 0 MAJOR, 1 MINOR (Ch7 omitted the 0.20 mm Default netclass from its 86–138 Ω claim), fixed with an explicit ~146 Ω statement and a new SI mutation; A-19 caption tightened |
-| Round 7 | 9 → 6 → 9 | Accept / ALLOW → BLOCK → Accept / ALLOW | Raster audit of all 211 pages of the Round 6 PDF; fixed the lone Ch6 bridge page, the lone appendix-B caveat page, B.2 filename splits and the empty bordered row fragment; initial review 9/10 with 2 MINOR, both fixed; recheck found a new MAJOR (removing `<wbr>` from ~250 inline code tokens created justified-prose rivers on five pages), fixed by restoring soft breaks while keeping B.2 filenames nowrap; river gate added; independent follow-up on the final artifact accepted the fix with 0 MAJOR / 0 MINOR |
+| Round 7 | 9 → 6 → 9 | Accept / ALLOW → BLOCK → Accept / ALLOW | Raster audit of all 211 pages of the Round 6 PDF; fixed the lone Ch6 bridge page, the lone appendix-B caveat page, B.2 filename splits and the empty bordered row fragment; initial review 9/10 with 2 MINOR, both fixed; recheck found a new MAJOR (removing `<wbr>` from ~250 inline code tokens created justified-prose rivers on five pages), fixed by restoring soft breaks while keeping B.2 filenames nowrap; river gate added; independent follow-up on the final artifact accepted the fix with 0 MAJOR / 0 MINOR; a CI-only Ch8 orphan was then fixed and the PR rerun passed |
 
 ## Round 7 Cross-Checks (before review)
 
@@ -63,15 +63,25 @@ Full follow-up report, verbatim: [round-7-recheck-2.md](round-7-recheck-2.md).
 - The new gate is meaningful: final PDF rc=0, Round 6 rc=1 with the expected old defects, synthetic spaced-CJK fires at 22/25/30 pt gaps and contiguous CJK does not. No assertion was weakened. CI runs the gate after the build.
 - Normalized text ratio against Round 6 is 0.9996; no content deletion. Residual detector blind spots are documented in the report and are not merge blockers.
 
+### Round 7 CI Follow-up
+
+- PR [#11](https://github.com/zhuguang-ZFG/kicad-book-zh/pull/11) first run `45771597642` failed only in `test_pdf_layout.py`: `pages with a lone body sentence/bullet: [85]`. On Ubuntu with `fonts-noto-cjk`, Ch8's transition sentence and the closing mark occupied CI p85 alone (89 extracted characters); the local Windows/Chrome build kept the whole Ch8 tail on one page and passed.
+- The gate was correct, not a false positive. `.ch-close` glues the bridge paragraph and ornament with `break-inside:avoid`; on CI p84 the preceding acceptance list's trailing margin plus the paragraph leading made the 39 pt pair a few points too tall for the 51 pt left below the last text.
+- Repair: `.chapter-body > :has(+ .ch-close){margin-bottom:0}` and `.ch-close p:first-child{margin-top:0}`. The closing mark keeps its size; no content, short-page exemption, threshold or test assertion was changed.
+- Rebuilt local artifact: **210 pages, 25 bookmarks, 0 blank pages, 78 unique captions**, `14,863,999 B`, MD5 `a0d5f4529c511bce31d2f7cc2a241e48`; HTML `6,622,216 B`. The full local gate set passes. Pages 67, 85, 142 and 191 were re-rendered at 110–130 dpi; the closing marks remain separate from the preceding text and the intentional short pages are unchanged.
+- CI rerun `45776337209` succeeded. Its artifact has **209 pages**, 25 bookmarks and 0 blank pages (the CI font stack absorbs the former p85, while the archived Chrome build stays at 210); Ch8 now closes on CI p84 and B.2 occupies pp184–185. The same layout gate passes, so the repair is verified against both font stacks.
+- The pre-repair `4ee2494704c2f2135901fc47849ed284` build is the 210-page artifact independently accepted by the follow-up. This repair only removes the margin before the closing mark; the river and B.2 evidence remains valid and the follow-up report intentionally retains the old hash.
+
 ## Round 7 Artifacts
 
-- Final artifact: `yuyu-book/dist/kicad-book-zh-round7.pdf` — **210 pages, 25 bookmarks, 0 blank pages, 78 unique captions**, `14,864,057 B`, MD5 `4ee2494704c2f2135901fc47849ed284`; independently accepted by the follow-up recheck.
-- HTML: `6,621,762 B`, 20 units, 78 plates, 44 cited links.
+- Final local artifact: `yuyu-book/dist/kicad-book-zh-round7.pdf` — **210 pages, 25 bookmarks, 0 blank pages, 78 unique captions**, `14,863,999 B`, MD5 `a0d5f4529c511bce31d2f7cc2a241e48`.
+- HTML: `6,622,216 B`, 20 units, 78 plates, 44 cited links.
+- CI artifact from rerun `45776337209`: **209 pages, 25 bookmarks, 0 blank pages**, `26,378,991 B`, MD5 `1689331ed1266d3479b449f0bffdefe4`; Ubuntu Noto CJK pagination, same sources and gates.
 - The earlier `7c185ac33d9400fc07865b9f391fa43b` build is the blocked recheck artifact; it was replaced in the archive after the river fix. The recheck report intentionally retains that historical hash.
-- Ch6 now closes on page 67; the old page 68 is gone. B.2 occupies pages 185–186 as two table cards split at the core/optional boundary; appendix B ends on page 191 with its source list, and appendix C starts on page 192.
+- Local archive: Ch6 closes on page 67; B.2 occupies pages 185–186 as two table cards split at the core/optional boundary; appendix B ends on page 191, and appendix C starts on page 192. CI pagination is one page shorter: B.2 on pp184–185.
 - Gates: `test_claims`, `test_usb_diagnostics`, `test_readme_links`, `test_book_metadata`, `test_pdf_cleanup`, `test_si_numbers` (17 mutations), `check_book`, `test_pdf_layout`, and builder `--check` all OK.
 - `task_verify run` returned `unverified` / `project-or-git-baseline-unavailable`; no operator-configured check was executed. The commands above are the recorded manual evidence.
-- Build used the installed Chrome; 58.69 s for the final PDF.
+- Build used the installed Chrome; 70.63 s for the repaired local PDF.
 
 ## Round 6 Cross-Checks (before review)
 
