@@ -13,11 +13,20 @@
 | Round 6 | 9/10 | Accept / ALLOW | Fresh technical/reproducibility audit of the 211-page artifact: all CLI flags, DRC semantics, menu paths and 19 Appendix A.7 screenshots verified against KiCad 10.0.8; 0 MAJOR, 1 MINOR (Ch7 omitted the 0.20 mm Default netclass from its 86–138 Ω claim), fixed with an explicit ~146 Ω statement and a new SI mutation; A-19 caption tightened |
 | Round 7 | 9 → 6 → 9 | Accept / ALLOW → BLOCK → Accept / ALLOW | Raster audit of all 211 pages of the Round 6 PDF; fixed the lone Ch6 bridge page, the lone appendix-B caveat page, B.2 filename splits and the empty bordered row fragment; initial review 9/10 with 2 MINOR, both fixed; recheck found a new MAJOR (removing `<wbr>` from ~250 inline code tokens created justified-prose rivers on five pages), fixed by restoring soft breaks while keeping B.2 filenames nowrap; river gate added; independent follow-up on the final artifact accepted the fix with 0 MAJOR / 0 MINOR; a CI-only Ch8 orphan was then fixed and the PR rerun passed |
 
-## Prose De-AI Pass (after Round 7)
+## Prose De-AI Passes (after Round 7)
+
+### First Pass
 
 - Scope: 12 chapter sources, 28 sentence-level edits. Technical claims, numbers, commands, figures, section order and page structure are unchanged.
 - Removed the repeated `不是 X，而是 Y` rhetorical frame (25 occurrences to 0), plus one `真正的` and one `一套完整`; the remaining text states the claim and its condition directly.
 - Verification after the edit: content checks OK; local PDF 210 pages, 25 bookmarks, 0 blank pages; `test_pdf_layout.py` OK; builder `--check` OK.
+
+### Second Pass (full book)
+
+- Scope: preface, chapters 1–15 and appendix B; 17 source files, 85 changed lines. Section numbering and page structure are unchanged.
+- Removed the remaining contrast frames and emphatic modifiers (`不是 X，而是 Y`, `不是 X，是 Y`, `真正的`, `一套完整`), renamed headings that used those frames, and replaced stage, reservoir and contract metaphors with direct technical statements.
+- Kept negations that distinguish real failure modes, including plain-text versus binary project files, optional 3D models, two-layer boards without impedance control, and DRC exclusions that do not repair geometry.
+- Verification after the edit: pattern scan 0; content checks OK; local PDF 210 pages, 25 bookmarks, 0 blank pages; `test_pdf_layout.py` OK; builder `--check` OK.
 
 ## Round 7 Cross-Checks (before review)
 
