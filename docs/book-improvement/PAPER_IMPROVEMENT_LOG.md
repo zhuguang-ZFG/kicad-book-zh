@@ -20,6 +20,7 @@
 - Rebuilt artifact: local PDF remains 210 pages / 25 bookmarks; the scene is on p97 and the new Figure 10-2 on p98; the builder reports 79 plates. Baseline and rebuilt PDFs were compared on the same reading path.
 - Verification: `test_claims`, `test_book_metadata`, `test_readme_links`, `check_book`, builder `--check`, and `test_pdf_layout` pass. `task_verify run` remains unverified (`project-or-git-baseline-unavailable`, `checks=[]`).
 - Boundary: this is a writing/illustration pilot, not a KiCad GUI or factory-line execution test; the illustration is explicitly labeled as a process schematic.
+- Causality correction: the scene now says same-origin Gerber and drill keep holes aligned with pads; only the POS exported with a new origin displaces component placement centers. Rebuilt p97 contains the corrected wording and no longer contains the old “安装孔整体偏离了焊盘” sentence.
 
 ## Prose De-AI Passes (after Round 7)
 
