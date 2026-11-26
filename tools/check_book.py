@@ -26,7 +26,8 @@ def md_files() -> list[Path]:
     out = []
     for p in ROOT.rglob("*.md"):
         if ("yuyu-book" in p.parts or "node_modules" in p.parts
-                or ".git" in p.parts or "book-improvement" in p.parts):
+                or ".git" in p.parts or ".tmp" in p.parts
+                or "book-improvement" in p.parts):
             continue
         out.append(p)
     return sorted(out)
