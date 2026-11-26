@@ -176,6 +176,11 @@ KiKit 是社区常用的拼板工具，可以生成面板、工艺边、V-Cut/�
 
 文本规则在 `File → Board Setup → Design Rules → Custom Rules` 里编辑，改完点 `Check rule syntax`——语法错误会让 DRC 完全无法运行。也可以用 `Tools → Design Rule Editor` 打开图形设计规则编辑器，用表单创建间距、线宽、过孔等规则；两种方式写进同一个 `.kicad_dru`。团队应把 `.kicad_dru` 和工程一起提交，并在工程的说明文件里写明每条规则的来源（工厂工艺、公司规范、器件手册）。
 
+<figure class="illu illu-photo screenshot">
+<div class="illu-frame"><img src="../yuyu-book/screenshots/pcbnew-drc-rule-editor.png" alt="Design Rule Editor 的规则树与条件表单"></div>
+<figcaption><span class="fig-no">图 9-3</span><span class="fig-cap">Design Rule Editor 的图形规则界面。左侧选规则类型，右侧填名称、条件和约束；Syntax help 只解释语法，保存后仍要回到 DRC 确认规则真的命中了目标对象。</span></figcaption>
+</figure>
+
 ## 9.7 发板前的检查清单
 
 - ERC 零错误，警告逐条解释；
@@ -192,7 +197,7 @@ KiKit 是社区常用的拼板工具，可以生成面板、工艺边、V-Cut/�
 kicad-ch09-three-gates
 ```
 
-图 9-3 DRC、电气确认、工厂能力是三道独立的门；任何一道没过，发板都只是赌运气。首次打样前没有实物板，电气确认是原理图、器件参数与回流的纸面走查；上电验收在第 12 章。DRC 的 0/5 是启用 `--exit-code-violations` 后的结果；工具运行错误是另一类失败。
+图 9-4 DRC、电气确认、工厂能力是三道独立的门；任何一道没过，发板都只是赌运气。首次打样前没有实物板，电气确认是原理图、器件参数与回流的纸面走查；上电验收在第 12 章。DRC 的 0/5 是启用 `--exit-code-violations` 后的结果；工具运行错误是另一类失败。
 
 ## 本章小结
 

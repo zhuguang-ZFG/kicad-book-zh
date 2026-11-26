@@ -351,6 +351,19 @@ def absorb_ill_captions(doc: str, md) -> str:
     return _ILL_CAPTION_RE.sub(repl, doc)
 
 
+def finalize_figures(doc: str, md, *, prefix: str, lang: str) -> tuple[str, int]:
+    """Number all figures, then absorb prose captions.
+
+    Order matters: a raw HTML screenshot or Markdown photo between two `ill`
+    fences shifts later diagrams by one. Absorbing before the final numbering
+    pass leaves the placeholder H2 caption in the figure and the real caption
+    as a duplicate paragraph.
+    """
+    doc, count = renumber_figures(doc, prefix=prefix, lang=lang)
+    doc = absorb_ill_captions(doc, md)
+    return doc, count
+
+
 # ---------------------------------------------------------------- ids -----
 
 _STRAY_ANGLE = re.compile(r"<[A-Za-z][A-Za-z0-9_]*"
@@ -502,15 +515,14 @@ def render_unit(unit: Unit, mapping: dict[str, str], *,
     doc = _PLATE_PH_RE.sub(plate_repl, doc)
     doc = inline_images(doc, unit.path)
     doc = photo_figures(doc)
-    doc = absorb_ill_captions(doc, md)
     if unit.kind == "chapter":
         fig_prefix = ch_num
     elif unit.kind == "front":
         fig_prefix = "0"
     else:
         fig_prefix = apx_letter
-    doc, figure_count = renumber_figures(
-        doc, prefix=fig_prefix, lang=unit.lang)
+    doc, figure_count = finalize_figures(
+        doc, md, prefix=fig_prefix, lang=unit.lang)
     fig_seq[0] = figure_count
 
     doc = prefix_ids(doc, unit.id)

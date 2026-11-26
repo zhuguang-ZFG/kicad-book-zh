@@ -2,8 +2,8 @@
   "skill": "auto-paper-improvement-loop",
   "upstream_commit": "3fefd34146d3317e407aec65a5a29335de87b9ee",
   "artifact": "KiCad 从原理到制板",
-  "current_round": 4,
-  "max_rounds": 4,
+  "current_round": 5,
+  "max_rounds": 5,
   "status": "rounds_complete",
   "reviewer_transport": "pi-subagent",
   "reviewer_agent": "reviewer",
@@ -75,6 +75,36 @@
   "round4_postmerge_fixes": [
     "pdf.py:_print_pdf closes the launched browser in finally; added tools/test_pdf_cleanup.py and wired it into CI/STRUCTURE"
   ],
+  "round5_scope": [
+    "reference GitHub open-source projects (InteractiveHtmlBom, KiKit, KiBot) with new workflow illustrations",
+    "add official KiCad 10 documentation screenshots to body chapters where the operation is easier to recognize than to describe",
+    "extend screenshot provenance from Appendix A to every embedded screenshot; gate missing files and missing credit rows",
+    "keep figure numbering sequential in source and rebuilt artifact; verify PDF pages/bookmarks/blanks"
+  ],
+  "round5_branch": "zhuguang-ZFG/round-5-visuals",
+  "round5_base": "0660c8c",
+  "round5_pages": 211,
+  "round5_pdf": "yuyu-book/dist/kicad-book-zh-round5.pdf",
+  "round5_pdf_bytes": 14884455,
+  "round5_html_bytes": 6616868,
+  "round5_screenshots": 27,
+  "round5_captions": 78,
+  "round5_initial_score": 6,
+  "round5_initial_verdict": "Almost / BLOCK",
+  "round5_initial_major_count": 1,
+  "round5_initial_minor_count": 1,
+  "round5_score": 9,
+  "round5_verdict": "Accept / ALLOW",
+  "round5_major_count": 0,
+  "round5_minor_count": 0,
+  "round5_majors_fixed": [
+    "Ch7 图 7-4 caption called a two-trace differential-pair tuning screenshot a single-trace meander; caption now says two parallel traces are tuned together and only single-ended nets tune one trace"
+  ],
+  "round5_minors_fixed": [
+    "Ch13 图 13-3 caption reversed the simulator layout; it now says the waveform, signal list and measurement table share one screen without making a false left/right claim"
+  ],
+  "round5_review": "docs/book-improvement/round-5-review.md",
+  "round5_recheck": "docs/book-improvement/round-5-recheck.md",
   "started": "2026-11-25T13:20:00Z",
-  "updated": "2026-11-26T01:56:21Z"
+  "updated": "2026-11-26T03:22:19Z"
 }

@@ -4,6 +4,7 @@ import importlib
 import json
 import re
 import sys
+import markdown
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
@@ -18,6 +19,7 @@ check_book = importlib.import_module("check_book")
 source_registry = importlib.import_module("yuyu_book.backmatter").source_registry
 photo_figures = importlib.import_module("yuyu_book.render").photo_figures
 renumber_figures = importlib.import_module("yuyu_book.render").renumber_figures
+finalize_figures = importlib.import_module("yuyu_book.render").finalize_figures
 page = importlib.import_module("yuyu_book.style").page
 
 
@@ -133,6 +135,60 @@ def test_source_figure_captions_are_sequential() -> None:
     assert check_book.source_figure_number_problems() == []
 
 
+def test_figure_caption_absorbs_after_photo_shift() -> None:
+    # A raw HTML screenshot or Markdown photo between two `ill` fences shifts
+    # the later diagram's final number. Absorbing the prose caption before the
+    # final numbering pass left the H2 placeholder behind as a duplicate.
+    doc = (
+        '<figure class="illu illu-photo"><figcaption>'
+        '<span class="fig-no">图 5-1</span><span class="fig-cap">照片一</span>'
+        '</figcaption></figure>\n'
+        '<figure class="illu illu-photo"><figcaption>'
+        '<span class="fig-no">图 5-2</span><span class="fig-cap">照片二</span>'
+        '</figcaption></figure>\n'
+        '<figure class="illu illu-line"><figcaption>'
+        '<span class="fig-no">图 5-2</span><span class="fig-cap">5.4 网类</span>'
+        '</figcaption></figure>\n'
+        '<p>图 5-3 真实图题</p>'
+    )
+    final, count = finalize_figures(doc, markdown.Markdown(), prefix="5", lang="zh")
+    assert count == 3
+    assert "5.4 网类" not in final, final
+    assert '<span class="fig-no">图 5-3</span><span class="fig-cap">真实图题' in final, final
+    assert "<p>图 5-3" not in final, final
+
+
+def test_html_source_figure_captions_are_sequential() -> None:
+    # Before the parser understood <span class="fig-no">, a screenshot-only
+    # chapter could number 2-1, 2-3 and still pass the source check.
+    with TemporaryDirectory() as tmp:
+        chapter = Path(tmp) / "chapter.md"
+        chapter.write_text(
+            '<figcaption><span class="fig-no">图 2-1</span><span class="fig-cap">甲</span></figcaption>\n'
+            '<figcaption><span class="fig-no">图 2-3</span><span class="fig-cap">乙</span></figcaption>\n',
+            encoding="utf-8")
+        with patch.object(check_book, "book_sources", lambda: [chapter]):
+            problems = check_book.source_figure_number_problems()
+        assert problems and "expected [1, 2]" in problems[0], problems
+
+
+def test_screenshot_requires_provenance_row() -> None:
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        book = root / "yuyu-book"
+        shots = book / "screenshots"
+        shots.mkdir(parents=True)
+        (shots / "new-shot.png").write_bytes(b"png")
+        (shots / "README.md").write_text("# 官方界面截图\n", encoding="utf-8")
+        (root / "chapter.md").write_text(
+            '<img src="../yuyu-book/screenshots/new-shot.png" alt="界面">\n',
+            encoding="utf-8")
+        with patch.object(check_book, "ROOT", root), patch.object(check_book, "BOOK", book), patch.object(check_book, "errors", []):
+            check_book.check_screenshots()
+            errors = list(check_book.errors)
+        assert any("no credit row for new-shot.png" in error for error in errors), errors
+
+
 def test_structure_html_limit_covers_readme_claim() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     structure = (ROOT / "STRUCTURE.md").read_text(encoding="utf-8")
@@ -171,6 +227,9 @@ if __name__ == "__main__":
     test_build_edition_passes_manifest_metadata_to_page_shell()
     test_photos_share_document_order_figure_numbers()
     test_source_figure_captions_are_sequential()
+    test_figure_caption_absorbs_after_photo_shift()
+    test_html_source_figure_captions_are_sequential()
+    test_screenshot_requires_provenance_row()
     test_structure_html_limit_covers_readme_claim()
     test_html_claim_requires_structure_limit()
     test_html_claim_requires_html_artifact()
