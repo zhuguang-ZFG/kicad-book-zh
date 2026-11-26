@@ -85,8 +85,8 @@
   "round5_base": "0660c8c",
   "round5_pages": 211,
   "round5_pdf": "yuyu-book/dist/kicad-book-zh-round5.pdf",
-  "round5_pdf_bytes": 14884455,
-  "round5_html_bytes": 6616868,
+  "round5_pdf_bytes": 14883630,
+  "round5_html_bytes": 6616941,
   "round5_screenshots": 27,
   "round5_captions": 78,
   "round5_initial_score": 6,
@@ -105,6 +105,10 @@
   ],
   "round5_review": "docs/book-improvement/round-5-review.md",
   "round5_recheck": "docs/book-improvement/round-5-recheck.md",
+  "round5_postmerge_fixes": [
+    "Ch5 图 5-2: copper-layer count is set in Physical Stackup, not Board Editor Layers; caption corrected and the visible F.Cu/In1-4/B.Cu rows are described as the current layer list",
+    "Ch13 图 13-3: the screenshot is an Analysis 1 - AC sweep, so it moved from §13.4 TRAN to §13.5 AC; caption shortened to \"波形、Signals 与 Cursor 同屏\" and still labels the official AC example"
+  ],
   "started": "2026-11-25T13:20:00Z",
-  "updated": "2026-11-26T03:22:19Z"
+  "updated": "2026-11-26T03:46:10Z"
 }
