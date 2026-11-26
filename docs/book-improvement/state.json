@@ -4,7 +4,7 @@
   "artifact": "KiCad 从原理到制板",
   "current_round": 5,
   "max_rounds": 5,
-  "status": "in_progress",
+  "status": "rounds_complete",
   "reviewer_transport": "pi-subagent",
   "reviewer_agent": "reviewer",
   "reviewer_context": "fresh",
@@ -85,10 +85,26 @@
   "round5_base": "0660c8c",
   "round5_pages": 211,
   "round5_pdf": "yuyu-book/dist/kicad-book-zh-round5.pdf",
-  "round5_pdf_bytes": 14884439,
-  "round5_html_bytes": 6616841,
+  "round5_pdf_bytes": 14884455,
+  "round5_html_bytes": 6616868,
   "round5_screenshots": 27,
   "round5_captions": 78,
+  "round5_initial_score": 6,
+  "round5_initial_verdict": "Almost / BLOCK",
+  "round5_initial_major_count": 1,
+  "round5_initial_minor_count": 1,
+  "round5_score": 9,
+  "round5_verdict": "Accept / ALLOW",
+  "round5_major_count": 0,
+  "round5_minor_count": 0,
+  "round5_majors_fixed": [
+    "Ch7 图 7-4 caption called a two-trace differential-pair tuning screenshot a single-trace meander; caption now says two parallel traces are tuned together and only single-ended nets tune one trace"
+  ],
+  "round5_minors_fixed": [
+    "Ch13 图 13-3 caption reversed the simulator layout; it now says the waveform, signal list and measurement table share one screen without making a false left/right claim"
+  ],
+  "round5_review": "docs/book-improvement/round-5-review.md",
+  "round5_recheck": "docs/book-improvement/round-5-recheck.md",
   "started": "2026-11-25T13:20:00Z",
-  "updated": "2026-11-26T03:00:00Z"
+  "updated": "2026-11-26T03:22:19Z"
 }

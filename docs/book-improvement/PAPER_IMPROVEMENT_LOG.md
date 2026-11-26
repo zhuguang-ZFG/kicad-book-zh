@@ -9,6 +9,7 @@
 | Round 2 | 6/10 | Almost / BLOCK | Reviewer (fresh, independent): Round-1's five MAJORs all closed; new MAJOR = duplicated figure numbers on 6 PDF pages from photo captions; 2 MINORs |
 | Round 3 | 8/10 | Accept / ALLOW | Closed the deferred baseline-duplication MINOR (preface table + ch7/8/13 compression); added §15.7 KiBot direct reuse (pinned action + schema-validated config + version/AGPL boundaries); 0 MAJOR, 2 MINOR fixed post-review |
 | Round 4 | 9/10 | Accept / ALLOW | Fresh review found 1 MAJOR (STRUCTURE HTML limit `< 1MB` vs 5.6MB artifact) and 3 MINOR; fixed the MAJOR, refreshed stats, made source captions sequential, added artifact gates; recheck closed the MAJOR, 1 new gate-hardening MINOR fixed, reference-depth MINOR deferred |
+| Round 5 | 9/10 | Accept / ALLOW | Added 8 official KiCad screenshots to body chapters (27 total with Appendix A.7), 3 OSS workflow diagrams, screenshot provenance gates and figure-number ordering fix; fresh review found 2 caption/pixel mismatches (1 MAJOR, 1 MINOR), both fixed; recheck 9/10 with 0 MAJOR, 0 MINOR |
 
 ## Round 5 Cross-Checks (before review)
 
@@ -20,10 +21,30 @@
 - **New gates**: `check_book.py` parses `<span class="fig-no">` captions in source order and verifies every embedded screenshot exists, is non-empty, has a provenance row, and that no shipped screenshot is unreferenced. Three regressions cover the HTML-only numbering hole, the provenance row requirement, and caption absorption after a photo/screenshot shift.
 - **Stats**: README refreshed to 15.8 万字符 / 6.2 万汉字, 65 SVG assets, 40 teaching illustrations, 10 photos, 27 screenshots, HTML ~6.6 MB, PDF 211 pages / ~14.9 MB; `STRUCTURE.md` HTML ceiling stays `< 8MB`.
 
+## Round 5 Review
+
+Full raw review, verbatim: [round-5-review.md](round-5-review.md).
+
+- **Initial fresh review: 6/10, Almost / BLOCK, 1 MAJOR, 1 MINOR, confidence 0.88.**
+- MAJOR: Ch7 图 7-4 caption said "图示为单线蛇形；差分对要两根一起调", but the official screenshot actually shows **two parallel traces meandering together** — the caption reversed the section's differential-pair lesson. The body steps were correct.
+- MINOR: Ch13 图 13-3 caption reversed the simulator layout: the waveform is on the left; Signals is top-right and Cursor/Measurement bottom-right. The same chapter's body already said the cursor table is on the right.
+- Independently confirmed the other 6 body screenshots, 27 provenance rows, 78 unique captions, 211 pages / 25 bookmarks / 0 blanks, and the MIT/AGPL boundaries. No screenshot was presented as a local capture.
+
+### Fixes After the Round-5 Review (same session)
+
+1. **MAJOR — differential-pair tuning caption** — Ch7 图 7-4 now says "图示为两根并行走线同时蛇形调谐，即差分对；单端才只调一根". Screenshot and body unchanged.
+2. **MINOR — simulator layout** — Ch13 图 13-3 no longer makes a left/right claim; it now says "界面同屏显示波形、信号列表与测量表" and still explicitly labels the image as the official AC-sweep example, not this board's RC result.
+
+### Round 5 Recheck
+
+- **9/10, Accept / ALLOW, 0 MAJOR, 0 MINOR, confidence 0.92.** Full recheck: [round-5-recheck.md](round-5-recheck.md).
+- Verified both corrected captions word-for-word against the rebuilt PDF p75/p138 and the screenshot pixels; the simulator caption now makes no left/right claim, so it cannot contradict the image or the chapter's "cursor table on the right" sentence.
+- Reconfirmed 211 pages / 25 bookmarks / 0 blank pages and 78 unique built captions (including appendix `图 A-N`). No screenshot files changed; provenance, licenses and MIT/AGPL boundaries still hold.
+
 ## Round 5 Artifacts
 
-- Final artifact: `yuyu-book/dist/kicad-book-zh-round5.pdf` — **211 pages, 25 bookmarks, 14,884,439 B**; 0 blank pages; 78 unique built captions.
-- HTML: `6,616,841 B`, 20 units, 78 plates, 44 cited links.
+- Final artifact: `yuyu-book/dist/kicad-book-zh-round5.pdf` — **211 pages, 25 bookmarks, 14,884,455 B**; 0 blank pages; 78 unique built captions.
+- HTML: `6,616,868 B`, 20 units, 78 plates, 44 cited links.
 - Verified pages: 37 (new ERC marker), 43 (CvPcb), 53 (Board Setup layers), 75 (length tuning), 93 (DRC rule editor), 101 (drill dialog), 114 (iBOM), 116 (KiKit), 138 (simulator), 158 (PCM), 162 (KiBot).
 - Gate: `test_claims`, `test_usb_diagnostics`, `test_readme_links`, `test_book_metadata`, `test_pdf_cleanup`, `test_si_numbers` (16 mutations), `check_book`, and builder `--check` all OK.
 
