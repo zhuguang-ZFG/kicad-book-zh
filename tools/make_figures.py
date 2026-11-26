@@ -643,23 +643,48 @@ def ch09_dfm(a):
 
 
 def ch09_three_gates(a):
-    a.text(360, 30, "三道门都过，才叫“可以发板”", size=15, opacity=.55)
-    gates = [("DRC", "规则 · 连通 · 几何", "0 通过 / 5 违规", "只证明规则"),
-             ("电气确认", "接得对 · 值对 · 回流顺", "原理图 / 器件参数走查", "只证明意图"),
-             ("工厂能力", "线宽 · 环宽 · 阻焊桥", "DFM 表 + 工厂确认", "只证明工艺")]
+    a.text(360, 27, "三道门都过，才叫“可以发板”", size=15, opacity=.75)
+    gates = [("DRC", "规则 · 连通 · 几何", "0 通过 / 5 违规", "只覆盖工程规则"),
+             ("电气确认", "接得对 · 值对 · 回流顺", "原理图 / 器件参数走查", "只确认电气正确"),
+             ("工厂能力", "线宽 · 环宽 · 阻焊桥", "DFM 表 + 工厂确认", "只覆盖工艺能力")]
     for i, (title, l1, l2, tail) in enumerate(gates):
-        x = 55 + i * 215
-        a.rect(x, 70, 180, 122, width=1.8, radius=4)
-        a.text(x + 90, 102, title, size=15)
-        a.text(x + 90, 130, l1, size=9, opacity=.6)
-        a.text(x + 90, 151, l2, size=9, opacity=.55)
-        a.line(x + 18, 164, x + 162, 164, width=.8, opacity=.25)
-        a.text(x + 90, 184, tail, size=8, opacity=.45)
-        a.line(x + 90, 192, x + 90, 220, width=1.3)
-    a.line(145, 220, 575, 220, width=1.3)
-    a.arrow(360, 220, 360, 246, width=1.5, head=5)
-    a.rect(300, 252, 120, 30, width=1.6, radius=3)
-    a.text(360, 272, "发板", size=12)
+        x = 35 + i * 230
+        cx = x + 95
+        a.rect(x, 48, 190, 178, width=1.8, radius=4)
+        if i == 0:
+            # Board geometry plus a violation marker and a resolved check.
+            a.rect(cx - 27, 61, 54, 36, width=1.4, radius=3)
+            a.path(f"M{cx-18} 75h18v12h18", width=1.1, opacity=.7)
+            cross(a, cx - 10, 88, 5, 1.6)
+            check(a, cx + 12, 88, 5, 1.6)
+        elif i == 1:
+            # A schematic network: resistor, capacitor and checked nodes.
+            a.line(cx - 31, 80, cx - 19, 80, width=1.4)
+            a.path(f"M{cx-19} 80l5-7 6 14 6-14 6 14 5-7", width=1.4)
+            a.line(cx + 9, 80, cx + 18, 80, width=1.4)
+            a.line(cx + 18, 71, cx + 18, 89, width=1.4)
+            a.line(cx + 23, 71, cx + 23, 89, width=1.4)
+            a.line(cx + 23, 80, cx + 31, 80, width=1.4)
+            check(a, cx, 62, 5, 1.4)
+        else:
+            # Annular ring under caliper jaws: a physical process limit.
+            a.circle(cx - 7, 80, 18, width=1.4)
+            a.circle(cx - 7, 80, 7, width=1.2)
+            a.line(cx + 20, 61, cx + 20, 99, width=1.4)
+            a.line(cx + 10, 68, cx + 27, 68, width=1.2)
+            a.line(cx + 10, 92, cx + 27, 92, width=1.2)
+            a.line(cx + 20, 68, cx + 20, 92, width=.8, opacity=.5)
+        a.text(cx, 124, title, size=15)
+        a.text(cx, 148, l1, size=10, opacity=.75)
+        a.line(x + 18, 159, x + 172, 159, width=.8, opacity=.35)
+        a.text(cx, 177, "检查证据", size=9, opacity=.75)
+        a.text(cx, 196, l2, size=10, opacity=.78)
+        a.text(cx, 216, tail, size=9, opacity=.75)
+        a.line(cx, 226, cx, 242, width=1.3)
+    a.line(130, 242, 590, 242, width=1.3)
+    a.arrow(360, 242, 360, 258, width=1.5, head=5)
+    a.rect(300, 260, 120, 28, width=1.6, radius=3)
+    a.text(360, 279, "才可发板", size=12)
 
 
 # ---- chapter 10 --------------------------------------------------------
