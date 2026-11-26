@@ -84,21 +84,73 @@ def learning_path(a):
 
 # ---- chapter 1 ---------------------------------------------------------
 def ch01_flow(a):
-    a.text(360, 30, "制造文件有两个直接来源：板图输出制造数据，原理图输出 BOM", size=14,
-           opacity=.62)
-    box(a, 24, 76, 192, 82, "原理图", "电气连接 · 器件字段", fs=15)
-    box(a, 252, 76, 192, 82, "PCB", "封装 · 板框 · 铜与规则", fs=15)
-    box(a, 484, 48, 212, 75, "制造数据", "Gerber · Drill · POS", fs=14)
-    box(a, 484, 148, 212, 68, "BOM", "Reference · Value · MPN", fs=14)
-    a.arrow(218, 116, 248, 116, width=1.8, head=5)
-    a.arrow(446, 94, 480, 84, width=1.8, head=4)
-    a.arrow(216, 148, 236, 203, width=1.4, head=4)
-    a.arrow(238, 203, 480, 187, width=1.4, head=4)
-    box(a, 256, 236, 184, 46, "符号库 / 封装库", fs=14)
-    a.arrow(280, 233, 176, 163, width=1.3, head=4)
-    a.arrow(416, 233, 404, 163, width=1.3, head=4)
-    a.text(360, 322, "库提供设计对象定义；同步、导出后，仍须核对规则、装配范围与工厂模板。", size=12,
-           opacity=.55)
+    a.text(360, 28, "从设计数据到制造交付", size=14, opacity=.7)
+
+    # Schematic sheet with a small electrical intent sketch.
+    a.rect(70, 64, 220, 96, width=1.8, radius=3)
+    a.line(270, 64, 290, 84, width=1.2, opacity=.6)
+    a.line(270, 64, 270, 84, width=1.2, opacity=.6)
+    a.line(270, 84, 290, 84, width=1.2, opacity=.6)
+    a.text(180, 84, "原理图", size=14)
+    a.line(96, 118, 136, 118, width=1.4)
+    a.path("M136 118l8-6 8 12 8-12 8 12 8-12 8 6", width=1.4)
+    a.line(176, 118, 216, 118, width=1.4)
+    a.line(226, 108, 226, 128, width=1.4)
+    a.line(232, 108, 232, 128, width=1.4)
+    a.line(216, 118, 226, 118, width=1.4)
+    a.line(232, 118, 250, 118, width=1.4)
+    a.rect(250, 104, 36, 28, width=1.4, radius=2)
+    a.text(180, 150, "电气连接 · 器件字段", size=10, opacity=.75)
+
+    # PCB board with copper traces, pads and a device.
+    a.rect(430, 64, 220, 96, width=2.0, radius=6)
+    for x, y in ((450, 84), (630, 84), (450, 140), (630, 140)):
+        a.circle(x, y, 4, width=1.0, opacity=.6)
+    a.text(540, 84, "PCB", size=14)
+    a.path("M462 108h38v22h44v-18h34", width=1.3, opacity=.7)
+    a.path("M462 128h44v-18h38v18h34", width=1.3, opacity=.7)
+    a.rect(516, 100, 48, 40, width=1.6, radius=2)
+    for x in (506, 574):
+        for y in (108, 120, 132):
+            a.rect(x - 3, y - 2, 6, 4, width=.8, opacity=.6)
+    a.text(540, 152, "封装 · 板框 · 铜与规则", size=10, opacity=.75)
+
+    a.arrow(294, 112, 426, 112, width=1.8, head=5)
+    a.text(360, 102, "同步", size=10, opacity=.75)
+
+    # Outputs sit directly under their source document.
+    a.arrow(180, 164, 180, 190, width=1.4, head=4)
+    a.text(196, 181, "生成", size=9.5, anchor="start", opacity=.75)
+    a.arrow(540, 164, 540, 190, width=1.4, head=4)
+    a.text(556, 181, "导出", size=9.5, anchor="start", opacity=.75)
+
+    a.rect(120, 196, 160, 56, width=1.6, radius=3)
+    a.rect(170, 190, 60, 10, width=1.2, radius=2)
+    a.text(200, 214, "BOM", size=12)
+    a.line(132, 224, 268, 224, width=.8, opacity=.4)
+    a.line(132, 238, 268, 238, width=.8, opacity=.4)
+    a.text(200, 246, "Ref · Value · MPN", size=8.5, opacity=.75)
+
+    a.path("M390 212V202h48l12 10h150", width=1.6)
+    a.rect(390, 212, 210, 40, width=1.6, radius=2)
+    a.text(495, 228, "制造数据", size=12)
+    a.text(430, 244, "Gerber", size=9, opacity=.75)
+    a.text(495, 244, "Drill", size=9, opacity=.75)
+    a.text(560, 244, "POS", size=9, opacity=.75)
+
+    # Side drawers supply object definitions to both design documents.
+    a.rect(16, 196, 88, 56, width=1.4, radius=2)
+    a.line(24, 224, 96, 224, width=1.0, opacity=.5)
+    a.text(60, 216, "符号库", size=10, opacity=.75)
+    a.text(60, 240, "对象定义", size=8.5, opacity=.75)
+    a.rect(616, 196, 88, 56, width=1.4, radius=2)
+    a.line(624, 224, 696, 224, width=1.0, opacity=.5)
+    a.text(660, 216, "封装库", size=10, opacity=.75)
+    a.text(660, 240, "对象定义", size=8.5, opacity=.75)
+    a.arrow(60, 196, 110, 160, width=1.2, head=4)
+    a.arrow(660, 196, 610, 160, width=1.2, head=4)
+
+    a.text(360, 330, "库提供对象定义；同步、导出后仍须核对规则、装配范围与工厂模板。", size=11, opacity=.7)
 
 
 def ch01_toolmap(a):
