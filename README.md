@@ -69,12 +69,12 @@ python ../tools/check_book.py
 - 所有插图引用存在，符合 SVG 安全契约（无脚本/样式/id/href）；
 - 制造文件命令与 KiCad 10.0 CLI 文档逐项核对；
 - ERC/DRC 规则与流程按官方文档整理；
-- 参考来源在来源页列出；2026-11-26 构建复验确认 HTML 元数据与书稿清单一致，PDF 无空白页，共 210 页、25 个书签。
+- 参考来源在来源页列出；2026-11-26 的 main CI 构建复验确认 HTML 元数据与书稿清单一致，发布 PDF 无空白页，共 209 页、25 个书签。
 
 ## 构建产物
 
 - HTML：`yuyu-book/dist/kicad-book-zh.html`（约 6.6MB，单文件可离线阅读）；
-- PDF：`yuyu-book/dist/kicad-book-zh.pdf`（210 页，约 14.9MB，25 个书签）；
+- PDF：发布版 209 页，约 26.4MB，25 个书签，见 [Releases](https://github.com/zhuguang-ZFG/kicad-book-zh/releases/latest)；本地重建输出为 `yuyu-book/dist/kicad-book-zh.pdf`；
 - 插图：`yuyu-book/illustrations/`，包含可独立引用的 SVG 与已署名的实物照片；官方截图在 `yuyu-book/screenshots/`；
 - 案例：`usb_breath_led` 为书中教学案例，不随书附带工程文件。
 
