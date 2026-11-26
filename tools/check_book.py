@@ -33,6 +33,15 @@ def md_files() -> list[Path]:
     return sorted(out)
 
 
+def book_sources() -> list[Path]:
+    """Return exactly the files assembled into the book, in manifest order."""
+    paths = [ROOT / MANIFEST["front"]["zh"]]
+    for part in MANIFEST["parts"]:
+        paths.extend(ROOT / unit["zh"] for unit in part["units"])
+    paths.extend(ROOT / unit["zh"] for unit in MANIFEST["appendices"])
+    return paths
+
+
 def check_units() -> None:
     units = [MANIFEST["front"]]
     for part in MANIFEST["parts"]:
@@ -51,6 +60,39 @@ def check_units() -> None:
             errors.append(f"{p}: too short ({len(text.strip())} chars)")
         if p.parent.name.startswith("第") and "第" in first and "章" not in first:
             errors.append(f"{p}: chapter H1 lacks 章")
+
+
+_SOURCE_FIG_CAPTION = re.compile(r"^\s*(?:\*)?图\s*([A-Za-z]|\d+)-(\d+)")
+
+
+def source_figure_number_problems() -> list[str]:
+    """Source captions must be 1..N per chapter even though the renderer
+    renumbers figures. Duplicate or out-of-order source numbers make the
+    Markdown misleading and hide a future renderer regression."""
+    problems: list[str] = []
+    for p in book_sources():
+        captions: list[tuple[str, int]] = []
+        for line in p.read_text(encoding="utf-8").splitlines():
+            if line.lstrip().startswith("!["):
+                continue  # image alt text repeats the caption number by design
+            m = _SOURCE_FIG_CAPTION.match(line)
+            if m:
+                captions.append((m.group(1), int(m.group(2))))
+        if not captions:
+            continue
+        prefixes = {prefix for prefix, _ in captions}
+        if len(prefixes) != 1:
+            problems.append(f"{p}: mixed source figure prefixes {sorted(prefixes)}")
+        actual = [number for _, number in captions]
+        expected = list(range(1, len(actual) + 1))
+        if actual != expected:
+            problems.append(
+                f"{p}: source figure captions {actual}, expected {expected}")
+    return problems
+
+
+def check_source_figure_numbers() -> None:
+    errors.extend(source_figure_number_problems())
 
 
 def check_ills() -> None:
@@ -594,9 +636,7 @@ def check_readme_stats() -> None:
         return
     chars = 0
     han = 0
-    for p in md_files():
-        if p.name in ("README.md", "STRUCTURE.md"):
-            continue
+    for p in book_sources():
         text = p.read_text(encoding="utf-8")
         chars += len(text)
         han += len(re.findall(r"[\u4e00-\u9fff]", text))
@@ -611,6 +651,8 @@ def check_readme_stats() -> None:
 
 def check_artifact_claims() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    structure_path = ROOT / "STRUCTURE.md"
+    structure = structure_path.read_text(encoding="utf-8") if structure_path.exists() else ""
     errors.extend(readme_link_problems(readme, ROOT))
     if "完整工程" in readme and not list(ROOT.glob("*.kicad_pro")):
         errors.append("README: claims a complete KiCad project but none exists")
@@ -618,6 +660,26 @@ def check_artifact_claims() -> None:
         # A PDF claim is only acceptable if a PDF actually exists.
         if not list((ROOT / "yuyu-book/dist").glob("*.pdf")):
             errors.append("README: mentions PDF but dist/ has no PDF")
+
+    claim = re.search(r"HTML：.*?约\s*([0-9.]+)\s*MB", readme)
+    limit = re.search(r"HTML 构建大小 <\s*([0-9.]+)\s*MB", structure)
+    if claim and not limit:
+        errors.append("STRUCTURE: README claims HTML size but no build-size limit exists")
+    if claim and limit and float(claim.group(1)) >= float(limit.group(1)):
+        errors.append(
+            f"STRUCTURE: HTML limit {limit.group(1)}MB is below the README claim "
+            f"{claim.group(1)}MB")
+    html = BOOK / "dist" / "kicad-book-zh.html"
+    if claim and not html.exists():
+        errors.append("README: claims HTML size but dist/ has no HTML artifact")
+    if html.exists():
+        size_mb = html.stat().st_size / 1_000_000
+        if claim and abs(size_mb - float(claim.group(1))) > 0.15:
+            errors.append(
+                f"README: claims {claim.group(1)}MB HTML, artifact is {size_mb:.2f}MB")
+        if limit and size_mb >= float(limit.group(1)):
+            errors.append(
+                f"STRUCTURE: HTML limit {limit.group(1)}MB, artifact is {size_mb:.2f}MB")
 
 
 
@@ -654,6 +716,7 @@ def check_placeholders() -> None:
 
 def main() -> int:
     check_units()
+    check_source_figure_numbers()
     check_ills()
     check_photos()
     check_attiny_pinmap()
