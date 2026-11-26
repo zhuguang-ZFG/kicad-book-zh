@@ -663,11 +663,15 @@ def check_artifact_claims() -> None:
 
     claim = re.search(r"HTML：.*?约\s*([0-9.]+)\s*MB", readme)
     limit = re.search(r"HTML 构建大小 <\s*([0-9.]+)\s*MB", structure)
+    if claim and not limit:
+        errors.append("STRUCTURE: README claims HTML size but no build-size limit exists")
     if claim and limit and float(claim.group(1)) >= float(limit.group(1)):
         errors.append(
             f"STRUCTURE: HTML limit {limit.group(1)}MB is below the README claim "
             f"{claim.group(1)}MB")
     html = BOOK / "dist" / "kicad-book-zh.html"
+    if claim and not html.exists():
+        errors.append("README: claims HTML size but dist/ has no HTML artifact")
     if html.exists():
         size_mb = html.stat().st_size / 1_000_000
         if claim and abs(size_mb - float(claim.group(1))) > 0.15:

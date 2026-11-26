@@ -142,6 +142,29 @@ def test_structure_html_limit_covers_readme_claim() -> None:
     assert float(claim.group(1)) < float(limit.group(1))
 
 
+def test_html_claim_requires_structure_limit() -> None:
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "README.md").write_text("HTML：约 5.6MB\n", encoding="utf-8")
+        with patch.object(check_book, "ROOT", root), patch.object(check_book, "errors", []):
+            check_book.check_artifact_claims()
+            errors = list(check_book.errors)
+        assert any("no build-size limit" in error for error in errors), errors
+
+
+def test_html_claim_requires_html_artifact() -> None:
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "README.md").write_text("HTML：约 5.6MB\n", encoding="utf-8")
+        (root / "STRUCTURE.md").write_text("HTML 构建大小 < 8MB\n", encoding="utf-8")
+        book = root / "book"
+        (book / "dist").mkdir(parents=True)
+        with patch.object(check_book, "ROOT", root), patch.object(check_book, "BOOK", book), patch.object(check_book, "errors", []):
+            check_book.check_artifact_claims()
+            errors = list(check_book.errors)
+        assert any("no HTML artifact" in error for error in errors), errors
+
+
 if __name__ == "__main__":
     test_page_shell_does_not_embed_foreign_product_metadata()
     test_page_shell_uses_and_escapes_product_metadata()
@@ -149,5 +172,7 @@ if __name__ == "__main__":
     test_photos_share_document_order_figure_numbers()
     test_source_figure_captions_are_sequential()
     test_structure_html_limit_covers_readme_claim()
+    test_html_claim_requires_structure_limit()
+    test_html_claim_requires_html_artifact()
     test_source_registry_separates_books_and_deep_links()
     print("book metadata regression: OK")

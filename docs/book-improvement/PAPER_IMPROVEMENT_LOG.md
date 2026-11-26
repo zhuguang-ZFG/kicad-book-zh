@@ -8,6 +8,38 @@
 | Round 1 | 6/10 | Almost / BLOCK | Fixed the LED net contract, added breathing firmware and toolchain prerequisites, aligned CLI origins, narrowed the impedance claim, locked component selection, repaired source classification |
 | Round 2 | 6/10 | Almost / BLOCK | Reviewer (fresh, independent): Round-1's five MAJORs all closed; new MAJOR = duplicated figure numbers on 6 PDF pages from photo captions; 2 MINORs |
 | Round 3 | 8/10 | Accept / ALLOW | Closed the deferred baseline-duplication MINOR (preface table + ch7/8/13 compression); added §15.7 KiBot direct reuse (pinned action + schema-validated config + version/AGPL boundaries); 0 MAJOR, 2 MINOR fixed post-review |
+| Round 4 | 9/10 | Accept / ALLOW | Fresh review found 1 MAJOR (STRUCTURE HTML limit `< 1MB` vs 5.6MB artifact) and 3 MINOR; fixed the MAJOR, refreshed stats, made source captions sequential, added artifact gates; recheck closed the MAJOR, 1 new gate-hardening MINOR fixed, reference-depth MINOR deferred |
+
+## Round 4 Review
+
+Full raw review, verbatim: [round-4-review.md](round-4-review.md). Post-fix recheck: [round-4-recheck.md](round-4-recheck.md).
+
+- **Initial fresh review: 8/10, Almost / BLOCK, 1 MAJOR, 3 MINOR, confidence 0.84.**
+- MAJOR: `STRUCTURE.md:95` claimed the HTML build was `< 1MB`; the actual single-file artifact was `5,599,223 B` (~5.6MB) and README already claimed ~5.6MB. The claim was false and had no regression check.
+- MINOR: README word counts were stale (`14.9 万字符 / 6.0 万汉字` vs measured `154,676 / 61,094`); source hand-written figure numbers were duplicated/out of order in ch4/6/10/12 although the renderer renumbered them; technical references remained mostly docs-level.
+- Independently verified the shipped artifact: 205 pages, 25 bookmarks, 0 blank pages, 13,971,714 B; then found `manifest.json` still said `v0.1.3 / 2026-11-25` while the PDF imprint and README said the 2026-11-26 build.
+
+### Fixes After the Round-4 Review (same session)
+
+1. **HTML size claim (MAJOR)** — `STRUCTURE.md` now says `HTML 构建大小 < 8MB（当前约 5.6MB）`; `tools/check_book.py` checks the README claim against both the STRUCTURE limit and the actual artifact; `tools/test_book_metadata.py` asserts the claim is below the limit.
+2. **Stale stats (MINOR)** — README now says `约 15.5 万字符（6.1 万汉字`; `check_readme_stats()` now counts exactly the 20 manifest-ordered book sources via `book_sources()`, so `.tmp`, `docs/`, and `book-improvement` cannot inflate the count.
+3. **Source figure numbers (MINOR)** — ch4 BOM `图 4-3` → `图 4-4`; ch6 floorplan/decoupling/antenna `6-1/6-2/6-3` → `6-2/6-3/6-4`; ch10 CLI `10-2` → `10-3`; ch12 bring-up/voltage/fault-tree `12-1/12-2/12-3` → `12-2/12-3/12-5`. Added `source_figure_number_problems()` + regression so source captions must be `1..N` per chapter even though the renderer renumbers.
+4. **Edition metadata** — `yuyu-book/manifest.json` bumped to `0.1.4 / 2026-11-26`; rebuilt PDF/HTML show the new imprint.
+5. **Gate hardening after recheck (MINOR)** — `check_artifact_claims()` now errors when README claims an HTML size but STRUCTURE has no limit or `dist/` has no HTML artifact; both cases have regressions.
+
+### Round 4 Recheck
+
+- **9/10, Accept / ALLOW, 0 MAJOR, 2 MINOR, confidence 0.90.**
+- Confirmed `STRUCTURE.md` limit 8MB > README claim 5.6MB > actual 5.59965MB; PDF 204 pages / 25 bookmarks / 0 blank pages; manifest and PDF imprint both `v0.1.4 / 2026-11-26`; 67 unique built figure numbers (48 numeric + 19 appendix) with zero duplicates; README stats match 154,676 chars / 61,094 han.
+- One new low-priority MINOR (HTML gate silently passed when the artifact or STRUCTURE limit was missing) was fixed after the recheck; the third original MINOR (technical-reference depth) remains deferred because no concrete factual error was found.
+
+## Round 4 Artifacts
+
+- Final artifact: `yuyu-book/dist/kicad-book-zh-round4.pdf` — **204 pages, 25 bookmarks, 14.0 MB**; 0 blank pages; 67 unique figure numbers (48 numeric + 19 appendix), 0 duplicate captions.
+- Page count moved 205 → 204 because making source captions match the renderer let the caption-absorption pass remove a duplicate caption paragraph; all chapters, appendices, and bookmarks remain.
+- HTML: `5,599,650 B` (~5.6MB), 20 units, 67 plates, 44 cited links.
+- Final gate: `test_claims`, `test_usb_diagnostics`, `test_readme_links`, `test_book_metadata`, `test_si_numbers` (16 mutations), `check_book`, and builder `--check` all OK.
+- Build used the installed Chrome via `--browser "C:/Program Files/Google/Chrome/Application/chrome.exe"`; 71.77 s.
 
 ## Round 3 Cross-Checks (before review)
 

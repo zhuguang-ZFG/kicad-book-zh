@@ -4,7 +4,7 @@
   "artifact": "KiCad 从原理到制板",
   "current_round": 4,
   "max_rounds": 4,
-  "status": "reviewing",
+  "status": "rounds_complete",
   "reviewer_transport": "pi-subagent",
   "reviewer_agent": "reviewer",
   "reviewer_context": "fresh",
@@ -45,10 +45,33 @@
     "registered KiBot in sources.json; excluded .tmp scratch Markdown from book stats; README counts refreshed"
   ],
   "round4_scope": [
-    "fresh-context audit of technical correctness, delivery claims and reproducibility on the 205-page artifact",
+    "fresh-context audit of technical correctness, delivery claims and reproducibility on the current 204-page artifact",
     "fix every MAJOR and actionable MINOR; verify artifact claims against actual HTML/PDF",
     "reuse upstream open-source assets only where they can be verified without a local Docker runtime"
   ],
+  "round4_pdf": "yuyu-book/dist/kicad-book-zh-round4.pdf",
+  "round4_pages": 204,
+  "round4_initial_score": 8,
+  "round4_initial_verdict": "Almost / BLOCK",
+  "round4_initial_major_count": 1,
+  "round4_initial_minor_count": 3,
+  "round4_score": 9,
+  "round4_verdict": "Accept / ALLOW",
+  "round4_major_count": 0,
+  "round4_minor_count": 2,
+  "round4_majors_fixed": [
+    "STRUCTURE claimed HTML build < 1MB while the artifact is 5,599,650 B and README claimed 5.6MB; raised the limit to 8MB, added a claim/limit/artifact gate and regressions"
+  ],
+  "round4_minors_fixed": [
+    "README stats refreshed to 15.5万字符 / 6.1万汉字 from the manifest-ordered 20 book sources",
+    "source figure captions made sequential in ch4/ch6/ch10/ch12; added a source-caption lint",
+    "HTML artifact gate now errors when a README HTML claim lacks a STRUCTURE limit or the artifact is missing"
+  ],
+  "round4_minors_deferred": [
+    "technical-reference depth: upstream LICENSE and Tektronix/Microchip/ngspice/KiCad document bodies remain docs-level citations; no concrete factual error found"
+  ],
+  "round4_review": "docs/book-improvement/round-4-review.md",
+  "round4_recheck": "docs/book-improvement/round-4-recheck.md",
   "started": "2026-11-25T13:20:00Z",
-  "updated": "2026-11-26T01:22:28Z"
+  "updated": "2026-11-26T01:46:21Z"
 }
