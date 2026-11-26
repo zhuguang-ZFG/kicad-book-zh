@@ -2,9 +2,9 @@
   "skill": "auto-paper-improvement-loop",
   "upstream_commit": "3fefd34146d3317e407aec65a5a29335de87b9ee",
   "artifact": "KiCad 从原理到制板",
-  "current_round": 3,
-  "max_rounds": 3,
-  "status": "rounds_complete",
+  "current_round": 4,
+  "max_rounds": 4,
+  "status": "reviewing",
   "reviewer_transport": "pi-subagent",
   "reviewer_agent": "reviewer",
   "reviewer_context": "fresh",
@@ -44,6 +44,11 @@
     "added §15.7 KiBot direct reuse: pinned upstream action, schema-validated .kibot.yaml, version/AGPL boundaries",
     "registered KiBot in sources.json; excluded .tmp scratch Markdown from book stats; README counts refreshed"
   ],
+  "round4_scope": [
+    "fresh-context audit of technical correctness, delivery claims and reproducibility on the 205-page artifact",
+    "fix every MAJOR and actionable MINOR; verify artifact claims against actual HTML/PDF",
+    "reuse upstream open-source assets only where they can be verified without a local Docker runtime"
+  ],
   "started": "2026-11-25T13:20:00Z",
-  "updated": "2026-11-26T01:05:07Z"
+  "updated": "2026-11-26T01:22:28Z"
 }
