@@ -50,6 +50,27 @@ PRINT_CSS = r"""/* ------- print / PDF ------- */
   th{white-space:normal;word-break:keep-all;overflow-wrap:break-word}
   table{font-size:8.6pt}
   table td{overflow-wrap:break-word}
+  /* A table cell that carries one code name must let that name set the
+     column's min-content width; otherwise Chromium prints `.kicad_mod` as
+     `.kicad_mo` / `d`. render.py only marks tokens without spaces. */
+  table td .nw{white-space:nowrap}
+  /* A scroll container is a fragmentation context, and Chromium can leave the
+     empty border/background of the next row on the sheet before its text. */
+  .table-scroll{overflow:visible}
+  /* a row that splits at the page edge leaves an empty bordered band behind */
+  table tr,table td{break-inside:avoid}
+  /* A table that spans sheets ends its bordered card at the page edge but
+     leaves the next row's strip blank. Splitting the source table at a
+     semantic boundary and breaking before the second card avoids it. */
+  .page-break{break-after:page}
+  /* B.2's five columns: fixed shares stop auto layout from starving the
+     short "分发" column down to two characters per line. */
+  .file-table table{table-layout:fixed}
+  .file-table th:nth-child(1){width:23%}
+  .file-table th:nth-child(2){width:22%}
+  .file-table th:nth-child(3){width:15%}
+  .file-table th:nth-child(4){width:23%}
+  .file-table th:nth-child(5){width:17%}
   /* The preface's three-row reading ladder is a single idea; let it move as a
      block rather than split its header from the last row. */
   #kicad-front .table-scroll{break-inside:avoid}
@@ -123,7 +144,11 @@ PRINT_CSS = r"""/* ------- print / PDF ------- */
      the tail of its last page, so the mark has to be big enough to be the
      reason the page stops there rather than a stray that fell into the void. */
   .ch-close{break-inside:avoid}
-  .ch-rut{width:min(19rem,82%);margin-top:1.6rem;opacity:.9;color:var(--bronze-3)}
+  /* The bridge and the ruts are one closing mark. The old 1.6rem gap did
+     not fit after Ch6's acceptance list and spent a whole sheet on two
+     lines; a tighter gap lets them close the page they belong to. */
+  .ch-close p{margin-bottom:.2rem}
+  .ch-rut{width:min(19rem,82%);margin-top:.5rem;opacity:.9;color:var(--bronze-3)}
   /* the keeper keeps the ink it has on paper; the hover lean simply stops */
   .keeper{break-inside:avoid;margin:.9rem 0 0}
   .kp-art svg{transition:none}

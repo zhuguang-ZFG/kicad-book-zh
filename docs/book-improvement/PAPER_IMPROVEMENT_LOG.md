@@ -11,6 +11,67 @@
 | Round 4 | 9/10 | Accept / ALLOW | Fresh review found 1 MAJOR (STRUCTURE HTML limit `< 1MB` vs 5.6MB artifact) and 3 MINOR; fixed the MAJOR, refreshed stats, made source captions sequential, added artifact gates; recheck closed the MAJOR, 1 new gate-hardening MINOR fixed, reference-depth MINOR deferred |
 | Round 5 | 9/10 | Accept / ALLOW | Added 8 official KiCad screenshots to body chapters (27 total with Appendix A.7), 3 OSS workflow diagrams, screenshot provenance gates and figure-number ordering fix; fresh review found 2 caption/pixel mismatches (1 MAJOR, 1 MINOR), both fixed; recheck 9/10 with 0 MAJOR, 0 MINOR |
 | Round 6 | 9/10 | Accept / ALLOW | Fresh technical/reproducibility audit of the 211-page artifact: all CLI flags, DRC semantics, menu paths and 19 Appendix A.7 screenshots verified against KiCad 10.0.8; 0 MAJOR, 1 MINOR (Ch7 omitted the 0.20 mm Default netclass from its 86–138 Ω claim), fixed with an explicit ~146 Ω statement and a new SI mutation; A-19 caption tightened |
+| Round 7 | 9 → 6 → 9 | Accept / ALLOW → BLOCK → Accept / ALLOW | Raster audit of all 211 pages of the Round 6 PDF; fixed the lone Ch6 bridge page, the lone appendix-B caveat page, B.2 filename splits and the empty bordered row fragment; initial review 9/10 with 2 MINOR, both fixed; recheck found a new MAJOR (removing `<wbr>` from ~250 inline code tokens created justified-prose rivers on five pages), fixed by restoring soft breaks while keeping B.2 filenames nowrap; river gate added; independent follow-up on the final artifact accepted the fix with 0 MAJOR / 0 MINOR |
+
+## Round 7 Cross-Checks (before review)
+
+- **Scope**: print layout only. The Round 6 artifact was rasterized into fourteen 4×4 contact sheets and every page was inspected; suspect pages were re-rendered at 110–140 dpi. No new technical, electrical or sourcing claims were added.
+- **Old artifact**: `kicad-book-zh-round6.pdf`, 211 pages, MD5 `1d75b07c951fcdc08e5914595fc6c7bd`.
+- **Lone tail pages (accepted defects)**: page 68 carried only the Ch6 bridge sentence plus the closing mark; page 192 carried only the final "未决问题" bullet of appendix B. Both left more than 85% of the sheet blank.
+- **B.2 table (accepted defects)**: the first column was squeezed until `.kicad_pro`, `.kicad_sch`, `.kicad_pcb`, `sym-lib-table`, `fp-lib-table` and `.kicad_sym` printed as two lines. Page 186 also ended with an empty bordered row strip before the next sheet.
+- **Intentional short pages (not defects)**: cover, version page, reading paths, TOC tail, part doors (13/49/96/132), photo and screenshot plates, chapter-end citation cards (31/58/77/129/142/151/167), and the final colophon page. Their previous page had no room for the whole block; splitting the citation card or padding with filler would be worse.
+- **False positives rejected**: pages 76→77 and 104→105 first looked like split tables on the contact sheet; 140 dpi renders showed complete rows and repeated headers. B.2 already had a repeated `<thead>`; the defect was column width, not a missing header.
+- **Gate**: `tools/test_pdf_layout.py` fails the untouched Round 6 PDF with all four checks: `pages with a lone body sentence/bullet: [68, 192]`, B.2 split/missing filename tokens, a missing complete row/header structure, and `appendix B.2 empty card strips: [(186, 39.9)]`. It passes the rebuilt PDF. The gate runs after the PDF build because it reads the artifact, not the sources; an optional path argument allows the same check against the old fixture.
+- **Gate hardening after review**: the gate now asserts one B.2 header and one complete row per filename, measures the bordered card against its last text row (20 pt tolerance; the old fragment was 39.9 pt), narrows the image exemption to images covering at least 20% of the page, and exempts citation pages only when the citation block starts the page.
+
+## Round 7 Review
+
+Full raw review, verbatim: [round-7-review.md](round-7-review.md).
+
+- **Initial fresh review: 9/10, Accept / ALLOW, 0 MAJOR, 2 MINOR, confidence 0.88.**
+- Independently confirmed no content loss: the Ch6 bridge moved from old p68 to new p67 and the appendix-B caveat from old p192 to new p185; the bridge and closing mark do not collide. B.2 prints as a header + 8 rows on p185 and a header + 6 rows on p186, with all 14 filenames intact and no empty band.
+- MINOR 1: the new layout gate guarded only two of the four repaired defects. It did not assert per-card header/row counts, an empty bordered strip, chapter-end crowding, or rows after B.3; its image and citation exemptions were broad.
+- MINOR 2: moving the caveat dropped `未决问题：`, `每种文件的`, and precision in the `.pretty/` and `.kicad_dru` cells. The meaning and placement were still correct.
+
+### Fixes After the Round-7 Review (same session)
+
+1. **Layout-gate coverage (MINOR 1)** — `tools/test_pdf_layout.py` now requires exactly one B.2 header per card, all 14 complete filename rows, and measures the bordered card to its last text row (20 pt tolerance; the old strip was 39.9 pt). The image exemption requires an image covering at least 20% of the page; the citation exemption requires the citation block to start the page. The old Round 6 PDF still fails the strengthened gate.
+2. **Caveat precision (MINOR 2)** — restored `未决问题：`, `每种文件的`, `.pretty/` as `目录（含 .kicad_mod 文件）`, and `.kicad_dru` as `针对某个 .kicad_pcb 的自定义设计规则`. Literal restoration alone reproduced a lone `）` line and split `自定义` into `自` / `定义`; the final wording adds the noun `文件` and marks `自定义` with a print-only nowrap span. The B.2 filenames remain `<code class="nw">`.
+
+### Round 7 Recheck
+
+Full recheck, verbatim: [round-7-recheck.md](round-7-recheck.md).
+
+- **6/10, BLOCK, 1 new MAJOR, 0 new MINOR, confidence 0.90.** Both original MINORs were accepted as fixed, including the gate's old-red/new-green behavior and the restored caveat wording.
+- The recheck's artifact was the **blocked** build `7c185ac33d9400fc07865b9f391fa43b` (210 pages, `14,855,636 B`), not the final artifact below.
+- New MAJOR root cause: adding `"code"` to `_NAME_BREAK_SKIP` stopped `soften_long_names()` from inserting `<wbr>` into roughly 250 inline code URLs/paths. Chromium could no longer break those tokens, so it pushed them to the next line and stretched the preceding justified CJK prose. The recheck measured holes of 96.6 pt and 43.5 pt and saw the defect on p142, p148, p149, p156 and p191. Round 6 did not have this regression.
+- The recheck also noted that the gate had no assertion for this river class, so a green gate did not prove the prose was clean.
+
+### Fixes After the Round-7 Recheck
+
+1. **Restore soft breaks (MAJOR)** — removed `"code"` from `_NAME_BREAK_SKIP`; inline code again receives `<wbr>`. B.2 filenames still stay on one line because their table-specific `<code class="nw">` plus print CSS wins. No B.2 token regressed.
+2. **End-to-end river assertion** — `tools/test_pdf_layout.py` now clusters PyMuPDF `rawdict` line fragments by baseline, skips filled table-card containers, and fails prose lines whose fragment gaps exceed 3.5 pt. On the blocked build it reports exactly the five affected pages; on the final build it reports none. A synthetic spaced-CJK page fails and a contiguous-CJK page passes, proving the detector can fire rather than merely staying silent.
+3. **Rebuild** — final build completed in 58.69 s; 210 pages, 25 bookmarks, 0 blank pages, 78 unique captions. The layout gate and all source/content gates pass. `p191` keeps `三份核心文件同时创建、备份目录：` together and breaks the URL at `/` instead of stretching the lead-in.
+
+### Round 7 Follow-up Recheck
+
+Full follow-up report, verbatim: [round-7-recheck-2.md](round-7-recheck-2.md).
+
+- **9/10, Accept / ALLOW, 0 new MAJOR, 0 new MINOR, confidence 0.90.** The follow-up independently verified the final artifact hash, not the blocked build.
+- The river MAJOR is closed: an independently reimplemented baseline-cluster detector found zero prose clusters on pp142/148/149/156/191, glyph advances are 10.2–11.98 pt (blocked build ~21 pt), and 140-dpi A/B renders show normal prose on the final pages versus stretched blocked pages. Whole-book candidates were confined to filled table cards.
+- Both original MINORs remain fixed: B.2 has one 5-column header + 8 rows on p185 and one header + 6 rows on p186, all 14 filenames on one line, no lone closing parenthesis, and a 9.6 pt card padding strip versus the historical 39.9 pt gap.
+- The new gate is meaningful: final PDF rc=0, Round 6 rc=1 with the expected old defects, synthetic spaced-CJK fires at 22/25/30 pt gaps and contiguous CJK does not. No assertion was weakened. CI runs the gate after the build.
+- Normalized text ratio against Round 6 is 0.9996; no content deletion. Residual detector blind spots are documented in the report and are not merge blockers.
+
+## Round 7 Artifacts
+
+- Final artifact: `yuyu-book/dist/kicad-book-zh-round7.pdf` — **210 pages, 25 bookmarks, 0 blank pages, 78 unique captions**, `14,864,057 B`, MD5 `4ee2494704c2f2135901fc47849ed284`; independently accepted by the follow-up recheck.
+- HTML: `6,621,762 B`, 20 units, 78 plates, 44 cited links.
+- The earlier `7c185ac33d9400fc07865b9f391fa43b` build is the blocked recheck artifact; it was replaced in the archive after the river fix. The recheck report intentionally retains that historical hash.
+- Ch6 now closes on page 67; the old page 68 is gone. B.2 occupies pages 185–186 as two table cards split at the core/optional boundary; appendix B ends on page 191 with its source list, and appendix C starts on page 192.
+- Gates: `test_claims`, `test_usb_diagnostics`, `test_readme_links`, `test_book_metadata`, `test_pdf_cleanup`, `test_si_numbers` (17 mutations), `check_book`, `test_pdf_layout`, and builder `--check` all OK.
+- `task_verify run` returned `unverified` / `project-or-git-baseline-unavailable`; no operator-configured check was executed. The commands above are the recorded manual evidence.
+- Build used the installed Chrome; 58.69 s for the final PDF.
 
 ## Round 6 Cross-Checks (before review)
 

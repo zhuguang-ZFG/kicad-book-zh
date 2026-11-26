@@ -36,7 +36,7 @@ usb_breath_led/
 
 ## B.2 核心文件速查
 
-“谁生成”一栏要连起来读：**.kicad_pro / .kicad_sch / .kicad_pcb 三份都由项目管理器的 File → New Project 同时创建、主名相同**，随后各自在对应编辑器里保存。其余文件由各自的编辑器或对话框按需生成。“分发”一栏是团队交付/提交 Git 的建议。
+“谁生成”一栏要连起来读：**.kicad_pro / .kicad_sch / .kicad_pcb 三份都由项目管理器的 File → New Project 同时创建、主名相同**，随后各自在对应编辑器里保存。其余文件由各自的编辑器或对话框按需生成。“分发”一栏是团队交付/提交 Git 的建议。未决问题：官方文件表给出扩展名与用途，但没有逐项规定每种文件的精确格式名；下表“格式”列按各编辑器实际保存形态归类，不当作 KiCad 文件格式规范。
 
 | 扩展名 | 内容 | 格式 | 谁生成 | 分发 |
 | --- | --- | --- | --- | --- |
@@ -46,9 +46,14 @@ usb_breath_led/
 | `sym-lib-table` | 符号库表：符号编辑器可用的库清单 | s-expression | **Preferences → Manage Symbol Libraries…** 写入；工程表在工程目录，全局表在配置目录 | 若工程依赖工程专用库表，随表引用的库一起提交 |
 | `fp-lib-table` | 封装库表：PCB 编辑器可用的库清单 | s-expression | **Preferences → Manage Footprint Libraries…** 写入 | 若工程依赖工程专用库表，随表引用的库一起提交 |
 | `.kicad_sym` | 符号库：打包库是一个文件，解包库是 `.kicad_symdir` 目录下的多个文件 | s-expression | 符号编辑器 | 用了才提交 |
-| `.pretty/` | 封装库目录，目录本身即库 | 目录（含 `.kicad_mod`） | 封装编辑器 | 用了才提交 |
+| `.pretty/` | 封装库目录，目录本身即库 | 目录（含 `.kicad_mod` 文件） | 封装编辑器 | 用了才提交 |
 | `.kicad_mod` | 单个封装 | s-expression | 封装编辑器 | 同上 |
-| `.kicad_dru` | 针对某个 `.kicad_pcb` 的自定义设计规则 | 规则文本 | Board Setup → Custom Rules / 图形设计规则编辑器 | 用了才提交 |
+
+<div class="page-break"></div>
+
+| 扩展名 | 内容 | 格式 | 谁生成 | 分发 |
+| --- | --- | --- | --- | --- |
+| `.kicad_dru` | 针对某个 `.kicad_pcb` 的<span class="nw">自定义</span>设计规则 | 规则文本 | Board Setup → Custom Rules / 图形设计规则编辑器 | 用了才提交 |
 | `.kicad_wks` | 图纸（页面布局：图框与标题栏）描述文件 | KiCad 文本格式 | 图纸编辑器（Drawing Sheet Editor） | 用了才提交 |
 | `.kicad_jobset` | 输出作业集 | JSON | **项目管理器 File → New Jobset File…**，在项目管理器标签页编辑 | 用了才提交 |
 | `.kicad_prl` | 本机界面状态（层可见性、选择过滤器等） | JSON | 自动生成 | **不提交、不分发** |
@@ -206,5 +211,4 @@ usb_breath_led/
 - 库表与路径变量：`https://docs.kicad.org/10.0/en/eeschema/eeschema.html` → *Managing symbol libraries*；`https://docs.kicad.org/10.0/en/pcbnew/pcbnew.html` → *Managing footprint libraries* / *Path variable substitution*。
 - 3D 模型与本地历史：`https://docs.kicad.org/10.0/en/pcbnew/pcbnew.html` → *3D models (STEP / GLB / BREP / XAO / PLY / STL / STPZ / U3D / PDF)*；`https://docs.kicad.org/10.0/en/kicad/kicad.html` → *Project backups and autosave*。
 - `.kicad_wks`：`https://docs.kicad.org/10.0/en/pl_editor/pl_editor.html` → *Introduction to the KiCad Drawing Sheet Editor*。
-- 未决问题：官方文件表给出扩展名与用途，但没有逐项规定每种文件的精确格式名；本附录“格式”列按各编辑器实际保存形态归类，不当作 KiCad 文件格式规范。
 
