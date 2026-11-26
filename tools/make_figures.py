@@ -705,16 +705,69 @@ def ch11_order(a):
 
 
 def ch11_assembly(a):
-    steps = [("钢网", 60), ("印刷", 190), ("贴片", 320), ("回流", 450), ("检验", 580)]
-    for i, (lab, x) in enumerate(steps):
-        a.circle(x + 40, 120, 26, width=1.8)
-        a.text(x + 40, 126, str(i + 1), size=16)
-        a.text(x + 40, 172, lab, size=13, opacity=.65)
-        if i < 4:
-            a.arrow(x + 68, 120, x + 118, 120, width=1.8, head=6)
-    a.rect(54, 204, 612, 34, width=1.2, radius=2)
-    a.text(360, 227, "印刷 → 贴片 → 回流 → 检验：每一段都要有可追溯的批次与参数", size=11, opacity=.55)
-    a.text(360, 278, "手焊和回流不是两件事，而是同一套“热、锡、助焊剂”的不同尺度。", size=12, opacity=.55)
+    a.text(360, 24, "组装线：从钢网到检验", size=14, opacity=.7)
+    centers = (88, 232, 376, 520, 664)
+
+    def label(x, num, text):
+        a.circle(x - 34, 54, 9, width=1.4)
+        a.text(x - 34, 58, str(num), size=10)
+        a.text(x - 18, 59, text, size=12, anchor="start", opacity=.75)
+
+    def pcb(x):
+        a.rect(x - 34, 196, 68, 14, width=1.4, radius=2)
+
+    for x, num, text in zip(centers, range(1, 6), ("钢网", "印刷", "贴片", "回流", "检验")):
+        label(x, num, text)
+        pcb(x)
+
+    # Stencil frame, openings and squeegee.
+    x = centers[0]
+    a.rect(x - 42, 86, 84, 74, width=1.8, radius=2)
+    for dx in (-24, 0, 24):
+        a.rect(x + dx - 6, 106, 12, 10, width=1.0, opacity=.6)
+        a.rect(x + dx - 6, 136, 12, 10, width=1.0, opacity=.6)
+    a.line(x - 32, 148, x + 30, 110, width=2.2)
+    a.rect(x - 10, 150, 20, 8, width=1.4, radius=1)
+
+    # Paste print: blade, handle and fresh paste dots.
+    x = centers[1]
+    a.line(x - 34, 102, x + 30, 132, width=2.4)
+    a.rect(x - 8, 134, 16, 22, width=1.4, radius=2)
+    for dx in (-20, 0, 20):
+        a.dot(x + dx, 202, 1.8)
+
+    # Pick-and-place gantry, nozzle, component and feeder reel.
+    x = centers[2]
+    a.rect(x - 44, 86, 88, 16, width=1.8, radius=2)
+    a.line(x, 102, x, 148, width=1.6)
+    a.rect(x - 10, 148, 20, 12, width=1.4, radius=1)
+    a.rect(x - 8, 170, 16, 10, width=1.2, radius=1)
+    a.circle(x + 38, 122, 14, width=1.4)
+    a.circle(x + 38, 122, 4, width=1.0)
+    a.line(x + 24, 122, x + 12, 150, width=1.2)
+
+    # Reflow oven with heat waves and a through-conveyor.
+    x = centers[3]
+    a.rect(x - 48, 90, 96, 98, width=1.8, radius=3)
+    a.rect(x - 38, 106, 76, 66, width=1.0, opacity=.5)
+    for dx in (-22, 0, 22):
+        a.path(f"M{x+dx} 156q-8-10 0-20t0-20", width=1.2, opacity=.6)
+    a.line(x - 58, 198, x + 58, 198, width=2.0)
+
+    # Inspection camera, magnifier and acceptance mark.
+    x = centers[4]
+    a.rect(x - 30, 86, 60, 16, width=1.8, radius=2)
+    a.line(x, 102, x, 136, width=1.6)
+    a.circle(x, 148, 18, width=1.6)
+    a.line(x + 12, 160, x + 26, 174, width=2.0)
+    check(a, x, 202, 7, 1.8)
+
+    # Conveyor and process-record band.
+    a.rect(36, 210, 648, 18, width=1.6, radius=2)
+    a.arrow(40, 239, 680, 239, width=1.2, head=6)
+    a.rect(96, 250, 528, 26, width=1.2, radius=3, opacity=.7)
+    a.text(360, 268, "批次 · 钢网 · 锡膏 · 贴片程序 · 回流曲线 · 检验记录", size=10, opacity=.75)
+    a.text(360, 292, "手焊和回流不是两件事，而是同一套“热、锡、助焊剂”的不同尺度。", size=11, opacity=.7)
 
 
 def ch11_ibom(a):
