@@ -29,6 +29,12 @@ Full raw review, verbatim: [round-3-review.md](round-3-review.md).
 1. **KiBot `dir` is a prefix (MINOR)** — action input changed from `dir: fab` to `dir: .`; the prose now says it is an output prefix concatenated with each output's `dir`, so `fab/gerbers` and `fab/` stay as documented instead of becoming `fab/fab/...`.
 2. **Ch2 still restated the baseline (MINOR)** — `02-原理图第一笔.md` now points to the preface table and keeps only the chapter-local instruction ("本章只画最小系统") plus the optional-expansion note.
 
+### Post-merge Correction (zone-fill semantics)
+
+- An aggregated advisory flagged that the mapping bullet conflated two KiBot preflights. Upstream v1.9.1 source confirms it: `pre_check_zone_fills.py` fills zones in memory, leaves the original PCB unchanged, and does **not** fail on fill changes (the `CheckZoneFill` internal template is the gate); `pre_fill_zones.py` refills and saves the board. The bullet now maps `fill_zones` to `--refill-zones --save-board` and states that `check_zone_fills` is not a gate; `CheckZoneFill` is not enabled in this config.
+- The same advisory batch repeated an ENTRYPOINT warning already corrected upstream: the base `kicad10_auto_full` image has `Entrypoint: null`, `Cmd: ["bash"]`, so the book's `docker run … bash -lc` version check is valid. `/entrypoint.sh` belongs to the action's derived image, not this command. No change made.
+- Rebuilt the PDF after the correction: 205 pages, 25 bookmarks, 14.0 MB; 0 blank pages; 0 duplicate figure numbers; all checks green.
+
 ## Round 3 Artifacts
 
 - Final artifact: `yuyu-book/dist/kicad-book-zh-round3.pdf` — **205 pages, 25 bookmarks, 14.0 MB**, rebuilt after both MINOR fixes.
