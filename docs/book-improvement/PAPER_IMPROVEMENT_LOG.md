@@ -47,6 +47,14 @@
 - Contrast: every text node uses opacity ≥ .70. Measured worst-case ratios across the frame gradient are 5.51:1 on print paper, 5.37:1 on the light sheet and 6.88:1 in dark mode, all above the 4.5:1 delivery gate.
 - Boundary: no manuscript text, technical value, command, warning, section order, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
 
+## Illustration Scene — Chapter 11 Assembly Line
+
+- Evidence: Figure 11-2 used five numbered circles and arrows; the stencil, print, placement, reflow and inspection stations had no visual identity, leaving most of the plate empty.
+- Change: redrew `ch11_assembly` as a five-station hand-drawn line with a stencil/squeegee, paste blade and dots, pick-and-place gantry and reel, reflow oven, inspection camera, conveyor and process-record band. Station order, caption, figure number, technical terms and 720×300 viewBox are preserved.
+- Budget and contrast: the first detailed version reached 22,994 bytes and exceeded the 20 KB inline-plate limit. Removing repeated conveyor rollers and per-board pads reduced the deterministic SVG to 15,312 bytes without removing any station. Every text node uses opacity ≥ .70; measured worst-case ratios are 5.51:1 on print paper, 5.37:1 on the light sheet and 6.88:1 in dark mode.
+- Verification: regenerating twice is byte-identical and only `kicad-ch11-assembly.svg` changes. The rebuilt PDF remains 210 pages / 228 bookmarks, and a 72-dpi whole-book comparison isolates the sole render change to p111. `test_claims`, `test_book_metadata`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass.
+- Boundary: no manuscript text, process parameter, command, warning, section order, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
+
 ## Prose De-AI Passes (after Round 7)
 
 ### First Pass
