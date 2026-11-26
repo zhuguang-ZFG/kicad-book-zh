@@ -89,7 +89,7 @@ usb_breath_led/
 要点：
 
 - `version` 是文件格式版本，不是 KiCad 版本；
-- `lib_symbols` 缓存了用到的符号定义，所以别人没有你的库也能打开（但封装仍要库）；
+- `lib_symbols` 保存已放置符号的定义。符号实例的 `Footprint` 属性记录的是封装库昵称和封装名，不是焊盘几何；已经放到 PCB 上的封装几何保存在 `.kicad_pcb` 中；
 - 每个对象有 `uuid`，用于交叉引用和更新；
 - 属性是字符串键值对，BOM 字段就在这里。
 - **别把缓存当成库**：`lib_symbols` 让原理图在没有符号库时也能显示，但“从库更新符号”、编辑库中的符号定义仍需要库表与库文件；PCB 的封装几何内嵌在 `.kicad_pcb` 里，自定义规则却在单独的 `.kicad_dru`，页面布局在 `.kicad_wks`。要完整交付，带上 `.kicad_pro` 和用到的库。
@@ -197,12 +197,12 @@ usb_breath_led/
 | --- | --- | --- |
 | `.kicad_sch` 打不开 | `<工程名>-backups/` 快照，或 **View → Panels → Local History** 的快照事件 | 用 Local History 的 **Restore Commit** 恢复；不要“新建工程再复制”，容易丢网络和属性 |
 | `.kicad_pcb` 打不开 | 同上；再考虑用文本编辑器删掉最后一次新增、括号已配对的对象 | 改前先复制一份原文件 |
-| 符号缺失 / “库未找到” | `sym-lib-table` 工程表条目及其 `uri`；库文件是否还在 `lib/` | 放回库文件与表文件；把绝对路径改回 `${KIPRJMOD}/...`；再跑 **Tools → Update Symbols from Library…** |
-| 封装缺失 | `fp-lib-table` 与 `.pretty/` 目录 | 同上，再跑 **Tools → Update Footprints from Library…** |
+| 从库更新符号时找不到符号 | 按库昵称查 `sym-lib-table`；URI 指向的 `.kicad_sym` 中是否有该符号 | 补回工程表或库，修正 URI，再跑 **Tools → Update Symbols from Library…** |
+| 从库更新封装时找不到封装 | 按库昵称查 `fp-lib-table`；URI 指向的 `.pretty` 目录内是否有对应的 `.kicad_mod` | 补回工程表或封装库，修正 URI，再跑 **Tools → Update Footprints from Library…** |
 | 3D 模型缺失 | 封装里的模型路径、**Configure Paths…** 的变量 | 补齐模型文件或修正变量；仅影响 3D 视图，不阻塞 ERC/DRC |
 | 板子显示正常但规则不对 | `.kicad_pro`（网类/设计规则）、`.kicad_dru`、`.kicad_wks` 是否随工程交付 | 从 Git 或备份补回这些文件，重跑 DRC |
 
-可复现的完整演练见第 14 章 14.7：移走库表/`lib/` → 记录“找不到库” → 放回并修正路径 → 确认恢复。背景：原理图/PCB 内嵌了符号与封装，所以画面通常还在；依赖外部库的是“从库更新”等操作，以及 `.kicad_pro` 里的工程级设置。
+换电脑打开已保存的工程时，已放置的符号和封装通常仍能显示；打开工程不会替你从库更新。要从库中选放新器件或更新已有器件，库昵称和库文件都要能找到。同名库以工程表为准；本地库随表交付，URI 用 `${KIPRJMOD}/lib/...`。用同一份工程验证显示与更新的步骤见 14.7。
 
 ### 本附录官方依据（KiCad 10.0.8，文档修订 8acc7624）
 
