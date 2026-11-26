@@ -43,10 +43,17 @@ Full raw review, verbatim: [round-5-review.md](round-5-review.md).
 
 ## Round 5 Artifacts
 
-- Final artifact: `yuyu-book/dist/kicad-book-zh-round5.pdf` — **211 pages, 25 bookmarks, 14,884,455 B**; 0 blank pages; 78 unique built captions.
-- HTML: `6,616,868 B`, 20 units, 78 plates, 44 cited links.
-- Verified pages: 37 (new ERC marker), 43 (CvPcb), 53 (Board Setup layers), 75 (length tuning), 93 (DRC rule editor), 101 (drill dialog), 114 (iBOM), 116 (KiKit), 138 (simulator), 158 (PCM), 162 (KiBot).
+- Final artifact: `yuyu-book/dist/kicad-book-zh-round5.pdf` — **211 pages, 25 bookmarks, 14,883,630 B**; 0 blank pages; 78 unique built captions.
+- HTML: `6,616,941 B`, 20 units, 78 plates, 44 cited links.
+- Verified pages: 37 (new ERC marker), 43 (CvPcb), 53 (Board Setup layers), 75 (length tuning), 93 (DRC rule editor), 101 (drill dialog), 114 (iBOM), 116 (KiKit), 139 (simulator), 158 (PCM), 162 (KiBot).
 - Gate: `test_claims`, `test_usb_diagnostics`, `test_readme_links`, `test_book_metadata`, `test_pdf_cleanup`, `test_si_numbers` (16 mutations), `check_book`, and builder `--check` all OK.
+
+### Post-merge Advisory Corrections
+
+- **Ch5 图 5-2 layer count** — the caption said layer count was defined on Board Editor Layers. Official KiCad 10 `pcbnew` docs put the copper-layer count on **Physical Stackup** (upper left); Board Editor Layers only manages layer type, name and enable state. Caption corrected; the screenshot's `F.Cu` / `In1.Cu…In4.Cu` / `B.Cu` rows are described as the current layer list, not as proof that the stackup is complete.
+- **Ch13 图 13-3 placement** — the screenshot is an `Analysis 1 - AC` sweep, so it was moved out of §13.4 (TRAN) into §13.5 (AC). The caption now says the official AC example is not this board's RC result and reads "波形、Signals 与 Cursor 同屏"; no left/right claim remains. Final PDF page 139.
+- **Regression scope** — `test_figure_caption_absorbs_after_photo_shift` already builds two preceding photo figures, an `ill` placeholder numbered 5-2 whose real caption says 5-3, calls `finalize_figures`, and asserts the real caption is inside `figcaption` with the duplicate paragraph gone. No test change was needed.
+- Rebuilt after the corrections: **211 pages, 25 bookmarks, 0 blank pages, 78 unique captions**; all gates green.
 
 ## Round 4 Review
 
