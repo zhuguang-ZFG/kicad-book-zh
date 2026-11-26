@@ -154,9 +154,8 @@ def assemble_book(lang: str, manifest: dict, sources: dict, *,
     layer = plain.Layer(glosses, lang)
 
     units = []
-    for unit_def, kind, part in unit_stream(manifest):
+    for unit_def, kind, _part in unit_stream(manifest):
         u = load_unit(unit_def, kind, lang, REPO_ROOT)
-        u.part = part  # type: ignore[attr-defined]
         units.append(u)
 
     local_targets = dict(collection_targets or {})
@@ -462,6 +461,7 @@ def build_collected(lang: str, spec: dict, volumes, *,
     n_diagrams = 0
     svgs = 0
     front_anchor = ""
+    guide = None
     guide_def = spec.get("guide")
     if guide_def:
         guide = load_unit(guide_def, "front", lang, REPO_ROOT)
@@ -544,7 +544,7 @@ def build_collected(lang: str, spec: dict, volumes, *,
                 f'{pages.esc(spec["version"])} · {len(volumes)} 卷 · '
                 f'{len(units_all)} units · {n_diagrams} {foot}</footer>')
     body.insert(3 if guide_def else 2, pages.toc_html(toc_entries, lang))
-    if guide_def:
+    if guide is not None:
         body.insert(0, '<nav class="collection-jumps no-print" '
                     f'aria-label="{pages.ui("collection_navigation", lang)}">'
                     f'<a href="#{guide.id}">{pages.esc(guide.title)}</a>'
@@ -705,7 +705,8 @@ def _article(payload, manifest, sources, lang, kind=None, notes=None,
     u = payload["unit"]
     kind = kind or u.kind
     guide = (manifest.get("guides") or {}).get(u.id, {})
-    part = getattr(u, "part", None)
+    part = next((p for p in manifest["parts"]
+                 if any(unit_def["id"] == u.id for unit_def in p["units"])), None)
     eyebrow = []
     if part:
         eyebrow.append(f'{part["no"][lang]} {part["title"][lang]}')

@@ -8,7 +8,37 @@
     "snapshot": "10.0.8, documentation revision 8acc7624",
     "accessed": "2026-11-25",
     "license": "GPL-3.0-or-later / CC BY 3.0",
-    "scope": "术语、工作流、编辑器行为、kicad-cli 参数与文件格式"
+    "scope": "术语、工作流、编辑器行为、kicad-cli 参数与文件格式；具体深链接见 kicad-docs-eeschema、kicad-docs-pcbnew、kicad-docs-cli"
+  },
+  "kicad-docs-eeschema": {
+    "title": "KiCad 10.0 Schematic Editor Manual",
+    "authority": "KiCad Documentation Contributors",
+    "kind": "docs",
+    "url": "https://docs.kicad.org/10.0/en/eeschema/eeschema.html",
+    "snapshot": "10.0.8, documentation revision 8acc7624；含 ERC 章节锚点",
+    "accessed": "2026-11-25",
+    "license": "GPL-3.0-or-later / CC BY 3.0",
+    "scope": "第 1—4 章：原理图界面、符号与网络操作、ERC 对话框；逐项深链接在前言与附录 A"
+  },
+  "kicad-docs-pcbnew": {
+    "title": "KiCad 10.0 PCB Editor Manual",
+    "authority": "KiCad Documentation Contributors",
+    "kind": "docs",
+    "url": "https://docs.kicad.org/10.0/en/pcbnew/pcbnew.html",
+    "snapshot": "10.0.8, documentation revision 8acc7624；含 DRC、铺铜与自由过孔章节锚点",
+    "accessed": "2026-11-25",
+    "license": "GPL-3.0-or-later / CC BY 3.0",
+    "scope": "第 5—9 章：布局、布线、规则评估、DRC、铺铜与过孔；逐项深链接在前言与附录 A"
+  },
+  "kicad-docs-cli": {
+    "title": "KiCad 10.0 Command Line Interface Manual",
+    "authority": "KiCad Documentation Contributors",
+    "kind": "docs",
+    "url": "https://docs.kicad.org/10.0/en/cli/",
+    "snapshot": "10.0.8, documentation revision 8acc7624",
+    "accessed": "2026-11-25",
+    "license": "GPL-3.0-or-later / CC BY 3.0",
+    "scope": "第 10、15 章：ERC/DRC、Gerber、Excellon、POS、BOM 导出参数与退出码"
   },
   "kicad-release-10": {
     "title": "Version 10.0.0 Released",
@@ -23,18 +53,21 @@
   "kicad-source": {
     "title": "KiCad source mirror",
     "authority": "KiCad project",
-    "kind": "community",
+    "kind": "github",
     "url": "https://github.com/KiCad/kicad-source-mirror/tree/e432beac2668303194ba2040274f9e5efe773fc0",
     "snapshot": "KiCad 10.0.8 tag, commit e432beac2668303194ba2040274f9e5efe773fc0; editor action registrations and platform-specific defaults",
     "accessed": "2026-11-25",
     "license": "GPL-3.0-or-later",
     "scope": "附录 A：编辑器快捷键默认值与 macOS 特定绑定；源码结构和发行说明交叉核对",
+    "pinned": {
+      "commit": "e432beac2668303194ba2040274f9e5efe773fc0"
+    },
     "normative": false
   },
   "kicad-symbols": {
     "title": "KiCad official symbol library",
     "authority": "KiCad Library Team",
-    "kind": "community",
+    "kind": "library",
     "url": "https://gitlab.com/kicad/libraries/kicad-symbols",
     "snapshot": "10.0 库分支",
     "accessed": "2026-11-21",
@@ -45,7 +78,7 @@
   "kicad-footprints": {
     "title": "KiCad official footprint library",
     "authority": "KiCad Library Team",
-    "kind": "community",
+    "kind": "library",
     "url": "https://gitlab.com/kicad/libraries/kicad-footprints",
     "snapshot": "10.0 库分支",
     "accessed": "2026-11-21",
@@ -56,7 +89,7 @@
   "klc": {
     "title": "KiCad Library Convention (KLC)",
     "authority": "KiCad Library Team",
-    "kind": "community",
+    "kind": "library",
     "url": "https://gitlab.com/kicad/libraries/klc/-/tree/6e8cbad9556359879d2b91f904d6df82517d97d1",
     "snapshot": "Official source revision 6e8cbad9556359879d2b91f904d6df82517d97d1 (2026-10-04): general guidance, S3.3, S4.1, S6.2, F5.1, F5.3",
     "accessed": "2026-11-25",
@@ -163,17 +196,6 @@
     "scope": "第15章：容器用户、环境变量、工作目录与工作区挂载",
     "normative": false
   },
-  "github-actions-upload-artifact": {
-    "title": "actions/upload-artifact v4",
-    "authority": "GitHub Actions",
-    "kind": "docs",
-    "url": "https://github.com/actions/upload-artifact/tree/ea165f8d65b6e75b540449e92b4886f43607fa02",
-    "snapshot": "v4 tag resolved on 2026-11-25 to commit ea165f8d65b6e75b540449e92b4886f43607fa02; action.yml path, if-no-files-found and retention-days inputs",
-    "accessed": "2026-11-25",
-    "license": "MIT",
-    "scope": "第15章：上传 CI 报告和制造输出",
-    "normative": false
-  },
   "github-actions-expressions": {
     "title": "GitHub Actions expressions: status check functions",
     "authority": "GitHub Actions",
@@ -232,7 +254,7 @@
   "elektor-kicad-like-a-pro-preview": {
     "title": "KiCad Like a Pro: Fundamentals and Projects — public preview",
     "authority": "Peter Dalmaris / Elektor",
-    "kind": "community",
+    "kind": "book",
     "url": "https://api.pageplace.de/preview/DT0400.9783895766275_A49833762/preview-9783895766275_A49833762.pdf",
     "snapshot": "2024，封面标第 4 版、覆盖 KiCad 8；电子书 ISBN 978-3-89576-627-5",
     "accessed": "2026-11-24",
@@ -397,7 +419,7 @@
   "bogatin-spi-3e": {
     "title": "Signal and Power Integrity - Simplified, Third edition",
     "authority": "Eric Bogatin / Prentice Hall",
-    "kind": "community",
+    "kind": "book",
     "url": "https://www.pearson.com/store/p/signal-and-power-integrity-simplified/P100001004142",
     "snapshot": "2018 年第 3 版，ISBN 9780134512228；引用带宽—边沿关系、拐角与过孔残桩电容估算、参考面宽度与间距阈值",
     "accessed": "2026-11-25",
@@ -408,13 +430,43 @@
   "johnson-hsdd": {
     "title": "High-Speed Digital Design: A Handbook of Black Magic",
     "authority": "Howard Johnson, Martin Graham / Prentice Hall",
-    "kind": "community",
+    "kind": "book",
     "url": "https://www.pearson.com/store/p/high-speed-digital-design-a-handbook-of-black-magic/P100000870465",
     "snapshot": "1993 年版，ISBN 9780133957242；用于交叉核对回流路径与传输线的工程判断",
     "accessed": "2026-11-25",
     "license": "版权书；本书只引用概念框架，不复刻正文与图",
     "scope": "第 7、8 章：回流路径、传输线判据与拐角的工程处理方式",
     "normative": false
+  },
+  "attiny25-45-85-datasheet": {
+    "title": "ATtiny25/45/85 Complete Datasheet (Rev. 2586Q)",
+    "authority": "Atmel / Microchip",
+    "kind": "docs",
+    "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-2586-AVR-8-bit-Microcontroller-ATtiny25-ATtiny45-ATtiny85_Datasheet.pdf",
+    "snapshot": "2586Q–AVR–08/2013；引脚表、Absolute Maximum Ratings、Electrical Characteristics active supply current 表、ISP 与 Timer1/OC1B 说明",
+    "accessed": "2026-11-25",
+    "license": "器件数据手册；引用性使用",
+    "scope": "第 2、12 章：ATtiny85 引脚映射、3.3 V 逻辑电平边界、ISP 接线与 PB3/OC1B 极性；1 MHz/3.3 V 的 0.3–0.6 mA 为按 active current 测试条件取的估算区间，不是新增实测"
+  },
+  "avrdude-8-1-manual": {
+    "title": "AVRDUDE 8.1 Manual",
+    "authority": "AVRDUDE contributors",
+    "kind": "docs",
+    "url": "https://avrdudes.github.io/avrdude/8.1/avrdude.html",
+    "snapshot": "8.1-20250623；programmer、part、signature 与熔丝位命令语法",
+    "accessed": "2026-11-25",
+    "license": "AVRDUDE 文档版权与许可声明见手册；引用性使用",
+    "scope": "第 12 章：usbasp、t85、signature 读取与 flash 烧录命令"
+  },
+  "microchip-avr-gcc": {
+    "title": "Microchip AVR GCC Toolchain",
+    "authority": "Microchip",
+    "kind": "docs",
+    "url": "https://www.microchip.com/en-us/development-tool/avr-gcc",
+    "snapshot": "官方 AVR GNU 工具链入口；编译器、汇编器、链接器与 AVR 库",
+    "accessed": "2026-11-25",
+    "license": "工具链各组件许可见官方发布；引用性使用",
+    "scope": "第 12 章：avr-gcc、avr-objcopy 与 AVR 固件编译环境"
   },
   "github-actions-checkout-v7": {
     "title": "actions/checkout v7 release notes and action.yml",

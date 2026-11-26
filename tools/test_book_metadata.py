@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 """Regression coverage for product metadata in the generated HTML shell."""
+import importlib
+import json
 import re
 import sys
-from tempfile import TemporaryDirectory
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 from unittest.mock import patch
-
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "yuyu-book"))
 
-from yuyu_book import app  # noqa: E402
-from yuyu_book.render import photo_figures, renumber_figures  # noqa: E402
-from yuyu_book.style import page  # noqa: E402
+app = importlib.import_module("yuyu_book.app")
+source_registry = importlib.import_module("yuyu_book.backmatter").source_registry
+photo_figures = importlib.import_module("yuyu_book.render").photo_figures
+renumber_figures = importlib.import_module("yuyu_book.render").renumber_figures
+page = importlib.import_module("yuyu_book.style").page
 
 
 def test_page_shell_does_not_embed_foreign_product_metadata() -> None:
@@ -100,6 +103,26 @@ def test_photos_share_document_order_figure_numbers() -> None:
     assert count == 3
     numbers = re.findall(r'<span class="fig-no">([^<]+)</span>', doc)
     assert numbers == ["图 2-1", "图 2-2", "图 2-3"]
+    # the hand-written caption number ("图 2-1：中间") must be stripped from
+    # the printed caption, or the page shows the same figure number twice
+    assert "图 2-1：中间" not in doc
+    assert '<span class="fig-cap">中间</span>' in doc
+
+
+def test_source_registry_separates_books_and_deep_links() -> None:
+    sources = json.loads((ROOT / "yuyu-book/sources.json").read_text(encoding="utf-8"))
+    sources.pop("schema_version", None)
+    for key in ("elektor-kicad-like-a-pro-preview", "bogatin-spi-3e", "johnson-hsdd"):
+        assert sources[key]["kind"] == "book"
+        assert sources[key]["normative"] is False
+    assert sources["kicad-source"]["kind"] == "github"
+    assert len(sources["kicad-source"]["pinned"]["commit"]) == 40
+    for key in ("kicad-docs-eeschema", "kicad-docs-pcbnew", "kicad-docs-cli"):
+        assert sources[key]["kind"] == "docs"
+        assert sources[key]["url"].startswith("https://docs.kicad.org/10.0/en/")
+    html = source_registry(sources, "zh")
+    assert "技术书籍（非规范）" in html
+    assert "官方库与指南" in html
 
 
 if __name__ == "__main__":
@@ -107,4 +130,5 @@ if __name__ == "__main__":
     test_page_shell_uses_and_escapes_product_metadata()
     test_build_edition_passes_manifest_metadata_to_page_shell()
     test_photos_share_document_order_figure_numbers()
+    test_source_registry_separates_books_and_deep_links()
     print("book metadata regression: OK")

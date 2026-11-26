@@ -11,8 +11,8 @@ import json
 import math
 import re
 import sys
-from urllib.parse import unquote, urlsplit
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parent.parent
 BOOK = ROOT / "yuyu-book"
@@ -25,7 +25,8 @@ errors: list[str] = []
 def md_files() -> list[Path]:
     out = []
     for p in ROOT.rglob("*.md"):
-        if "yuyu-book" in p.parts or "node_modules" in p.parts or ".git" in p.parts:
+        if ("yuyu-book" in p.parts or "node_modules" in p.parts
+                or ".git" in p.parts or "book-improvement" in p.parts):
             continue
         out.append(p)
     return sorted(out)
@@ -136,8 +137,150 @@ def check_attiny_pinmap() -> None:
             errors.append(f"symbol figure missing label {token!r}")
 
 
+def led_net_problems(text: str) -> list[str]:
+    """Keep the schematic contract aligned with the PB3 LED branch."""
+    problems: list[str] = []
+    rows = {m.group(1): m.group(2).strip()
+            for m in re.finditer(r"^\|\s*`([^`]+)`\s*\|\s*([^|]+)\|\s*([^|]+)\|", text, re.M)}
+    rail = rows.get("+3V3", "")
+    led = rows.get("LED", "")
+    if "LED" in rail or "限流电阻" in rail:
+        problems.append("+3V3 must not include the LED branch")
+    if "PB3" not in led or "限流电阻" not in led:
+        problems.append("LED net must join MCU PB3 and the series resistor")
+    return problems
+
+
+def check_led_net_contract() -> None:
+    text = (ROOT / "第一部分-入门篇/02-原理图第一笔.md").read_text(encoding="utf-8")
+    errors.extend(f"ch02: {problem}" for problem in led_net_problems(text))
+
+
+def selection_lock_problems(text: str) -> list[str]:
+    """Open component selection must be recorded before layout/purchasing."""
+    problems: list[str] = []
+    for token in ("### 先把器件选型锁定", "MPN、数据手册、封装",
+                  "暂时没有决定的格子标“待定”", "AVR 编译与烧录工具链的安装入口见 12.3"):
+        if token not in text:
+            problems.append(f"missing selection-lock contract: {token}")
+    return problems
+
+
+def check_selection_lock() -> None:
+    text = (ROOT / "第一部分-入门篇/02-原理图第一笔.md").read_text(encoding="utf-8")
+    errors.extend(f"ch02: {problem}" for problem in selection_lock_problems(text))
+
+
+def round2_claim_problems(texts: dict[str, str]) -> list[str]:
+    """Keep round-two calibrations explicit instead of silently drifting back."""
+    required = {
+        "ch02": ("输入电流约 9–10 mA",
+                 "引脚编号和电气类型仍要按所选器件的数据手册核对"),
+        "ch06": ("**不含 `Iq`**",),
+        "ch07": ("在这个 20 ns 假设下",),
+        "ch08": ("量级估算，不是合格证", "特定几何", "不要用它当验收签字"),
+        "ch10": ("版本与日期、层数、板厚、铜厚、表面处理、单位、原点、特殊工艺、联系人",),
+        "ch11": ("工艺选择要和实际贴片厂确认",),
+        "ch12": ("不要拿“几 mA”当通用标准",),
+        "ch15": ("版本受约束、但不是完全可复现", "同一个文件的后半段",
+                 "docker buildx imagetools inspect"),
+    }
+    forbidden = {
+        "ch02": ("照抄结构通常比自创更稳",),
+        "ch07": ("**本板不需要阻抗控制、不需要等长、不需要仿真**",),
+        "ch08": ("偏差就能控制在 1% 以内", "串扰基本可以不管",
+                 "至少各有 3 倍介质厚度宽"),
+        "ch12": ("MCU 未编程时通常几 mA",),
+    }
+    problems: list[str] = []
+    for key, tokens in required.items():
+        text = texts.get(key, "")
+        problems.extend(f"{key}: missing calibration: {token}"
+                        for token in tokens if token not in text)
+    for key, tokens in forbidden.items():
+        text = texts.get(key, "")
+        problems.extend(f"{key}: restored overclaim: {token}"
+                        for token in tokens if token in text)
+    return problems
+
+
+def check_round2_contracts() -> None:
+    paths = {
+        "ch02": "第一部分-入门篇/02-原理图第一笔.md",
+        "ch06": "第二部分-设计篇/06-布局.md",
+        "ch07": "第二部分-设计篇/07-布线.md",
+        "ch08": "第二部分-设计篇/08-铺铜与电磁兼容.md",
+        "ch10": "第三部分-制造篇/10-输出制造文件.md",
+        "ch11": "第三部分-制造篇/11-打样与组装.md",
+        "ch12": "第三部分-制造篇/12-焊接调试与返修.md",
+        "ch15": "第四部分-进阶篇/15-自动化与插件.md",
+    }
+    texts = {key: (ROOT / path).read_text(encoding="utf-8")
+             for key, path in paths.items()}
+    errors.extend(round2_claim_problems(texts))
+
+
+def breath_firmware_problems(text: str) -> list[str]:
+    """The named project must ship a breathing baseline, not only blink."""
+    problems: list[str] = []
+    required = (
+        "static void pwm_frame(uint8_t level)",
+        "#define LEVELS 64U",
+        "#define SLICE_US 150U",
+        "PORTB |= (1 << PB3)",
+        "avr-gcc -mmcu=attiny85 -Os -o breath.elf breath.c",
+        "烧录 `breath.hex` 后，LED 能连续渐亮、渐暗并循环",
+        "avr-gcc --version",
+        "avr-objcopy --version",
+        "avrdude -v",
+    )
+    for token in required:
+        if token not in text:
+            problems.append(f"missing breathing/toolchain contract: {token}")
+    return problems
+
+
+def check_breath_firmware() -> None:
+    text = (ROOT / "第三部分-制造篇/12-焊接调试与返修.md").read_text(encoding="utf-8")
+    errors.extend(f"ch12: {problem}" for problem in breath_firmware_problems(text))
+
+
+def cli_origin_problems(text: str) -> list[str]:
+    """Gerber, drill and POS examples must share the drill/place origin."""
+    section = re.search(r"(?ms)^## 15\.2 .*?(?=^## 15\.3 )", text)
+    if not section:
+        return ["section 15.2 is missing"]
+    body = section.group(0)
+    problems: list[str] = []
+    gerbers = re.search(r"kicad-cli pcb export gerbers[\s\S]*?\n\n", body)
+    drill = re.search(r"kicad-cli pcb export drill[\s\S]*?\n\n", body)
+    pos = re.search(r"kicad-cli pcb export pos[\s\S]*?\n\n", body)
+    if not gerbers or "--use-drill-file-origin" not in gerbers.group(0):
+        problems.append("15.2 Gerber export must use --use-drill-file-origin")
+    if not drill or "--drill-origin plot" not in drill.group(0):
+        problems.append("15.2 drill export must use --drill-origin plot")
+    if not pos or "--use-drill-file-origin" not in pos.group(0):
+        problems.append("15.2 POS export must use --use-drill-file-origin")
+    return problems
+
+
+def check_cli_origin_contract() -> None:
+    text = (ROOT / "第四部分-进阶篇/15-自动化与插件.md").read_text(encoding="utf-8")
+    errors.extend(f"ch15: {problem}" for problem in cli_origin_problems(text))
+
+
 def check_sources() -> None:
     data = json.loads((BOOK / "sources.json").read_text(encoding="utf-8"))
+    official_libraries = {"kicad-symbols", "kicad-footprints", "klc"}
+    for key in sorted(official_libraries):
+        if key not in data:
+            errors.append(f"source {key}: missing official library/guideline entry")
+        elif data[key].get("kind") != "library":
+            errors.append(f"source {key}: official library/guideline must use kind:library")
+    for key in ("attiny25-45-85-datasheet", "avrdude-8-1-manual", "microchip-avr-gcc",
+                "kicad-docs-eeschema", "kicad-docs-pcbnew", "kicad-docs-cli"):
+        if key not in data:
+            errors.append(f"source {key}: missing device/toolchain/documentation reference")
     for key, src in data.items():
         if key == "schema_version":
             continue
@@ -146,8 +289,8 @@ def check_sources() -> None:
                 errors.append(f"source {key}: empty {field}")
         if not str(src.get("url", "")).startswith("https://"):
             errors.append(f"source {key}: url must be https")
-        if src.get("kind") == "community" and src.get("normative") is not False:
-            errors.append(f"source {key}: community must set normative:false")
+        if src.get("kind") in ("community", "book") and src.get("normative") is not False:
+            errors.append(f"source {key}: {src.get('kind')} must set normative:false")
 
 
 def check_cli_claims() -> None:
@@ -248,6 +391,8 @@ def check_si_numbers() -> None:
     """
     ch07 = (ROOT / "第二部分-设计篇/07-布线.md").read_text(encoding="utf-8")
     ch08 = (ROOT / "第二部分-设计篇/08-铺铜与电磁兼容.md").read_text(encoding="utf-8")
+    if "在这个 20 ns 假设下" not in ch07:
+        errors.append("ch07: 7.3 conclusion must stay conditional on the 20 ns assumption")
     delay_ps_per_mm = 6.7
 
     # -- 7.3 bandwidth / length threshold table -------------------------
@@ -292,6 +437,8 @@ def check_si_numbers() -> None:
             errors.append(f"ch07: stub {mil} mil gives {ff} fF, 5 fF/mil gives {want:.0f} fF")
 
     # -- 7.3 microstrip impedance table --------------------------------
+    if "四层以上板子" in ch07 or "必须先改叠层" in ch07 or "就得先改叠层" in ch07:
+        errors.append("ch07: do not turn the board's line-width result into a two-layer impossibility claim")
     zrows = re.findall(r"^\|\s*([0-9.]+)\s*mm\s*\|\s*约\s*([0-9.]+)\s*mm\s*\|\s*约\s*([0-9]+)\s*Ω\s*\|",
                        ch07, re.M)
     if len(zrows) != 3:
@@ -322,6 +469,8 @@ def check_si_numbers() -> None:
         errors.append("ch08: section 8.4 (return path) is missing")
     else:
         body = section.group(0)
+        if "量级估算，不是合格证" not in body or "特定几何" not in body:
+            errors.append("ch08: 8.4 must label 3h/3w as context-dependent estimates")
         if "3 倍介质厚度" not in body:
             errors.append("ch08: 8.4 must state the 3h reference-copper rule")
         if not re.search(r"3 倍线宽", body):
@@ -507,6 +656,11 @@ def main() -> int:
     check_ills()
     check_photos()
     check_attiny_pinmap()
+    check_led_net_contract()
+    check_selection_lock()
+    check_breath_firmware()
+    check_cli_origin_contract()
+    check_round2_contracts()
     check_sources()
     check_cli_claims()
     check_lib_table_examples()

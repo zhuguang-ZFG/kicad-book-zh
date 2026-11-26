@@ -86,9 +86,9 @@ def validate_configs(manifest: dict, sources: dict) -> None:
             errors.append(f"source {sid}: github refs must pin tag or commit")
         if kind == "npm" and not pinned.get("version"):
             errors.append(f"source {sid}: npm refs must pin version")
-        if kind == "community" and (src.get("normative") is not False
-                                    or not src.get("accessed")):
-            errors.append(f"source {sid}: community refs need "
+        if kind in ("community", "book") and (src.get("normative") is not False
+                                            or not src.get("accessed")):
+            errors.append(f"source {sid}: {kind} refs need "
                           "normative:false + accessed date")
         if kind == "community" and pinned.get("commit"):
             if len(pinned["commit"]) < 40:
@@ -101,9 +101,11 @@ def validate_configs(manifest: dict, sources: dict) -> None:
 
 
 def load_configs(manifest_name: str = "manifest.json",
-                 sources_name: str = "sources.json"):
+                 sources_name: str = "sources.json") -> tuple[dict, dict]:
     from . import registry
     manifest = registry.load(manifest_name)
     sources = registry.load(sources_name)
+    if not isinstance(manifest, dict) or not isinstance(sources, dict):
+        raise BuildError("manifest and sources must be JSON objects")
     validate_configs(manifest, sources)
     return manifest, sources

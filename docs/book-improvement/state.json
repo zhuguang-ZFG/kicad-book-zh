@@ -1,0 +1,34 @@
+{
+  "skill": "auto-paper-improvement-loop",
+  "upstream_commit": "3fefd34146d3317e407aec65a5a29335de87b9ee",
+  "artifact": "KiCad 从原理到制板",
+  "current_round": 2,
+  "max_rounds": 2,
+  "status": "rounds_complete",
+  "reviewer_transport": "pi-subagent",
+  "reviewer_agent": "reviewer",
+  "reviewer_context": "fresh",
+  "baseline_pdf": "yuyu-book/dist/kicad-book-zh-round0.pdf",
+  "baseline_pages": 194,
+  "round1_pdf": "yuyu-book/dist/kicad-book-zh-round1.pdf",
+  "round1_pages": 199,
+  "round1_score": 6,
+  "round1_verdict": "Almost / BLOCK",
+  "round2_pdf": "yuyu-book/dist/kicad-book-zh-round2.pdf",
+  "round2_pages": 200,
+  "round2_score": 6,
+  "round2_verdict": "Almost / BLOCK",
+  "round2_major_count": 1,
+  "round2_minor_count": 2,
+  "round2_majors_fixed": [
+    "duplicated figure numbers on 6 PDF pages (photo caption strip regex did not tolerate spaces; render.py fix + regression test; rebuilt PDF re-verified unique)"
+  ],
+  "round2_minors_fixed": [
+    "removed uncited github-actions-upload-artifact v4 entry from sources.json"
+  ],
+  "round2_minors_deferred": [
+    "cross-chapter repeated baseline reminders (editorial de-duplication pass, next round)"
+  ],
+  "started": "2026-11-25T13:20:00Z",
+  "updated": "2026-11-25T23:39:37Z"
+}

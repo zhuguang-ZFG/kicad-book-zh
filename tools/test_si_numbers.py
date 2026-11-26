@@ -47,6 +47,12 @@ MUTATIONS: list[tuple] = [
      "3 倍线宽", "更大的间距", True),
     ("drop the 1% coupling fact", CH08,
      "1%", "很低的水平", True),
+    ("drop the 20 ns assumption qualifier", CH07,
+     "在这个 20 ns 假设下", "无论如何"),
+    ("turn 3h estimate into a guarantee", CH08,
+     "量级估算，不是合格证", "必然达到 1% 以内"),
+    ("drop 3w geometry caveat", CH08,
+     "特定几何", "所有叠层"),
 ]
 
 
