@@ -5,6 +5,7 @@ edition pipeline so a different front end can call it without a CLI.
 """
 from __future__ import annotations
 
+import html
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -131,6 +132,14 @@ class Assembly:
     expect_svgs: int | None = None
 
 
+def _section_bookmarks(payload: dict, level: int) -> list[tuple[int, str, str]]:
+    """H2 sections become PDF bookmarks; H3/H4 stay out of the sidebar."""
+    return [
+        (level, " ".join(html.unescape(h["text"]).split()), h["id"])
+        for h in payload["headings"] if h["level"] == 2
+    ]
+
+
 def assemble_book(lang: str, manifest: dict, sources: dict, *,
                   mode: str, browser: str | None, autolink: bool,
                   glosses: dict | None = None,
@@ -205,6 +214,7 @@ def assemble_book(lang: str, manifest: dict, sources: dict, *,
     outline: list[tuple[int, str, str]] = [
         (1, by_id[front_id]["unit"].display or pages.ui("front", lang),
          front_id)]
+    outline.extend(_section_bookmarks(by_id[front_id], 2))
     rail = [f'<nav class="rail" aria-label="contents"><p class="rail-title">'
             f'<a href="#toc">{pages.ui("toc", lang)}</a></p>']
     rail.append(f'<a class="rail-map" href="#route-map">'
@@ -223,6 +233,7 @@ def assemble_book(lang: str, manifest: dict, sources: dict, *,
             toc_entries.append({"kind": "row", "anchor": unit_def["id"],
                                 "no": u.no_plain, "title": u.title})
             outline.append((2, u.display, unit_def["id"]))
+            outline.extend(_section_bookmarks(by_id[unit_def["id"]], 3))
             rail.append(f'<a href="#{unit_def["id"]}">{pages.esc(u.no)} '
                         f'{pages.esc(u.title)}</a>')
 
@@ -233,6 +244,7 @@ def assemble_book(lang: str, manifest: dict, sources: dict, *,
         toc_entries.append({"kind": "row", "anchor": apx["id"],
                             "no": u.no_plain, "title": u.title})
         outline.append((1, u.display, apx["id"]))
+        outline.extend(_section_bookmarks(by_id[apx["id"]], 2))
         rail.append(f'<a href="#{apx["id"]}">{pages.esc(u.no)} '
                     f'{pages.esc(u.title)}</a>')
 
@@ -407,11 +419,15 @@ def build_edition(lang: str, manifest: dict, sources: dict, *,
         from yuyu_book import pdf
         pmeta = pdf_meta(manifest, asm.outline, asm.toc_entries, lang,
                          asm.idx_entries)
+        section_ids = {h["id"] for p in asm.payloads
+                       for h in p["headings"] if h["level"] == 2}
         # paper has no hover and no locator chip that means anything without a
         # sheet number, so the index rows get their folios from a measuring
         # print and the book is printed again with the numbers in place
-        p, folios = print_with_index(pdf, out, html_text, pmeta,
-                                     edge or browser)
+        p, folios = print_with_index(
+            pdf, out, html_text, pmeta, edge or browser,
+            heads=tuple((anchor, label) for _level, label, anchor in asm.outline
+                        if anchor not in section_ids))
         print(f"  {p.name}: {p.stat().st_size / 1e6:.1f} MB, "
               f"{pdf.sheet_count(p)} pages, {len(asm.outline)} bookmarks, "
               f"{len(folios)} index folios")
@@ -515,9 +531,12 @@ def build_collected(lang: str, spec: dict, volumes, *,
                 label = " · ".join(x for x in (entry.get("no"), entry["title"]) if x)
                 rail.append(f'<a{cls} href="#{entry["anchor"]}">'
                             f'{pages.esc(label)}</a>')
+        section_ids = {h["id"] for p in asm.payloads
+                       for h in p["headings"] if h["level"] == 2}
         for level, label, anchor in asm.outline:
             outline.append((level + 1, label, anchor))
-            head_labels.append((anchor, f'{vol.no[lang]} · {label}'))
+            if anchor not in section_ids:
+                head_labels.append((anchor, f'{vol.no[lang]} · {label}'))
 
         rows = [(p["id"], p["no"][lang], p["title"][lang])
                 for p in vol.manifest["parts"]]
@@ -637,8 +656,8 @@ def pdf_meta(manifest, outline, toc_entries, lang, idx_entries=()) -> PrintManif
     """Everything the PDF pass needs that the HTML cannot say for itself:
     bookmarks, the contents rows it must number, and the index rows it must
     number once the measuring print says where each unit lands. Running heads
-    are derived from the outline, so a part divider cannot be left out of the
-    head map without also disappearing from the bookmark tree."""
+    default to the outline; editions with section bookmarks pass a chapter-
+    level head map so section navigation does not replace the running head."""
     return PrintManifest(
         # every bookmark opens a section, parts included: leaving the part
         # dividers out made those pages wear the previous chapter's head
