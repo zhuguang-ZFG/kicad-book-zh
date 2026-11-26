@@ -427,7 +427,8 @@ def build_edition(lang: str, manifest: dict, sources: dict, *,
         p, folios = print_with_index(
             pdf, out, html_text, pmeta, edge or browser,
             heads=tuple((anchor, label) for _level, label, anchor in asm.outline
-                        if anchor not in section_ids))
+                        if anchor not in section_ids),
+            section_ids=section_ids)
         print(f"  {p.name}: {p.stat().st_size / 1e6:.1f} MB, "
               f"{pdf.sheet_count(p)} pages, {len(asm.outline)} bookmarks, "
               f"{len(folios)} index folios")
@@ -599,6 +600,8 @@ def build_collected(lang: str, spec: dict, volumes, *,
           f"{counts['lead']} lead bands, {counts['keeper']} keeper notes")
     if do_pdf:
         from yuyu_book import pdf
+        section_ids = {h["id"] for p in payloads_all
+                       for h in p["headings"] if h["level"] == 2}
         pmeta = PrintManifest(
             outline=tuple(OutlineEntry(*entry) for entry in outline),
             toc_rows=tuple(e["anchor"] for e in toc_entries
@@ -615,7 +618,8 @@ def build_collected(lang: str, spec: dict, volumes, *,
         p, folios = print_with_index(pdf, out, html_text, pmeta,
                                      edge or browser,
                                      heads=tuple(head_labels),
-                                     verso_heads=tuple(verso_labels))
+                                     verso_heads=tuple(verso_labels),
+                                     section_ids=section_ids)
         print(f"  {p.name}: {p.stat().st_size / 1e6:.1f} MB, "
               f"{pdf.sheet_count(p)} pages, {len(outline)} bookmarks, "
               f"{len(folios)} index folios")

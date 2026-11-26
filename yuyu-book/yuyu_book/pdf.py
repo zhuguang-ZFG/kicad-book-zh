@@ -129,14 +129,16 @@ def _destinations(doc, anchors: list[str]) -> dict[str, int]:
     return found
 
 
-def _heading_destinations(doc, outline, known: dict[str, int]) -> dict[str, int]:
-    """Add pages for section anchors that have no incoming PDF link.
+def _heading_destinations(doc, outline, known: dict[str, int],
+                          section_ids: set[str]) -> dict[str, int]:
+    """Add pages only for H2 section anchors that have no incoming PDF link.
 
     Chromium writes named destinations for cross-references, not every heading
     ID. H2 bookmarks therefore resolve from the printed heading blocks: their
     15.36 pt type is distinct from the 12.72 pt H3 and 10.2 pt body. The outline
     order bounds each search, so repeated labels such as “学习目标” stay with
-    their own chapter.
+    their own chapter. Non-section anchors never use this fallback; a missing
+    chapter, part or appendix destination must still fail the build.
     """
     resolved = dict(known)
     cache: dict[int, list[str]] = {}
@@ -167,6 +169,8 @@ def _heading_destinations(doc, outline, known: dict[str, int]) -> dict[str, int]
     for i, entry in enumerate(outline):
         if entry.anchor in resolved:
             previous = resolved[entry.anchor]
+            continue
+        if entry.anchor not in section_ids:
             continue
         wanted = "".join(entry.label.split())
         for pno in range(previous, next_known[i]):
@@ -299,7 +303,8 @@ def _running_head(head: _Head, page, text: str, side: str) -> None:
 def build_pdf(html_path: Path, meta: PrintManifest, browser: str | None = None,
               folios: dict[str, int] | None = None,
               heads: tuple[tuple[str, str], ...] | None = None,
-              verso_heads: tuple[tuple[str, str], ...] | None = None) -> Path:
+              verso_heads: tuple[tuple[str, str], ...] | None = None,
+              section_ids: set[str] | None = None) -> Path:
     """Print and post-process one book.
 
     `heads` overrides the recto running-head labels (default: the bookmark
@@ -307,6 +312,8 @@ def build_pdf(html_path: Path, meta: PrintManifest, browser: str | None = None,
     edition wants on the left pages; a standalone book keeps its title there.
     Both maps are read through the printed destinations, so a label that does
     not resolve to a bookmarked section is refused before any ink is drawn.
+    `section_ids` limits heading-text recovery to H2 bookmarks; all other
+    anchors must come from real PDF links.
     """
     raw = html_path.with_name(html_path.stem + ".raw.pdf")
     out = html_path.with_suffix(".pdf")
@@ -319,7 +326,7 @@ def build_pdf(html_path: Path, meta: PrintManifest, browser: str | None = None,
     anchors += list(meta.toc_rows) + [front_a]
     anchors += sorted({row.anchor for row in meta.index_rows})
     dest = _destinations(doc, anchors)
-    dest = _heading_destinations(doc, meta.outline, dest)
+    dest = _heading_destinations(doc, meta.outline, dest, section_ids or set())
     missing = sorted({a for a in anchors if a not in dest})
     if missing:
         doc.close()
