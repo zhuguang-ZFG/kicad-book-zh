@@ -6,9 +6,9 @@
     "kind": "docs",
     "url": "https://docs.kicad.org/10.0/en/",
     "snapshot": "10.0.8, documentation revision 8acc7624",
-    "accessed": "2026-11-25",
+    "accessed": "2026-11-26",
     "license": "GPL-3.0-or-later / CC BY 3.0",
-    "scope": "术语、工作流、编辑器行为、kicad-cli 参数与文件格式；具体深链接见 kicad-docs-eeschema、kicad-docs-pcbnew、kicad-docs-cli"
+    "scope": "术语、工作流、编辑器行为、kicad-cli 参数与文件格式；正文 8 张与附录 A.7 19 张界面截图均取自官方文档图片，逐张映射见 yuyu-book/screenshots/README.md；具体深链接见 kicad-docs-eeschema、kicad-docs-pcbnew、kicad-docs-cli"
   },
   "kicad-docs-eeschema": {
     "title": "KiCad 10.0 Schematic Editor Manual",
@@ -16,9 +16,9 @@
     "kind": "docs",
     "url": "https://docs.kicad.org/10.0/en/eeschema/eeschema.html",
     "snapshot": "10.0.8, documentation revision 8acc7624；含 ERC 章节锚点",
-    "accessed": "2026-11-25",
+    "accessed": "2026-11-26",
     "license": "GPL-3.0-or-later / CC BY 3.0",
-    "scope": "第 1—4 章：原理图界面、符号与网络操作、ERC 对话框；逐项深链接在前言与附录 A"
+    "scope": "第 1—4、13 章：原理图界面、符号与网络操作、ERC 对话框、CvPcb 与仿真器；含正文截图 eeschema_erc_single_marker、cvpcb_main_window、sim_main_dialog；逐项深链接在前言与附录 A"
   },
   "kicad-docs-pcbnew": {
     "title": "KiCad 10.0 PCB Editor Manual",
@@ -26,9 +26,19 @@
     "kind": "docs",
     "url": "https://docs.kicad.org/10.0/en/pcbnew/pcbnew.html",
     "snapshot": "10.0.8, documentation revision 8acc7624；含 DRC、铺铜与自由过孔章节锚点",
-    "accessed": "2026-11-25",
+    "accessed": "2026-11-26",
     "license": "GPL-3.0-or-later / CC BY 3.0",
-    "scope": "第 5—9 章：布局、布线、规则评估、DRC、铺铜与过孔；逐项深链接在前言与附录 A"
+    "scope": "第 5—10、15 章：布局、布线、规则评估、DRC、铺铜与过孔；含正文截图 board_setup_board_editor_layers、pcbnew_tuning_pattern、drc_rule_editor、generate_drill_files_dialog；逐项深链接在前言与附录 A"
+  },
+  "kicad-docs-kicad": {
+    "title": "KiCad 10.0 KiCad Application Manual",
+    "authority": "KiCad Documentation Contributors",
+    "kind": "docs",
+    "url": "https://docs.kicad.org/10.0/en/kicad/kicad.html",
+    "snapshot": "10.0.8, documentation revision 8acc7624；含 Plugin and Content Manager 章节",
+    "accessed": "2026-11-26",
+    "license": "GPL-3.0-or-later / CC BY 3.0",
+    "scope": "第 15 章：Plugin and Content Manager 的 Repository/Installed 界面与插件安装流程；正文截图 kicad-pcm-repository"
   },
   "kicad-docs-cli": {
     "title": "KiCad 10.0 Command Line Interface Manual",

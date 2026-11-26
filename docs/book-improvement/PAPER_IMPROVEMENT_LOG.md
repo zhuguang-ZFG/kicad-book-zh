@@ -10,6 +10,23 @@
 | Round 3 | 8/10 | Accept / ALLOW | Closed the deferred baseline-duplication MINOR (preface table + ch7/8/13 compression); added §15.7 KiBot direct reuse (pinned action + schema-validated config + version/AGPL boundaries); 0 MAJOR, 2 MINOR fixed post-review |
 | Round 4 | 9/10 | Accept / ALLOW | Fresh review found 1 MAJOR (STRUCTURE HTML limit `< 1MB` vs 5.6MB artifact) and 3 MINOR; fixed the MAJOR, refreshed stats, made source captions sequential, added artifact gates; recheck closed the MAJOR, 1 new gate-hardening MINOR fixed, reference-depth MINOR deferred |
 
+## Round 5 Cross-Checks (before review)
+
+- **Scope**: Round 5 adds real UI recognition to the body chapters and three workflow illustrations for GitHub-hosted open-source tools; it does not add a new electrical claim or a new manufacturing step.
+- **Official screenshots**: 8 body screenshots inserted (Ch3 ERC marker, Ch4 CvPcb, Ch5 Board Setup layers, Ch7 length tuning, Ch9 DRC rule editor, Ch10 drill dialog, Ch13 simulator, Ch15 PCM repository); Appendix A.7 keeps its 19 screenshots. Total 27, each with a `screenshots/README.md` source row, access date 2026-11-26, and the official docs license note (CC BY 3.0 / GPLv3+).
+- **Captions are checked against the pixels**: the drill screenshot still shows `Origin: Absolute`, so the caption explicitly tells the reader to switch to `Plot / Drill / Place` for `--drill-origin plot`; the simulator screenshot is an official AC-sweep example, not this board's RC result; the PCM screenshot's detail pane is KiBuzzard while iBOM/KiKit are visible in the list. No screenshot is presented as a local capture.
+- **OSS workflow illustrations**: `kicad-ch11-ibom` (MIT), `kicad-ch11-kikit` (MIT), and `kicad-ch15-kibot` (AGPL-3.0) are hand-drawn diagrams, not screenshots; captions state the license and that KiKit spacing/array is illustrative, not a process parameter. KiBot is still schema-validated only because no local Docker was available.
+- **Figure-number regression**: a raw HTML screenshot or Markdown photo between two `ill` fences shifted later diagram numbers. `render.py` now calls `renumber_figures()` before `absorb_ill_captions()` via `finalize_figures()`; without this, an H2 placeholder caption stayed in the figure and the real caption became a duplicate paragraph.
+- **New gates**: `check_book.py` parses `<span class="fig-no">` captions in source order and verifies every embedded screenshot exists, is non-empty, has a provenance row, and that no shipped screenshot is unreferenced. Three regressions cover the HTML-only numbering hole, the provenance row requirement, and caption absorption after a photo/screenshot shift.
+- **Stats**: README refreshed to 15.8 万字符 / 6.2 万汉字, 65 SVG assets, 40 teaching illustrations, 10 photos, 27 screenshots, HTML ~6.6 MB, PDF 211 pages / ~14.9 MB; `STRUCTURE.md` HTML ceiling stays `< 8MB`.
+
+## Round 5 Artifacts
+
+- Final artifact: `yuyu-book/dist/kicad-book-zh-round5.pdf` — **211 pages, 25 bookmarks, 14,884,439 B**; 0 blank pages; 78 unique built captions.
+- HTML: `6,616,841 B`, 20 units, 78 plates, 44 cited links.
+- Verified pages: 37 (new ERC marker), 43 (CvPcb), 53 (Board Setup layers), 75 (length tuning), 93 (DRC rule editor), 101 (drill dialog), 114 (iBOM), 116 (KiKit), 138 (simulator), 158 (PCM), 162 (KiBot).
+- Gate: `test_claims`, `test_usb_diagnostics`, `test_readme_links`, `test_book_metadata`, `test_pdf_cleanup`, `test_si_numbers` (16 mutations), `check_book`, and builder `--check` all OK.
+
 ## Round 4 Review
 
 Full raw review, verbatim: [round-4-review.md](round-4-review.md). Post-fix recheck: [round-4-recheck.md](round-4-recheck.md).

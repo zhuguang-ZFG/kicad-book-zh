@@ -664,6 +664,38 @@ def ch11_assembly(a):
     a.text(360, 278, "手焊和回流不是两件事，而是同一套“热、锡、助焊剂”的不同尺度。", size=12, opacity=.55)
 
 
+def ch11_ibom(a):
+    a.text(360, 30, "InteractiveHtmlBom：把 BOM 和板图放进同一个离线页面", size=15,
+           opacity=.62)
+    box(a, 24, 70, 176, 72, "PCB 数据", ".kicad_pcb", fs=14)
+    box(a, 24, 166, 176, 64, "BOM", "位号 · 值 · 封装", fs=14)
+    box(a, 260, 92, 196, 116, "InteractiveHtmlBom", "插件生成自包含 HTML", fs=13)
+    box(a, 510, 70, 180, 72, "离线 HTML", "无需联网", fs=14)
+    box(a, 510, 166, 180, 64, "装配视图", "高亮 · 勾选 · 对账", fs=14)
+    a.arrow(202, 106, 256, 120, width=1.6, head=5)
+    a.arrow(202, 198, 256, 180, width=1.6, head=5)
+    a.arrow(458, 138, 506, 106, width=1.6, head=5)
+    a.arrow(458, 162, 506, 198, width=1.6, head=5)
+    a.text(360, 250, "点 BOM 行高亮板位；点封装反查 BOM；可标记已焊。", size=12, opacity=.55)
+    a.text(360, 276, "它只读 PCB 数据，不替代 Gerber、坐标或 BOM 本身。", size=11, opacity=.5)
+
+
+def ch11_kikit(a):
+    a.text(360, 30, "KiKit：把单板排成可制造的拼板", size=15, opacity=.62)
+    board(a, 40, 92, 110, 68, 4)
+    a.text(95, 184, "单板", size=12, opacity=.6)
+    a.arrow(154, 126, 220, 126, width=1.8, head=6)
+    a.rect(230, 58, 260, 172, width=2.2, radius=4)
+    for row in range(2):
+        for col in range(2):
+            board(a, 250 + col * 112, 78 + row * 72, 96, 56, 4)
+    for cx, cy in ((242, 70), (478, 70), (242, 218), (478, 218)):
+        a.circle(cx, cy, 3.4, width=1.2)
+        a.circle(cx, cy, 1.2, width=.8, opacity=.4)
+    a.text(360, 250, "工艺边 + 阵列 + 基准点", size=12, opacity=.6)
+    a.text(360, 276, "拼板后重跑 DRC；分板方式与最小间距先问工厂。", size=11, opacity=.5)
+
+
 # ---- chapter 12 --------------------------------------------------------
 def ch12_bringup(a):
     steps = ["目视", "测短路", "限流", "上电", "测轨", "测电流", "时钟", "编程"]
@@ -922,6 +954,23 @@ def ch15_plugin(a):
     a.text(360, 278, "四条入口，各管一段：命令行管批处理，Python 管板级操作，IPC 管实时会话，PCM 管分发。", size=11, opacity=.55)
 
 
+def ch15_kibot(a):
+    a.text(360, 30, "KiBot：一份 YAML 驱动预检与制造输出", size=15, opacity=.62)
+    box(a, 24, 86, 120, 62, "Git 提交", "固定版本", fs=13)
+    box(a, 196, 54, 196, 68, "KiBot action", "固定 commit / 镜像", fs=13)
+    box(a, 196, 158, 196, 68, ".kibot.yaml", "ERC/DRC + 输出", fs=13)
+    box(a, 500, 44, 184, 58, "预检报告", "ERC · DRC", fs=13)
+    box(a, 500, 124, 184, 58, "制造输出", "Gerber·Drill·POS·BOM", fs=11)
+    box(a, 500, 196, 184, 44, "artifact", "失败也上传", fs=13)
+    a.arrow(144, 117, 192, 88, width=1.6, head=5)
+    a.arrow(294, 158, 294, 126, width=1.6, head=5)
+    a.arrow(392, 88, 496, 64, width=1.6, head=5)
+    a.arrow(392, 105, 496, 140, width=1.6, head=5)
+    a.arrow(592, 182, 592, 192, width=1.6, head=5)
+    a.text(360, 260, "配置、版本、镜像 digest 一起入库；失败报告仍归档。", size=12, opacity=.55)
+    a.text(360, 284, "复用上游 action，不等于放弃对输出与许可边界的复核。", size=11, opacity=.5)
+
+
 figs = {
     "kicad-learning-path": (720, 260, learning_path),
     "kicad-ch01-flow": (720, 340, ch01_flow),
@@ -951,6 +1000,8 @@ figs = {
     "kicad-ch10-cli": (720, 300, ch10_cli),
     "kicad-ch11-order": (720, 300, ch11_order),
     "kicad-ch11-assembly": (720, 300, ch11_assembly),
+    "kicad-ch11-ibom": (720, 300, ch11_ibom),
+    "kicad-ch11-kikit": (720, 300, ch11_kikit),
     "kicad-ch12-bringup": (720, 280, ch12_bringup),
     "kicad-ch12-power": (720, 340, ch12_power),
     "kicad-ch12-debug": (720, 280, ch12_debug),
@@ -960,6 +1011,7 @@ figs = {
     "kicad-ch14-git": (720, 300, ch14_git),
     "kicad-ch15-automation": (720, 280, ch15_ci),
     "kicad-ch15-plugin": (720, 280, ch15_plugin),
+    "kicad-ch15-kibot": (720, 300, ch15_kibot),
 }
 for name, (w, h, fn) in figs.items():
     fig(name, w, h, fn)

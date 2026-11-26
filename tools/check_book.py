@@ -63,6 +63,8 @@ def check_units() -> None:
 
 
 _SOURCE_FIG_CAPTION = re.compile(r"^\s*(?:\*)?图\s*([A-Za-z]|\d+)-(\d+)")
+_SOURCE_FIG_CAPTION_HTML = re.compile(
+    r'<span class="fig-no">\s*图\s*([A-Za-z]|\d+)-(\d+)\s*</span>')
 
 
 def source_figure_number_problems() -> list[str]:
@@ -75,6 +77,10 @@ def source_figure_number_problems() -> list[str]:
         for line in p.read_text(encoding="utf-8").splitlines():
             if line.lstrip().startswith("!["):
                 continue  # image alt text repeats the caption number by design
+            html = _SOURCE_FIG_CAPTION_HTML.findall(line)
+            if html:
+                captions.extend((prefix, int(number)) for prefix, number in html)
+                continue
             m = _SOURCE_FIG_CAPTION.match(line)
             if m:
                 captions.append((m.group(1), int(m.group(2))))
@@ -146,6 +152,41 @@ def check_photos() -> None:
     for name in sorted(shipped - names):
         errors.append(f"{name}: shipped photograph is not referenced")
     print(f"photographs referenced: {len(names)}; files: {len(shipped)}")
+
+
+_SCREENSHOT_IMG = re.compile(r'<img[^>]+src="(?:\.\./)?yuyu-book/screenshots/([^"]+)"')
+
+
+def check_screenshots() -> None:
+    """Every embedded UI screenshot must exist and have a provenance row."""
+    names: set[str] = set()
+    shot_types = {".jpg", ".jpeg", ".png", ".webp"}
+    for p in md_files():
+        text = p.read_text(encoding="utf-8")
+        for name in _SCREENSHOT_IMG.findall(text):
+            names.add(name)
+            shot = BOOK / "screenshots" / name
+            if not shot.is_file():
+                errors.append(f"{p}: screenshot missing {name}")
+                continue
+            if shot.suffix.lower() not in shot_types:
+                errors.append(f"{p}: unsupported screenshot type {name}")
+            if shot.stat().st_size == 0:
+                errors.append(f"{name}: empty screenshot")
+    credits_path = BOOK / "screenshots/README.md"
+    credits = credits_path.read_text(encoding="utf-8") if credits_path.exists() else ""
+    if not credits:
+        errors.append("screenshots/README.md: missing screenshot credits")
+    for name in sorted(names):
+        row = re.compile(
+            rf"^\|\s*`{re.escape(name)}`\s*\|\s*https?://", re.MULTILINE)
+        if not row.search(credits):
+            errors.append(f"screenshots/README.md: no credit row for {name}")
+    shipped = {p.name for p in (BOOK / "screenshots").glob("*")
+               if p.suffix.lower() in shot_types}
+    for name in sorted(shipped - names):
+        errors.append(f"{name}: shipped screenshot is not referenced")
+    print(f"screenshots referenced: {len(names)}; files: {len(shipped)}")
 
 
 def check_attiny_pinmap() -> None:
@@ -719,6 +760,7 @@ def main() -> int:
     check_source_figure_numbers()
     check_ills()
     check_photos()
+    check_screenshots()
     check_attiny_pinmap()
     check_led_net_contract()
     check_selection_lock()
