@@ -22,6 +22,13 @@
 - Boundary: this is a writing/illustration pilot, not a KiCad GUI or factory-line execution test; the illustration is explicitly labeled as a process schematic.
 - Causality correction: the scene now says same-origin Gerber and drill keep holes aligned with pads; only the POS exported with a new origin displaces component placement centers. Rebuilt p97 contains the corrected wording and no longer contains the old “安装孔整体偏离了焊盘” sentence.
 
+## PDF Navigation — Section Bookmarks
+
+- Evidence: the 210-page baseline had 25 bookmarks for 203 article H2 headings. Readers could jump to a chapter but not directly to sections such as “3.6 ERC 的处理循环”.
+- Change: `render_unit()` heading IDs now feed `app.assemble_book()` and `PrintManifest.outline`; H2 sections become bookmarks, H3/H4 stay out of the sidebar, and collected editions may nest them at level 4. Unlinked section destinations resolve from their 15.36 pt printed heading blocks. Running heads retain the existing chapter-level labels.
+- Verification: old-red/new-green bookmark regression passes (25 → 228; all 203 section labels verified on their heading pages). All 210 rendered pages are pixel-identical to the baseline at 72 dpi. In the actual PDF viewer, expanding Chapter 3 exposes its sections and clicking 3.6 opens p36. `test_claims`, `test_book_metadata`, `test_pdf_cleanup`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass.
+- Boundary: no manuscript text, figure, command, warning, page geometry, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
+
 ## Prose De-AI Passes (after Round 7)
 
 ### First Pass

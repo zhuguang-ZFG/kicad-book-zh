@@ -129,6 +129,54 @@ def _destinations(doc, anchors: list[str]) -> dict[str, int]:
     return found
 
 
+def _heading_destinations(doc, outline, known: dict[str, int]) -> dict[str, int]:
+    """Add pages for section anchors that have no incoming PDF link.
+
+    Chromium writes named destinations for cross-references, not every heading
+    ID. H2 bookmarks therefore resolve from the printed heading blocks: their
+    15.36 pt type is distinct from the 12.72 pt H3 and 10.2 pt body. The outline
+    order bounds each search, so repeated labels such as “学习目标” stay with
+    their own chapter.
+    """
+    resolved = dict(known)
+    cache: dict[int, list[str]] = {}
+
+    def headings(pno: int) -> list[str]:
+        if pno not in cache:
+            blocks = []
+            for block in doc[pno].get_text("dict", sort=True)["blocks"]:
+                lines = block.get("lines", ())
+                spans = [s for line in lines for s in line["spans"]]
+                if not any(s["size"] >= 14.0 for s in spans):
+                    continue
+                text = "".join("".join(s["text"] for s in line["spans"])
+                               for line in lines)
+                blocks.append("".join(text.split()))
+            cache[pno] = blocks
+        return cache[pno]
+
+    next_known = [doc.page_count] * len(outline)
+    next_page = doc.page_count
+    for i in range(len(outline) - 1, -1, -1):
+        next_known[i] = next_page
+        anchor = outline[i].anchor
+        if anchor in resolved:
+            next_page = resolved[anchor]
+
+    previous = 0
+    for i, entry in enumerate(outline):
+        if entry.anchor in resolved:
+            previous = resolved[entry.anchor]
+            continue
+        wanted = "".join(entry.label.split())
+        for pno in range(previous, next_known[i]):
+            if any(wanted in text for text in headings(pno)):
+                resolved[entry.anchor] = pno
+                previous = pno
+                break
+    return resolved
+
+
 def measure(html_path: Path, anchors: list[str],
             browser: str | None = None) -> dict[str, int]:
     """Print the book once only to learn which sheet each anchor landed on.
@@ -271,6 +319,7 @@ def build_pdf(html_path: Path, meta: PrintManifest, browser: str | None = None,
     anchors += list(meta.toc_rows) + [front_a]
     anchors += sorted({row.anchor for row in meta.index_rows})
     dest = _destinations(doc, anchors)
+    dest = _heading_destinations(doc, meta.outline, dest)
     missing = sorted({a for a in anchors if a not in dest})
     if missing:
         doc.close()
