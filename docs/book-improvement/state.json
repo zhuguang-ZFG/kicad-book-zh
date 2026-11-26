@@ -2,8 +2,8 @@
   "skill": "auto-paper-improvement-loop",
   "upstream_commit": "3fefd34146d3317e407aec65a5a29335de87b9ee",
   "artifact": "KiCad 从原理到制板",
-  "current_round": 5,
-  "max_rounds": 5,
+  "current_round": 6,
+  "max_rounds": 6,
   "status": "rounds_complete",
   "reviewer_transport": "pi-subagent",
   "reviewer_agent": "reviewer",
@@ -109,6 +109,38 @@
     "Ch5 图 5-2: copper-layer count is set in Physical Stackup, not Board Editor Layers; caption corrected and the visible F.Cu/In1-4/B.Cu rows are described as the current layer list",
     "Ch13 图 13-3: the screenshot is an Analysis 1 - AC sweep, so it moved from §13.4 TRAN to §13.5 AC; caption shortened to \"波形、Signals 与 Cursor 同屏\" and still labels the official AC example"
   ],
+  "round6_scope": [
+    "fresh technical/reproducibility audit of the 211-page Round 5 artifact",
+    "recompute quantitative claims; verify KiCad 10.0.8 CLI, DRC semantics, menu paths and hotkeys",
+    "pixel-compare all 19 Appendix A.7 screenshots against captions",
+    "check acceptance observability and source/license boundaries"
+  ],
+  "round6_branch": "zhuguang-ZFG/round-6-audit",
+  "round6_base": "92d389f",
+  "round6_pages": 211,
+  "round6_pdf": "yuyu-book/dist/kicad-book-zh-round6.pdf",
+  "round6_pdf_bytes": 14886118,
+  "round6_html_bytes": 6617230,
+  "round6_screenshots": 27,
+  "round6_captions": 78,
+  "round6_initial_score": 9,
+  "round6_initial_verdict": "Accept / ALLOW",
+  "round6_initial_major_count": 0,
+  "round6_initial_minor_count": 1,
+  "round6_review": "docs/book-improvement/round-6-review.md",
+  "round6_recheck": "docs/book-improvement/round-6-recheck.md",
+  "round6_score": 9,
+  "round6_verdict": "Accept / ALLOW",
+  "round6_major_count": 0,
+  "round6_minor_count": 0,
+  "round6_recheck_confidence": 0.92,
+  "round6_minors_fixed": [
+    "Ch7 §7.3 and summary now separate the 0.25-1.0 mm 86-138 Ω table from the 0.20 mm Default netclass (~146 Ω); check_si_numbers recomputes the default width and a 146->50 mutation proves the gate"
+  ],
+  "round6_gate_hardening": "check_si_numbers() now uses findall and validates every 0.20 mm impedance statement, so the body and summary cannot drift apart",
+  "round6_advisories_fixed": [
+    "A-19 caption now names the three Mode choices and says Free angle mode is grayed because Shove is selected"
+  ],
   "started": "2026-11-25T13:20:00Z",
-  "updated": "2026-11-26T03:46:10Z"
+  "updated": "2026-11-26T04:12:07Z"
 }

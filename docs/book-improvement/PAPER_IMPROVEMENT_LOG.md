@@ -10,6 +10,45 @@
 | Round 3 | 8/10 | Accept / ALLOW | Closed the deferred baseline-duplication MINOR (preface table + ch7/8/13 compression); added §15.7 KiBot direct reuse (pinned action + schema-validated config + version/AGPL boundaries); 0 MAJOR, 2 MINOR fixed post-review |
 | Round 4 | 9/10 | Accept / ALLOW | Fresh review found 1 MAJOR (STRUCTURE HTML limit `< 1MB` vs 5.6MB artifact) and 3 MINOR; fixed the MAJOR, refreshed stats, made source captions sequential, added artifact gates; recheck closed the MAJOR, 1 new gate-hardening MINOR fixed, reference-depth MINOR deferred |
 | Round 5 | 9/10 | Accept / ALLOW | Added 8 official KiCad screenshots to body chapters (27 total with Appendix A.7), 3 OSS workflow diagrams, screenshot provenance gates and figure-number ordering fix; fresh review found 2 caption/pixel mismatches (1 MAJOR, 1 MINOR), both fixed; recheck 9/10 with 0 MAJOR, 0 MINOR |
+| Round 6 | 9/10 | Accept / ALLOW | Fresh technical/reproducibility audit of the 211-page artifact: all CLI flags, DRC semantics, menu paths and 19 Appendix A.7 screenshots verified against KiCad 10.0.8; 0 MAJOR, 1 MINOR (Ch7 omitted the 0.20 mm Default netclass from its 86–138 Ω claim), fixed with an explicit ~146 Ω statement and a new SI mutation; A-19 caption tightened |
+
+## Round 6 Cross-Checks (before review)
+
+- **Scope**: independent technical/reproducibility audit of the 211-page Round 5 artifact, not a new editorial expansion. Priorities: quantitative claims, KiCad 10.0.8 CLI/menu correctness, acceptance observability, pixel-level screenshot captions, and source/license boundaries.
+- **Quantitative audit**: recomputed IPC-2221 widths, 30 mm/0.30 mm voltage drop, 2 A/3 A temperature extrapolations, `BW=0.35/RT` thresholds, microstrip impedances, 3h/3w rules, θJA and the Ch13 bias values; all matched except the cross-chapter impedance range below.
+- **KiCad 10.0.8 operation**: every CLI flag used in the book exists in `tools/_cli10.txt`; `--exit-code-violations` semantics, `--refill-zones`/`--save-board` pairing, DRC menu paths and appendix hotkeys match the official 10.0 manuals.
+- **Acceptance sections**: all 15 chapters have observable acceptance items that work with a reader-built project; none depends on shipped KiCad project files.
+- **Appendix A.7 screenshots**: all 19 captions were pixel-compared against the images (title, tab, panels, values); zero mismatches. A-19's "走线角度" wording was noted as broader than the visible grayed `Free angle mode`, but the checkbox is angle-related, so it was not counted as a defect.
+- **Sources/license**: `sources.json` and `screenshots/README.md` agree on the KiCad 10.0.8 snapshot, access date, and CC BY 3.0 / GPLv3+ boundary; no license mixing with the MIT/AGPL OSS tools.
+
+## Round 6 Review
+
+Full raw review, verbatim: [round-6-review.md](round-6-review.md).
+
+- **Initial fresh review: 9/10, Accept / ALLOW, 0 MAJOR, 1 MINOR, confidence 0.82.**
+- MINOR (confidence 0.65): Ch7 §7.3 and the summary claimed the board's ordinary tracks are 86–138 Ω, but Ch5 §5.4's `Default` netclass is 0.20 mm. The table starts at 0.25 mm, so the 0.20 mm default was outside the stated range; the same microstrip estimate gives ~146 Ω.
+- The review explicitly did not re-adjudicate the Round 5 §7.4/§13.4 caption items and did not do a 211-page raster pass; those remain stated verification gaps, not new failures.
+
+### Fixes After the Round-6 Review (same session)
+
+1. **Ch7 default-width inconsistency (MINOR)** — §7.3 now says the 0.25–1.0 mm table corresponds to 86–138 Ω, while §5.4's 0.20 mm `Default` netclass is ~146 Ω under the same approximation; the summary states the same split. `check_si_numbers()` now recomputes the 0.20 mm / 1.5 mm value and rejects a mismatch; `test_si_numbers.py` adds a `146 → 50 Ω` mutation, raising the suite to 17 mutations.
+2. **A-19 caption precision (advisory)** — the caption now names `Highlight collisions` / `Shove` / `Walk around` and says `Free angle mode` is grayed because `Shove` is selected, matching the screenshot instead of the broader "走线角度" wording.
+
+### Round 6 Recheck
+
+- **9/10, Accept / ALLOW, 0 MAJOR, 0 MINOR, confidence 0.92.**
+- F1 fixed: independent recomputation gives 0.20 mm → 146.23 Ω, 0.25 mm → 137.78 Ω, 0.5 mm → 111.69 Ω, 1.0 mm → 86.15 Ω; both the §7.3 prose and the summary now separate the 0.20 mm default from the 0.25–1.0 mm range, and the PDF text layer carries the new sentence on pages 74 and 78.
+- A-19 fixed: the caption matches the screenshot (three Mode choices, `Shove` selected, `Free angle mode` grayed) and the KiCad 10 manual entry; no stale "走线角度" claim remains.
+- Artifact: 211 pages, 25 bookmarks, 0 blank pages, 78 unique captions; `round6.pdf` MD5 matches the built PDF.
+- The recheck noted a robustness gap: the new gate used `re.search` and only validated the first `0.20 mm … Ω` occurrence. `check_si_numbers()` now uses `re.findall` and validates every occurrence, so the body and summary cannot drift apart; both gate runs stay green and the 17-mutation suite still passes.
+
+## Round 6 Artifacts
+
+- Final artifact: `yuyu-book/dist/kicad-book-zh-round6.pdf` — **211 pages, 25 bookmarks, 0 blank pages, 78 unique captions**, `14,886,118 B`.
+- HTML: `6,617,230 B`, 20 units, 78 plates, 44 cited links.
+- New Ch7 text is on PDF page 74 (§7.3) and page 78 (summary); A-19 is on page 184.
+- Gates: `test_claims`, `test_usb_diagnostics`, `test_readme_links`, `test_book_metadata`, `test_pdf_cleanup`, `test_si_numbers` (17 mutations), `check_book`, and builder `--check` all OK.
+- Build used the installed Chrome; 66.56 s.
 
 ## Round 5 Cross-Checks (before review)
 
