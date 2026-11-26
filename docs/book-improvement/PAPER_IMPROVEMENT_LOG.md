@@ -13,6 +13,14 @@
 | Round 6 | 9/10 | Accept / ALLOW | Fresh technical/reproducibility audit of the 211-page artifact: all CLI flags, DRC semantics, menu paths and 19 Appendix A.7 screenshots verified against KiCad 10.0.8; 0 MAJOR, 1 MINOR (Ch7 omitted the 0.20 mm Default netclass from its 86–138 Ω claim), fixed with an explicit ~146 Ω statement and a new SI mutation; A-19 caption tightened |
 | Round 7 | 9 → 6 → 9 | Accept / ALLOW → BLOCK → Accept / ALLOW | Raster audit of all 211 pages of the Round 6 PDF; fixed the lone Ch6 bridge page, the lone appendix-B caveat page, B.2 filename splits and the empty bordered row fragment; initial review 9/10 with 2 MINOR, both fixed; recheck found a new MAJOR (removing `<wbr>` from ~250 inline code tokens created justified-prose rivers on five pages), fixed by restoring soft breaks while keeping B.2 filenames nowrap; river gate added; independent follow-up on the final artifact accepted the fix with 0 MAJOR / 0 MINOR; a CI-only Ch8 orphan was then fixed and the PR rerun passed |
 
+## Vividness Pilot — Chapter 10
+
+- Scope: Chapter 10 opening only. Added a concrete factory-acceptance scene and a hand-drawn “验包台” illustration; kept all commands, technical claims, warnings and section order. Existing Chapter 10 figures were renumbered sequentially to 10-1…10-5.
+- Visual contract: the new SVG uses `currentColor`, contains no script/style/id/href/url, and stays below the 24 KB inline limit. README asset counts now report 66 SVGs / 41 teaching illustrations.
+- Rebuilt artifact: local PDF remains 210 pages / 25 bookmarks; the scene is on p97 and the new Figure 10-2 on p98; the builder reports 79 plates. Baseline and rebuilt PDFs were compared on the same reading path.
+- Verification: `test_claims`, `test_book_metadata`, `test_readme_links`, `check_book`, builder `--check`, and `test_pdf_layout` pass. `task_verify run` remains unverified (`project-or-git-baseline-unavailable`, `checks=[]`).
+- Boundary: this is a writing/illustration pilot, not a KiCad GUI or factory-line execution test; the illustration is explicitly labeled as a process schematic.
+
 ## Prose De-AI Passes (after Round 7)
 
 ### First Pass
