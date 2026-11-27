@@ -36,6 +36,14 @@
 - **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
 - **Boundary**: no chapter text, SVG, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
 
+## Chapter 12 — First-Article Record Table
+
+- **Evidence**: §12.7 required recording every board and the exercise asked for a “首次上电记录表”, but the section only had a dense reproducibility blockquote. §12.3 step 6 also compared the first article against a baseline that did not exist yet.
+- **Change**: added a seven-row record table for `VBUS`/`+5V`/`+3V3`, no-load current, `RESET`, ISP signature/fuses, and LED/PB3; moved repeatability and button limits into the blockquote; made the first article set the baseline and later boards use ±30%.
+- **Verification**: rebuilt PDF is 210 pages / 228 bookmarks; the table is intact on p129, and p128/p129 120-dpi renders show no split, empty band, collision, or clipping. `test_claims`, `check_book`, `test_book_metadata`, `test_readme_links`, `test_pdf_layout`, and `test_pdf_cleanup` pass.
+- **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
+- **Boundary**: no chapter commands, measured limits, figures, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
+
 ## Vividness Pilot — Chapter 10
 
 - Scope: Chapter 10 opening only. Added a concrete factory-acceptance scene and a hand-drawn “验包台” illustration; kept all commands, technical claims, warnings and section order. Existing Chapter 10 figures were renumbered sequentially to 10-1…10-5.
