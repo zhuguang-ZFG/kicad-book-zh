@@ -77,6 +77,14 @@
 - **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
 - **Boundary**: no command, measured limit, figure, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
 
+## Preface — Concrete Project Opening
+
+- **Evidence**: the opening used broad promotional framing (“这本书想补上的就是这一段”, “完整的教学项目”, “它不大，却包含了真实产品会遇到的主要环节”) instead of showing what the reader will actually check.
+- **Change**: replaced it with the concrete sequence in this book: pin/pad audit, manufacturing-file overlay, first-article power measurement, then the breathing-light board from schematic through assembly and firmware acceptance. Removed the unsupported generalization about what online tutorials do.
+- **Verification**: the revised preface remains on pp7–8; 210 pages / 228 bookmarks. 120-dpi p7/p8 renders show normal paragraph flow with no collision or clipping. `test_claims`, `check_book`, `test_book_metadata`, `test_readme_links`, `test_pdf_layout`, and `test_pdf_cleanup` pass.
+- **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
+- **Boundary**: project scope, components, assembly method, firmware levels, and acceptance conditions are preserved; no figure, manifest, version, or release artifact changed.
+
 ## Vividness Pilot — Chapter 10
 
 - Scope: Chapter 10 opening only. Added a concrete factory-acceptance scene and a hand-drawn “验包台” illustration; kept all commands, technical claims, warnings and section order. Existing Chapter 10 figures were renumbered sequentially to 10-1…10-5.
