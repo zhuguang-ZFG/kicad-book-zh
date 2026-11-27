@@ -1,0 +1,1606 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>第 12 章 · 首次上电练习</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #e9e3d7;
+    --surface: #f7f2e8;
+    --surface-2: #eee7da;
+    --ink: #1d2826;
+    --muted: #5c6864;
+    --line: #c9c0b1;
+    --line-strong: #9b9181;
+    --accent: #b45309;
+    --accent-ink: #fff7ed;
+    --accent-soft: #f3dfc2;
+    --ok: #166534;
+    --ok-soft: #d9f0df;
+    --bad: #991b1b;
+    --bad-soft: #f8dddd;
+    --bench: #f1eadf;
+    --screen: #d7e3c4;
+    --screen-ink: #18301b;
+    --shadow: 0 18px 45px rgba(57, 45, 25, .10);
+    --focus: #0f766e;
+    --mono: ui-monospace, "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #111614;
+    --surface: #1b2320;
+    --surface-2: #232e2a;
+    --ink: #eef2ea;
+    --muted: #a5b1ab;
+    --line: #35443e;
+    --line-strong: #5c6c64;
+    --accent: #f2b35e;
+    --accent-ink: #281b09;
+    --accent-soft: #3a2c18;
+    --ok: #7bd88f;
+    --ok-soft: #173a24;
+    --bad: #ff8f8f;
+    --bad-soft: #3d1c1c;
+    --bench: #161d1a;
+    --screen: #b8cf9d;
+    --screen-ink: #15200f;
+    --shadow: 0 18px 50px rgba(0, 0, 0, .35);
+    --focus: #7dd3c7;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { min-width: 320px; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 8% 0%, rgba(180, 83, 9, .10), transparent 28rem),
+      radial-gradient(circle at 95% 18%, rgba(15, 118, 110, .08), transparent 24rem),
+      var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button, select { font: inherit; color: inherit; }
+
+  button:focus-visible, select:focus-visible, a:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  .studio {
+    width: min(1180px, 100%);
+    margin: 0 auto;
+    padding: 28px clamp(14px, 4vw, 48px) 56px;
+  }
+
+  .masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .eyebrow, .kicker {
+    margin: 0;
+    font: 700 .68rem/1.4 var(--mono);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  h1 {
+    margin: .32rem 0 .62rem;
+    font-size: clamp(2.35rem, 5.8vw, 4.55rem);
+    line-height: .98;
+    letter-spacing: -.055em;
+    font-weight: 850;
+  }
+
+  .lede {
+    max-width: 68ch;
+    margin: 0;
+    color: var(--muted);
+    font-size: clamp(.92rem, 1.5vw, 1.03rem);
+    line-height: 1.7;
+  }
+
+  .masthead-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 8px;
+  }
+
+  .ghost {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    padding: 9px 15px;
+    cursor: pointer;
+    font-size: .82rem;
+    font-weight: 700;
+  }
+
+  .ghost:hover {
+    border-color: var(--line-strong);
+    background: var(--surface);
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 14px 22px;
+    margin: 20px 0;
+  }
+
+  .select-wrap {
+    display: grid;
+    gap: 6px;
+    min-width: 190px;
+  }
+
+  .select-wrap > span {
+    color: var(--muted);
+    font: 700 .64rem/1.2 var(--mono);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  select {
+    min-height: 42px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 8px 34px 8px 12px;
+    cursor: pointer;
+  }
+
+  .scope {
+    flex: 1 1 300px;
+    max-width: 62ch;
+    margin: 0 0 2px;
+    color: var(--muted);
+    font-size: .8rem;
+    line-height: 1.55;
+  }
+
+  .bench {
+    position: relative;
+    overflow: hidden;
+    margin-top: 4px;
+    padding: clamp(16px, 2.7vw, 24px);
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    background: var(--bench);
+    box-shadow: var(--shadow);
+  }
+
+  .bench::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: .16;
+  }
+
+  .bench > * { position: relative; z-index: 1; }
+
+  .bench-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .bench-head h2 {
+    margin: .2rem 0 0;
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
+    letter-spacing: -.02em;
+  }
+
+  .power-indicator {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--muted);
+    font: 700 .68rem/1.2 var(--mono);
+    letter-spacing: .06em;
+  }
+
+  .led {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--line-strong);
+    box-shadow: 0 0 0 4px var(--surface-2);
+    transition: background .2s ease, box-shadow .2s ease;
+  }
+
+  .bench[data-powered="true"] .led {
+    background: var(--ok);
+    box-shadow: 0 0 0 4px var(--ok-soft), 0 0 18px var(--ok);
+  }
+
+  .power-path {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr) 30px minmax(0, 1fr) 30px minmax(0, 1fr);
+    align-items: center;
+    margin: 22px 0 16px;
+  }
+
+  .node {
+    min-width: 0;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    padding: 15px 14px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: 0 3px 0 var(--line);
+    transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+  }
+
+  .node-kicker {
+    color: var(--muted);
+    font: 700 .61rem/1.2 var(--mono);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .node strong {
+    font-size: 1.02rem;
+    letter-spacing: -.01em;
+  }
+
+  .node small {
+    color: var(--muted);
+    font-size: .74rem;
+    line-height: 1.35;
+  }
+
+  .node[data-state="ok"] {
+    border-color: var(--ok);
+    background: var(--ok-soft);
+  }
+
+  .node[data-state="fail"] {
+    border-color: var(--bad);
+    background: var(--bad-soft);
+  }
+
+  .bench[data-active="usb"] [data-node="usb"],
+  .bench[data-active="fuse"] [data-node="fuse"],
+  .bench[data-active="ldo"] [data-node="ldo"] {
+    border-color: var(--accent);
+    box-shadow: 0 3px 0 var(--accent), 0 0 0 3px var(--accent-soft);
+    transform: translateY(-2px);
+  }
+
+  .bench[data-active="rails"] .node {
+    border-color: var(--accent);
+  }
+
+  .link {
+    position: relative;
+    height: 2px;
+    background: var(--line-strong);
+    transition: background .2s ease, box-shadow .2s ease;
+  }
+
+  .link::after {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+
+  .link.live {
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .link.live::after { background: var(--accent); }
+
+  .testpoints {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .testpoint {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    font-size: .76rem;
+    transition: border-color .18s ease, box-shadow .18s ease;
+  }
+
+  .testpoint span {
+    color: var(--muted);
+    font: 700 .61rem/1 var(--mono);
+  }
+
+  .testpoint strong { font-size: .8rem; }
+
+  .testpoint em {
+    min-width: 3.6em;
+    color: var(--muted);
+    font: 700 .7rem/1 var(--mono);
+    font-style: normal;
+    text-align: right;
+  }
+
+  .bench[data-probe="all"] .testpoint,
+  .bench[data-probe="vbus"] [data-tp="vbus"],
+  .bench[data-probe="plus5"] [data-tp="plus5"],
+  .bench[data-probe="plus3v3"] [data-tp="plus3v3"] {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+
+  .ground-rail {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    color: var(--muted);
+    font: 700 .65rem/1.3 var(--mono);
+    letter-spacing: .06em;
+  }
+
+  .ground-rail i {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .ground-rail small {
+    color: var(--muted);
+    font: 400 .68rem/1.3 "Segoe UI", "PingFang SC", sans-serif;
+    letter-spacing: 0;
+  }
+
+  .console {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr);
+    gap: 16px;
+    align-items: stretch;
+    margin-top: 16px;
+  }
+
+  .step-card, .meter-panel {
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .step-card { padding: clamp(18px, 3vw, 26px); }
+
+  .step-kicker {
+    margin: 0 0 5px;
+    color: var(--accent);
+    font: 700 .66rem/1.2 var(--mono);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+
+  .step-card h2 {
+    margin: 0;
+    font-size: clamp(1.45rem, 2.9vw, 2.05rem);
+    line-height: 1.14;
+    letter-spacing: -.03em;
+  }
+
+  .step-brief {
+    margin: 10px 0 18px;
+    color: var(--muted);
+    font-size: .92rem;
+    line-height: 1.65;
+  }
+
+  .probe-note {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    margin: 0 0 20px;
+    padding: 5px 0 5px 12px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .probe-note span {
+    padding-top: 1px;
+    color: var(--accent);
+    font: 700 .63rem/1.4 var(--mono);
+    letter-spacing: .1em;
+  }
+
+  .probe-note p {
+    margin: 0;
+    font-size: .86rem;
+    line-height: 1.55;
+  }
+
+  .choice-block {
+    padding-top: 18px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .question {
+    margin: 0 0 10px;
+    font-weight: 750;
+    font-size: .94rem;
+  }
+
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .choice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface-2);
+    padding: 13px 12px;
+    text-align: left;
+    font-weight: 750;
+    cursor: pointer;
+    transition: transform .15s ease, border-color .15s ease, background .15s ease;
+  }
+
+  .choice:hover:not(:disabled) {
+    border-color: var(--line-strong);
+    transform: translateY(-1px);
+  }
+
+  .choice[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+
+  .choice:disabled {
+    cursor: not-allowed;
+    opacity: .56;
+  }
+
+  .choice-key {
+    border: 1px solid currentColor;
+    border-radius: 5px;
+    padding: 3px 5px;
+    font: 700 .66rem/1 var(--mono);
+    opacity: .64;
+  }
+
+  .verify-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .primary {
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    padding: 10px 18px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .primary:hover:not(:disabled) { filter: brightness(1.05); }
+
+  .primary:disabled {
+    cursor: not-allowed;
+    opacity: .46;
+  }
+
+  .key-hint {
+    margin-left: auto;
+    color: var(--muted);
+    font: .66rem/1 var(--mono);
+  }
+
+  .feedback {
+    min-height: 3.2em;
+    margin: 16px 0 0;
+    padding: 11px 13px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: .86rem;
+    line-height: 1.55;
+  }
+
+  .feedback[data-tone="ok"] { background: var(--ok-soft); color: var(--ok); }
+  .feedback[data-tone="bad"] { background: var(--bad-soft); color: var(--bad); }
+  .feedback[data-tone="warn"] { background: var(--accent-soft); color: var(--ink); }
+
+  .meter-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px;
+    background: var(--surface-2);
+  }
+
+  .meter {
+    padding: 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 18px;
+    background: var(--surface);
+    box-shadow: 0 5px 0 var(--line-strong);
+  }
+
+  .meter-top, .meter-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font: 700 .6rem/1.25 var(--mono);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .meter-screen {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    min-height: 62px;
+    margin: 10px 0;
+    padding: 13px 12px;
+    border-radius: 10px;
+    background: var(--screen);
+    color: var(--screen-ink);
+    box-shadow: inset 0 2px 9px rgba(0, 0, 0, .20);
+    font: 800 clamp(1.55rem, 3.2vw, 2.2rem)/1.05 var(--mono);
+    letter-spacing: .03em;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  .status-pill {
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--muted);
+    font: 700 .6rem/1.2 var(--mono);
+    letter-spacing: .04em;
+  }
+
+  .status-pill[data-state="pass"] { background: var(--ok-soft); color: var(--ok); }
+  .status-pill[data-state="fail"] { background: var(--bad-soft); color: var(--bad); }
+
+  .log {
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .log-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font: 700 .62rem/1.2 var(--mono);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .log ol {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .log li {
+    display: grid;
+    grid-template-columns: 8px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: .75rem;
+  }
+
+  .log .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+
+  .log li[data-state="pass"] .dot { background: var(--ok); }
+  .log li[data-state="fail"] .dot { background: var(--bad); }
+  .log li b { font-weight: 650; color: var(--ink); }
+
+  .log li em {
+    color: var(--muted);
+    font: 700 .67rem/1.2 var(--mono);
+    font-style: normal;
+  }
+
+  .step-nav {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .step-key {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: transparent;
+    text-align: left;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .step-key span {
+    font: 700 .62rem/1 var(--mono);
+    letter-spacing: .1em;
+  }
+
+  .step-key b {
+    overflow: hidden;
+    max-width: 100%;
+    color: var(--ink);
+    font-size: .78rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .step-key[aria-current="step"] {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .step-key[data-state="pass"] { border-color: var(--ok); }
+  .step-key[data-state="fail"] { border-color: var(--bad); }
+
+  .step-key:disabled {
+    cursor: not-allowed;
+    opacity: .42;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .safety, .about {
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+  }
+
+  .safety {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .safety p, .about p {
+    margin: .35rem 0 0;
+    color: var(--muted);
+    font-size: .82rem;
+    line-height: 1.65;
+  }
+
+  .about { background: transparent; }
+
+  .about a { color: var(--ink); text-underline-offset: 3px; }
+
+  .completion {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-top: 16px;
+    padding: 18px 20px;
+    border: 1px solid var(--ok);
+    border-radius: 18px;
+    background: var(--ok-soft);
+  }
+
+  .completion[hidden] { display: none; }
+
+  .completion .check {
+    color: var(--ok);
+    font-size: 1.5rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .completion strong { font-size: .96rem; }
+
+  .completion p {
+    margin: .25rem 0 0;
+    color: var(--muted);
+    font-size: .82rem;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 900px) {
+    .console, .footer-grid { grid-template-columns: 1fr; }
+    .masthead { flex-direction: column; }
+    .masthead-actions { align-self: flex-start; }
+    .meter-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, .8fr); align-items: start; }
+  }
+
+  @media (max-width: 680px) {
+    .studio { padding: 20px 14px 40px; }
+    .power-path { grid-template-columns: 1fr; }
+    .link { width: 2px; height: 22px; margin: 0 auto; }
+    .link::after { display: none; }
+    .node { min-height: 84px; }
+    .testpoints { grid-template-columns: 1fr; }
+    .step-nav { grid-template-columns: 1fr; }
+    .step-key { flex-direction: row; align-items: center; gap: 10px; }
+    .choices { grid-template-columns: 1fr; }
+    .meter-panel { display: flex; }
+    .ground-rail small { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      scroll-behavior: auto !important;
+      transition-duration: .001ms !important;
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="studio">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">Chapter 12 · 首次上电</p>
+      <h1>先查短路，<br>再给电。</h1>
+      <p class="lede">刚焊好的板子不会告诉你哪里错了。先留下“没有短路”和“限流合适”两个证据，再逐段测 VBUS、+5V、+3V3。这个页面只练上电前段；空载电流、RESET 和 ISP 仍按第 12 章做。</p>
+    </div>
+    <div class="masthead-actions">
+      <button class="ghost" id="themeToggle" type="button" aria-label="切换明暗主题">深色</button>
+      <button class="ghost" id="resetButton" type="button">重置</button>
+    </div>
+  </header>
+
+  <section class="controls" aria-label="练习设置">
+    <label class="select-wrap">
+      <span>练习场景</span>
+      <select id="scenarioSelect">
+        <option value="normal">正常板</option>
+        <option value="noUsb">USB-C 未接触</option>
+        <option value="fuseOpen">F1 已断开</option>
+        <option value="ldoFault">U2 LDO 无输出</option>
+        <option value="short3v3">+3V3 对 GND 短路</option>
+      </select>
+    </label>
+    <label class="select-wrap">
+      <span>限流设定</span>
+      <select id="limitSelect">
+        <option value="50">50 mA</option>
+        <option value="100" selected>100 mA</option>
+        <option value="500">500 mA（超限）</option>
+      </select>
+    </label>
+    <p class="scope">切换场景或限流会从头开始。读数在判断后显示；异常成立时下一步锁定，先断电排查，再换场景练习。判定阈值按第 12 章 §12.7：VBUS/+5V 4.75–5.25 V，+3V3 3.14–3.47 V。</p>
+  </section>
+
+  <section class="bench" id="bench" data-active="usb" data-probe="none" data-powered="false" aria-label="首次上电电源链">
+    <div class="bench-head">
+      <div>
+        <p class="kicker">Bench / 电源链</p>
+        <h2>USB-C → F1 → U2 → U1</h2>
+      </div>
+      <div class="power-indicator">
+        <i class="led" aria-hidden="true"></i>
+        <span id="powerLabel">未上电</span>
+      </div>
+    </div>
+
+    <div class="power-path" id="powerPath">
+      <div class="node" data-node="usb">
+        <span class="node-kicker">J1</span>
+        <strong>USB-C</strong>
+        <small>5 V 输入</small>
+      </div>
+      <div class="link" data-link="usbFuse" aria-hidden="true"></div>
+      <div class="node" data-node="fuse">
+        <span class="node-kicker">F1</span>
+        <strong>保险丝</strong>
+        <small>自恢复</small>
+      </div>
+      <div class="link" data-link="fuseLdo" aria-hidden="true"></div>
+      <div class="node" data-node="ldo">
+        <span class="node-kicker">U2</span>
+        <strong>3.3 V LDO</strong>
+        <small>稳压输出</small>
+      </div>
+      <div class="link" data-link="ldoMcu" aria-hidden="true"></div>
+      <div class="node" data-node="mcu">
+        <span class="node-kicker">U1</span>
+        <strong>ATtiny85</strong>
+        <small>负载</small>
+      </div>
+    </div>
+
+    <div class="testpoints" id="testpoints">
+      <div class="testpoint" data-tp="vbus">
+        <span>TP1</span><strong>VBUS</strong><em data-tp-reading="vbus">待测</em>
+      </div>
+      <div class="testpoint" data-tp="plus5">
+        <span>TP2</span><strong>+5V</strong><em data-tp-reading="plus5">待测</em>
+      </div>
+      <div class="testpoint" data-tp="plus3v3">
+        <span>TP3</span><strong>+3V3</strong><em data-tp-reading="plus3v3">待测</em>
+      </div>
+    </div>
+
+    <div class="ground-rail">
+      <span>GND</span><i aria-hidden="true"></i><small>所有测量以 GND 为参考</small>
+    </div>
+  </section>
+
+  <section class="console" aria-label="当前步骤与万用表">
+    <article class="step-card">
+      <p class="step-kicker" id="stepKicker">Step 01 / 05</p>
+      <h2 id="stepTitle">查短路</h2>
+      <p class="step-brief" id="stepBrief"></p>
+      <div class="probe-note">
+        <span>表笔</span>
+        <p id="probeText"></p>
+      </div>
+      <div class="choice-block">
+        <p class="question" id="question">这次读数正常吗？</p>
+        <div class="choices" role="group" aria-labelledby="question">
+          <button class="choice" type="button" data-predict="pass" aria-pressed="false">
+            <span class="choice-key">1</span><span id="passLabel">正常</span>
+          </button>
+          <button class="choice" type="button" data-predict="fail" aria-pressed="false">
+            <span class="choice-key">2</span><span id="failLabel">异常</span>
+          </button>
+        </div>
+        <div class="verify-row">
+          <button class="ghost" id="prevButton" type="button" disabled>上一步</button>
+          <button class="primary" id="verifyButton" type="button">验证判断</button>
+          <button class="ghost" id="nextButton" type="button" disabled>下一步</button>
+          <span class="key-hint">← / Enter / →</span>
+        </div>
+      </div>
+      <p class="feedback" id="feedback" data-tone="" aria-live="polite">先选“正常”或“异常”，再点验证。读数在判断后显示。</p>
+    </article>
+
+    <aside class="meter-panel" aria-label="数字万用表与本轮记录">
+      <div class="meter">
+        <div class="meter-top"><span>DMM</span><span id="meterMode">Ω / 通断</span></div>
+        <output class="meter-screen" id="reading">— — —</output>
+        <div class="meter-bottom">
+          <span id="probeLabel">GND → 三条轨</span>
+          <span class="status-pill" id="statusPill" data-state="pending">待验证</span>
+        </div>
+      </div>
+      <div class="log">
+        <div class="log-head"><span>本轮记录</span><strong id="progressCount">0 / 5</strong></div>
+        <ol id="logList"></ol>
+      </div>
+    </aside>
+  </section>
+
+  <nav class="step-nav" id="stepNav" aria-label="首次上电步骤">
+    <button class="step-key" type="button" data-step="0"><span>01</span><b>查短路</b></button>
+    <button class="step-key" type="button" data-step="1"><span>02</span><b>设限流</b></button>
+    <button class="step-key" type="button" data-step="2"><span>03</span><b>测 VBUS</b></button>
+    <button class="step-key" type="button" data-step="3"><span>04</span><b>测 +5V</b></button>
+    <button class="step-key" type="button" data-step="4"><span>05</span><b>测 +3V3</b></button>
+  </nav>
+
+  <div class="completion" id="completion" hidden>
+    <span class="check" aria-hidden="true">✓</span>
+    <div>
+      <strong>三条电源轨通过。</strong>
+      <p>接着回第 12 章测空载电流、RESET 和 ISP；电源链通过不等于整板功能通过。</p>
+    </div>
+  </div>
+
+  <footer class="footer-grid">
+    <section class="safety">
+      <p class="kicker">Safety / 安全边界</p>
+      <p>这是决策练习，不是电表仿真。真实板先断电测阻；首次上电把 5 V 输出限在 50–100 mA；出现短路、冒烟、异味或电流异常，立即断电。不要用 500 mA 去“试一下”。</p>
+    </section>
+    <section class="about">
+      <p class="kicker">About</p>
+      <p>离线单文件，无外部脚本、字体或 CDN。交互结构参考 <a href="https://github.com/Aaryan1524/Visualize">Visualize</a>（MIT）的二维触觉场景与单一状态源做法，不包含其运行器、语音模型或生成代码。对应正文：<a href="../../第三部分-制造篇/12-焊接调试与返修.md">第 12 章“焊接、调试与返修”</a>。</p>
+    </section>
+  </footer>
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  const SCENARIOS = {
+    normal: {
+      label: "正常板",
+      short: null,
+      vbus: 5.02,
+      plus5: 4.97,
+      plus3v3: 3.31,
+      ldo: "ok",
+      fuse: "ok"
+    },
+    noUsb: {
+      label: "USB-C 未接触",
+      short: null,
+      vbus: 0,
+      plus5: 0,
+      plus3v3: 0,
+      ldo: "ok",
+      fuse: "ok"
+    },
+    fuseOpen: {
+      label: "F1 已断开",
+      short: null,
+      vbus: 5.01,
+      plus5: 0,
+      plus3v3: 0,
+      ldo: "ok",
+      fuse: "open"
+    },
+    ldoFault: {
+      label: "U2 LDO 无输出",
+      short: null,
+      vbus: 5.01,
+      plus5: 4.98,
+      plus3v3: 0.12,
+      ldo: "fault",
+      fuse: "ok"
+    },
+    short3v3: {
+      label: "+3V3 对 GND 短路",
+      short: "+3V3",
+      vbus: 5.01,
+      plus5: 4.61,
+      plus3v3: 0.06,
+      ldo: "ok",
+      fuse: "ok"
+    }
+  };
+
+  const RAIL_LIMITS = {
+    vbus: [4.75, 5.25],
+    plus5: [4.75, 5.25],
+    plus3v3: [3.14, 3.47]
+  };
+
+  function inRailRange(value, range) {
+    return value >= range[0] && value <= range[1];
+  }
+
+  const STEPS = [
+    {
+      id: "short",
+      short: "查短路",
+      title: "先确认三条电源轨没有对地短路",
+      brief: "断电。万用表切到电阻或通断档，黑表笔固定在 GND，红表笔依次点 VBUS、+5V、+3V3。三处都应是开路或高阻，不能出现持续接近 0 Ω 的通路。",
+      probeText: "黑表笔接 GND；红表笔依次点 VBUS、+5V、+3V3。板子必须断电。",
+      probeLabel: "GND → 三条轨",
+      question: "三条轨对地电阻正常吗？",
+      passLabel: "正常",
+      failLabel: "异常"
+    },
+    {
+      id: "limit",
+      short: "设限流",
+      title: "把首次上电的电流限在 50–100 mA",
+      brief: "按第 12 章用可调电源或带限流的 USB 口，把 5 V 输出限在 50–100 mA。限流不是可选项：它把接反、短路和装错器件的后果压在电源能承受的范围内。",
+      probeText: "先确认限流值，再接通 5 V。当前练习只允许书中 50–100 mA 范围。",
+      probeLabel: "输入端",
+      question: "这个限流值能直接上电吗？",
+      passLabel: "合规",
+      failLabel: "超限"
+    },
+    {
+      id: "vbus",
+      short: "测 VBUS",
+      title: "先测输入端 VBUS",
+      brief: "上电后先测 USB-C 的 VBUS 对 GND。第 12 章 §12.7 的记录表把 VBUS 合格范围定为 4.75–5.25 V；输入端先合格，后面的保险丝和稳压器才有讨论的前提。",
+      probeText: "红表笔接 VBUS，黑表笔接 GND；确认 USB-C 已插稳、线缆和焊点没有松动。数据通信留到 ISP 步骤再查。",
+      probeLabel: "VBUS – GND",
+      question: "VBUS 读数正常吗？",
+      passLabel: "正常",
+      failLabel: "异常"
+    },
+    {
+      id: "plus5",
+      short: "测 +5V",
+      title: "再测保险丝之后的 +5V",
+      brief: "VBUS 正常后，测 F1 之后的 +5V 轨。第 12 章 §12.7 的记录表把 +5V 合格范围定为 4.75–5.25 V。这里为 0 V 而 VBUS 正常，就把范围缩到保险丝、焊点和输入路径。",
+      probeText: "红表笔接 +5V 测试点，黑表笔接 GND；先断电确认 F1 没有断开。",
+      probeLabel: "+5V – GND",
+      question: "+5V 读数正常吗？",
+      passLabel: "正常",
+      failLabel: "异常"
+    },
+    {
+      id: "plus3v3",
+      short: "测 +3V3",
+      title: "最后测 LDO 输出 +3V3",
+      brief: "确认 +5V 正常后，再测 U2 的 +3V3 输出。第 12 章 §12.7 的记录表把 +3V3 合格范围定为 3.14–3.47 V。若 +3V3 被拉低，先断电查短路和负载，不要靠加大限流硬撑。",
+      probeText: "红表笔接 +3V3 测试点，黑表笔接 GND；确认 U2 输入、输出和接地焊点。",
+      probeLabel: "+3V3 – GND",
+      question: "+3V3 读数正常吗？",
+      passLabel: "正常",
+      failLabel: "异常"
+    }
+  ];
+
+  const state = {
+    scenario: "normal",
+    limit: 100,
+    step: 0,
+    maxStep: 0,
+    prediction: null,
+    verified: false,
+    revealed: false,
+    outcomes: Array(STEPS.length).fill("pending"),
+    message: "",
+    tone: ""
+  };
+
+  const els = {
+    root: document.documentElement,
+    bench: document.getElementById("bench"),
+    powerLabel: document.getElementById("powerLabel"),
+    stepKicker: document.getElementById("stepKicker"),
+    stepTitle: document.getElementById("stepTitle"),
+    stepBrief: document.getElementById("stepBrief"),
+    probeText: document.getElementById("probeText"),
+    probeLabel: document.getElementById("probeLabel"),
+    question: document.getElementById("question"),
+    passLabel: document.getElementById("passLabel"),
+    failLabel: document.getElementById("failLabel"),
+    meterMode: document.getElementById("meterMode"),
+    reading: document.getElementById("reading"),
+    statusPill: document.getElementById("statusPill"),
+    feedback: document.getElementById("feedback"),
+    verifyButton: document.getElementById("verifyButton"),
+    prevButton: document.getElementById("prevButton"),
+    nextButton: document.getElementById("nextButton"),
+    progressCount: document.getElementById("progressCount"),
+    logList: document.getElementById("logList"),
+    completion: document.getElementById("completion"),
+    themeToggle: document.getElementById("themeToggle"),
+    resetButton: document.getElementById("resetButton"),
+    scenarioSelect: document.getElementById("scenarioSelect"),
+    limitSelect: document.getElementById("limitSelect"),
+    stepKeys: Array.from(document.querySelectorAll("[data-step]")),
+    predictionButtons: Array.from(document.querySelectorAll("[data-predict]")),
+    nodes: Array.from(document.querySelectorAll("[data-node]")),
+    links: Array.from(document.querySelectorAll("[data-link]")),
+    testpointReadings: Array.from(document.querySelectorAll("[data-tp-reading]"))
+  };
+
+  function simModel(input = {}) {
+    const scenarioKey = SCENARIOS[input.scenario] ? input.scenario : "normal";
+    const cfg = SCENARIOS[scenarioKey];
+    const limit = Number.isFinite(Number(input.limit)) ? Number(input.limit) : 100;
+    const stepIndex = Math.max(0, Math.min(STEPS.length - 1, Number(input.step) || 0));
+    const step = STEPS[stepIndex].id;
+
+    let status = "pass";
+    let mode = "DC V";
+    let reading = "";
+    let detail = "";
+    let probe = "none";
+    let active = "usb";
+    let powered = false;
+    let nodes = { usb: "idle", fuse: "idle", ldo: "idle", mcu: "idle" };
+    let wires = { usbFuse: false, fuseLdo: false, ldoMcu: false };
+
+    if (step === "short") {
+      const shorted = cfg.short !== null;
+      status = shorted ? "fail" : "pass";
+      mode = "Ω / 通断";
+      active = "rails";
+      probe = shorted ? "plus3v3" : "none";
+      reading = shorted ? "0.4 Ω" : "∞";
+      detail = shorted
+        ? `${cfg.short} 对 GND 约 0.4 Ω；先断电，找到短路点，不要上电。`
+        : "VBUS、+5V、+3V3 对 GND 均无持续低阻。";
+    } else if (step === "limit") {
+      const inRange = limit >= 50 && limit <= 100;
+      status = inRange ? "pass" : "fail";
+      mode = "mA";
+      active = "usb";
+      reading = `${limit} mA`;
+      detail = inRange
+        ? `限流 ${limit} mA 在书中 50–100 mA 范围内。`
+        : `限流 ${limit} mA 超过 50–100 mA；不要上电，改到 100 mA 或更低。`;
+    } else if (step === "vbus") {
+      status = inRailRange(cfg.vbus, RAIL_LIMITS.vbus) ? "pass" : "fail";
+      active = "usb";
+      probe = "vbus";
+      mode = "DC V";
+      reading = `${cfg.vbus.toFixed(2)} V`;
+      detail = status === "pass"
+        ? `VBUS 落在 ${RAIL_LIMITS.vbus[0]}–${RAIL_LIMITS.vbus[1]} V 范围；输入端已经得电。`
+        : `VBUS 不在 ${RAIL_LIMITS.vbus[0]}–${RAIL_LIMITS.vbus[1]} V 范围；先查 USB-C 插头、线缆和焊点。`;
+      nodes.usb = status === "pass" ? "ok" : "fail";
+      powered = cfg.vbus >= RAIL_LIMITS.vbus[0];
+      wires.usbFuse = cfg.vbus >= RAIL_LIMITS.vbus[0];
+    } else if (step === "plus5") {
+      status = inRailRange(cfg.plus5, RAIL_LIMITS.plus5) ? "pass" : "fail";
+      active = "fuse";
+      probe = "plus5";
+      mode = "DC V";
+      reading = `${cfg.plus5.toFixed(2)} V`;
+      detail = status === "pass"
+        ? `+5V 落在 ${RAIL_LIMITS.plus5[0]}–${RAIL_LIMITS.plus5[1]} V 范围；保险丝与输入路径正常。`
+        : `+5V 不在 ${RAIL_LIMITS.plus5[0]}–${RAIL_LIMITS.plus5[1]} V 范围；查 F1 是否断开、焊点是否连续。`;
+      nodes.usb = cfg.vbus >= RAIL_LIMITS.vbus[0] ? "ok" : "fail";
+      nodes.fuse = status === "pass" ? "ok" : "fail";
+      nodes.ldo = status === "pass" ? "idle" : "fail";
+      powered = cfg.vbus >= RAIL_LIMITS.vbus[0];
+      wires.usbFuse = cfg.vbus >= RAIL_LIMITS.vbus[0];
+      wires.fuseLdo = cfg.plus5 >= RAIL_LIMITS.plus5[0];
+    } else if (step === "plus3v3") {
+      const pass = inRailRange(cfg.plus5, RAIL_LIMITS.plus5)
+        && inRailRange(cfg.plus3v3, RAIL_LIMITS.plus3v3)
+        && cfg.short === null;
+      status = pass ? "pass" : "fail";
+      active = "ldo";
+      probe = "plus3v3";
+      mode = "DC V";
+      reading = `${cfg.plus3v3.toFixed(2)} V`;
+      detail = pass
+        ? `+3V3 落在 ${RAIL_LIMITS.plus3v3[0]}–${RAIL_LIMITS.plus3v3[1]} V 范围；电源链通过。`
+        : cfg.short
+          ? "+3V3 被短路拉低；先断电，查短路点。"
+          : `+3V3 不在 ${RAIL_LIMITS.plus3v3[0]}–${RAIL_LIMITS.plus3v3[1]} V 范围；查 U2 焊接、输入和负载。`;
+      nodes.usb = cfg.vbus >= RAIL_LIMITS.vbus[0] ? "ok" : "fail";
+      nodes.fuse = inRailRange(cfg.plus5, RAIL_LIMITS.plus5) ? "ok" : "fail";
+      nodes.ldo = pass ? "ok" : "fail";
+      nodes.mcu = pass ? "ok" : "fail";
+      powered = cfg.vbus >= RAIL_LIMITS.vbus[0];
+      wires.usbFuse = cfg.vbus >= RAIL_LIMITS.vbus[0];
+      wires.fuseLdo = cfg.plus5 >= RAIL_LIMITS.plus5[0];
+      wires.ldoMcu = pass;
+    }
+
+    return {
+      scenario: scenarioKey,
+      step,
+      limit,
+      status,
+      expected: status === "pass" ? "pass" : "fail",
+      mode,
+      reading,
+      detail,
+      probe,
+      active,
+      powered,
+      nodes,
+      wires,
+      rails: {
+        vbus: cfg.vbus,
+        plus5: cfg.plus5,
+        plus3v3: cfg.plus3v3
+      }
+    };
+  }
+
+  function currentSim() {
+    return simModel({ scenario: state.scenario, limit: state.limit, step: state.step });
+  }
+
+  function fmtRail(value) {
+    return `${Number(value).toFixed(2)} V`;
+  }
+
+  function resetRun() {
+    state.step = 0;
+    state.maxStep = 0;
+    state.prediction = null;
+    state.verified = false;
+    state.revealed = false;
+    state.outcomes = Array(STEPS.length).fill("pending");
+    state.message = "";
+    state.tone = "";
+    render();
+  }
+
+  function setScenario(key) {
+    if (!SCENARIOS[key]) return false;
+    state.scenario = key;
+    els.scenarioSelect.value = key;
+    resetRun();
+    return true;
+  }
+
+  function setLimit(limit) {
+    const value = Number(limit);
+    if (![50, 100, 500].includes(value)) return false;
+    state.limit = value;
+    els.limitSelect.value = String(value);
+    resetRun();
+    return true;
+  }
+
+  function selectPrediction(value) {
+    if (state.verified || (value !== "pass" && value !== "fail")) return false;
+    state.prediction = value;
+    state.message = "";
+    state.tone = "";
+    render();
+    return true;
+  }
+
+  function goToStep(index) {
+    const next = Number(index);
+    if (!Number.isInteger(next) || next < 0 || next >= STEPS.length || next > state.maxStep) return false;
+    state.step = next;
+    const outcome = state.outcomes[next];
+    state.verified = outcome !== "pending";
+    state.revealed = outcome !== "pending";
+    state.prediction = outcome === "pass" ? "pass" : outcome === "fail" ? "fail" : null;
+    if (outcome === "pass") {
+      state.message = "本步已通过。";
+      state.tone = "ok";
+    } else if (outcome === "fail") {
+      state.message = "本步已判定异常；先断电排查。";
+      state.tone = "bad";
+    } else {
+      state.message = "";
+      state.tone = "";
+    }
+    render();
+    return true;
+  }
+
+  function nextStep() {
+    if (state.step >= STEPS.length - 1) return false;
+    if (state.outcomes[state.step] !== "pass") return false;
+    return goToStep(state.step + 1);
+  }
+
+  function previousStep() {
+    return goToStep(state.step - 1);
+  }
+
+  function verifyPrediction() {
+    if (state.verified) {
+      return { ok: false, reason: "already-verified" };
+    }
+    if (!state.prediction) {
+      state.message = "先选择正常或异常，再验证。";
+      state.tone = "warn";
+      render();
+      return { ok: false, reason: "no-prediction" };
+    }
+
+    const sim = currentSim();
+    if (state.prediction !== sim.expected) {
+      state.revealed = true;
+      state.verified = false;
+      state.message = `判断与读数不符。当前显示 ${sim.reading}；再看表笔位置，重新判断。`;
+      state.tone = "warn";
+      render();
+      return {
+        ok: false,
+        reason: "mismatch",
+        reading: sim.reading,
+        actual: sim.expected
+      };
+    }
+
+    state.revealed = true;
+    state.verified = true;
+    state.outcomes[state.step] = sim.status;
+    if (sim.status === "pass") {
+      state.maxStep = Math.max(state.maxStep, Math.min(STEPS.length - 1, state.step + 1));
+      state.message = `${sim.detail} 本步通过。`;
+      state.tone = "ok";
+    } else {
+      state.message = `${sim.detail} 本步判定为异常，后续步骤锁定。`;
+      state.tone = "bad";
+    }
+    render();
+    return {
+      ok: true,
+      step: STEPS[state.step].id,
+      status: sim.status,
+      reading: sim.reading
+    };
+  }
+
+  function render() {
+    const sim = currentSim();
+    const step = STEPS[state.step];
+    const completed = state.outcomes.every((value) => value === "pass");
+    const passed = state.outcomes.filter((value) => value === "pass").length;
+
+    els.bench.dataset.active = sim.active;
+    els.bench.dataset.probe = sim.probe;
+    els.bench.dataset.powered = String(sim.powered);
+    els.powerLabel.textContent = sim.powered ? "已上电" : "未上电";
+
+    els.nodes.forEach((node) => {
+      node.dataset.state = sim.nodes[node.dataset.node] || "idle";
+    });
+    els.links.forEach((link) => {
+      link.classList.toggle("live", Boolean(sim.wires[link.dataset.link]));
+    });
+    els.testpointReadings.forEach((reading) => {
+      const key = reading.dataset.tpReading;
+      let text = "待测";
+      if (completed) {
+        text = fmtRail(sim.rails[key]);
+      } else if (state.revealed && sim.step === "short") {
+        text = sim.status === "fail" && key === "plus3v3" ? "0.4 Ω" : "∞";
+      } else if (state.revealed && sim.step === "vbus" && key === "vbus") {
+        text = fmtRail(sim.rails.vbus);
+      } else if (state.revealed && sim.step === "plus5" && key === "plus5") {
+        text = fmtRail(sim.rails.plus5);
+      } else if (state.revealed && sim.step === "plus3v3" && key === "plus3v3") {
+        text = fmtRail(sim.rails.plus3v3);
+      }
+      reading.textContent = text;
+    });
+
+    els.stepKicker.textContent = `Step ${String(state.step + 1).padStart(2, "0")} / ${String(STEPS.length).padStart(2, "0")}`;
+    els.stepTitle.textContent = step.title;
+    els.stepBrief.textContent = step.brief;
+    els.probeText.textContent = step.probeText;
+    els.probeLabel.textContent = step.probeLabel;
+    els.question.textContent = step.question;
+    els.passLabel.textContent = step.passLabel;
+    els.failLabel.textContent = step.failLabel;
+
+    els.meterMode.textContent = sim.mode;
+    els.reading.textContent = state.revealed ? sim.reading : "— — —";
+    els.statusPill.dataset.state = state.verified ? sim.status : "pending";
+    els.statusPill.textContent = state.verified
+      ? sim.status === "pass" ? "通过" : "异常"
+      : state.revealed ? "再判断" : "待验证";
+
+    els.feedback.dataset.tone = state.tone;
+    els.feedback.textContent = state.message || "先选“正常”或“异常”，再点验证。读数在判断后显示。";
+
+    els.predictionButtons.forEach((button) => {
+      const selected = state.prediction === button.dataset.predict;
+      button.setAttribute("aria-pressed", String(selected));
+      button.disabled = state.verified;
+    });
+
+    els.verifyButton.disabled = state.verified;
+    els.verifyButton.textContent = state.verified
+      ? sim.status === "pass" ? "本步通过" : "本步锁定"
+      : "验证判断";
+
+    els.prevButton.disabled = state.step === 0;
+    const canAdvance = state.outcomes[state.step] === "pass" && state.step < STEPS.length - 1;
+    els.nextButton.disabled = !canAdvance;
+    els.nextButton.textContent = state.step === STEPS.length - 1 && state.outcomes[state.step] === "pass"
+      ? "已完成"
+      : "下一步";
+
+    els.progressCount.textContent = `${passed} / ${STEPS.length}`;
+    els.logList.innerHTML = STEPS.map((item, index) => {
+      const outcome = state.outcomes[index];
+      const model = outcome === "pending"
+        ? null
+        : simModel({ scenario: state.scenario, limit: state.limit, step: index });
+      return `<li data-state="${outcome}"><span class="dot" aria-hidden="true"></span><b>${index + 1}. ${item.short}</b><em>${model ? model.reading : "待做"}</em></li>`;
+    }).join("");
+
+    els.stepKeys.forEach((button, index) => {
+      button.disabled = index > state.maxStep;
+      button.dataset.state = state.outcomes[index];
+      if (index === state.step) {
+        button.setAttribute("aria-current", "step");
+      } else {
+        button.removeAttribute("aria-current");
+      }
+    });
+
+    els.completion.hidden = !completed;
+  }
+
+  els.predictionButtons.forEach((button) => {
+    button.addEventListener("click", () => selectPrediction(button.dataset.predict));
+  });
+
+  els.verifyButton.addEventListener("click", verifyPrediction);
+  els.prevButton.addEventListener("click", previousStep);
+  els.nextButton.addEventListener("click", nextStep);
+  document.getElementById("resetButton").addEventListener("click", () => {
+    els.scenarioSelect.value = "normal";
+    els.limitSelect.value = "100";
+    state.scenario = "normal";
+    state.limit = 100;
+    resetRun();
+  });
+
+  els.scenarioSelect.addEventListener("change", () => {
+    state.scenario = els.scenarioSelect.value;
+    resetRun();
+  });
+
+  els.limitSelect.addEventListener("change", () => {
+    state.limit = Number(els.limitSelect.value);
+    resetRun();
+  });
+
+  els.themeToggle.addEventListener("click", () => {
+    const dark = els.root.dataset.theme !== "dark";
+    els.root.dataset.theme = dark ? "dark" : "";
+    els.themeToggle.textContent = dark ? "浅色" : "深色";
+  });
+
+  els.stepKeys.forEach((button) => {
+    button.addEventListener("click", () => goToStep(Number(button.dataset.step)));
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.target instanceof HTMLElement && event.target.matches("select, input, textarea")) return;
+    if (event.target instanceof HTMLElement && event.target.matches("button, a") && event.key === "Enter") return;
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      previousStep();
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      nextStep();
+    } else if (event.key === "1") {
+      event.preventDefault();
+      selectPrediction("pass");
+    } else if (event.key === "2") {
+      event.preventDefault();
+      selectPrediction("fail");
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      verifyPrediction();
+    } else if (event.key.toLowerCase() === "r") {
+      event.preventDefault();
+      document.getElementById("resetButton").click();
+    } else if (event.key.toLowerCase() === "t") {
+      event.preventDefault();
+      els.themeToggle.click();
+    }
+  });
+
+  function selfCheck() {
+    const failures = [];
+    const checks = [];
+    const assert = (name, condition) => {
+      checks.push(name);
+      if (!condition) failures.push(name);
+    };
+
+    const normal = [0, 1, 2, 3, 4].map((step) =>
+      simModel({ scenario: "normal", limit: 100, step })
+    );
+    normal.forEach((model, index) => {
+      assert(`normal step ${index + 1} passes`, model.status === "pass");
+    });
+
+    assert("normal uses five steps", STEPS.length === 5);
+    assert("normal exposes five scenarios", Object.keys(SCENARIOS).length === 5);
+    assert("short check passes without a short", simModel({ scenario: "normal", limit: 100, step: 0 }).status === "pass");
+    assert("VBUS fails when USB is absent", simModel({ scenario: "noUsb", limit: 100, step: 2 }).status === "fail");
+    assert("+5V fails when the fuse is open", simModel({ scenario: "fuseOpen", limit: 100, step: 3 }).status === "fail");
+    assert("+3V3 fails when the LDO has no output", simModel({ scenario: "ldoFault", limit: 100, step: 4 }).status === "fail");
+    assert("short check catches a +3V3 short", simModel({ scenario: "short3v3", limit: 100, step: 0 }).status === "fail");
+    assert("50 mA is inside the limit", simModel({ scenario: "normal", limit: 50, step: 1 }).status === "pass");
+    assert("100 mA is inside the limit", simModel({ scenario: "normal", limit: 100, step: 1 }).status === "pass");
+    assert("500 mA is rejected", simModel({ scenario: "normal", limit: 500, step: 1 }).status === "fail");
+
+    const originalNormal = { ...SCENARIOS.normal };
+    try {
+      SCENARIOS.normal.vbus = 4.74;
+      assert("VBUS below the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 2 }).status === "fail");
+      SCENARIOS.normal.vbus = 5.26;
+      assert("VBUS above the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 2 }).status === "fail");
+      Object.assign(SCENARIOS.normal, originalNormal);
+      SCENARIOS.normal.plus5 = 4.74;
+      assert("+5V below the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 3 }).status === "fail");
+      SCENARIOS.normal.plus5 = 5.26;
+      assert("+5V above the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 3 }).status === "fail");
+      Object.assign(SCENARIOS.normal, originalNormal);
+      SCENARIOS.normal.plus3v3 = 3.13;
+      assert("+3V3 below the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 4 }).status === "fail");
+      SCENARIOS.normal.plus3v3 = 3.48;
+      assert("+3V3 above the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 4 }).status === "fail");
+    } finally {
+      Object.assign(SCENARIOS.normal, originalNormal);
+    }
+
+    return { ok: failures.length === 0, checks: checks.length, failures };
+  }
+
+  window.__powerup = Object.freeze({
+    version: "1.0.0",
+    steps: STEPS.map((step) => step.id),
+    scenarios: Object.keys(SCENARIOS),
+    simModel,
+    selfCheck,
+    snapshot: () => ({
+      scenario: state.scenario,
+      limit: state.limit,
+      step: state.step,
+      maxStep: state.maxStep,
+      prediction: state.prediction,
+      verified: state.verified,
+      revealed: state.revealed,
+      outcomes: state.outcomes.slice(),
+      sim: currentSim()
+    }),
+    setScenario,
+    setLimit,
+    goToStep,
+    nextStep,
+    previousStep,
+    selectPrediction,
+    verify: verifyPrediction,
+    reset: () => {
+      els.scenarioSelect.value = "normal";
+      els.limitSelect.value = "100";
+      state.scenario = "normal";
+      state.limit = 100;
+      resetRun();
+    }
+  });
+
+  els.root.dataset.theme = "";
+  els.themeToggle.textContent = "深色";
+  render();
+})();
+</script>
+</body>
+</html>

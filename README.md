@@ -75,6 +75,7 @@ python ../tools/check_book.py
 
 - HTML：`yuyu-book/dist/kicad-book-zh.html`（约 6.6MB，单文件可离线阅读）；
 - PDF：发布版 209 页，约 26.4MB，25 个书签，见 [Releases](https://github.com/zhuguang-ZFG/kicad-book-zh/releases/latest)；当前开发构建 210 页、228 个书签（新增 203 个小节入口），本地重建输出为 `yuyu-book/dist/kicad-book-zh.pdf`；
+- 交互附件：[第 12 章首次上电练习](docs/interactive/ch12-first-power-up.html)，离线单文件，书外可选练习，不进入 PDF；
 - 插图：`yuyu-book/illustrations/`，包含可独立引用的 SVG 与已署名的实物照片；官方截图在 `yuyu-book/screenshots/`；
 - 案例：`usb_breath_led` 为书中教学案例，不随书附带工程文件。
 
