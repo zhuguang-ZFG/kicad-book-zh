@@ -60,6 +60,14 @@
 - **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
 - **Boundary**: no command, measured limit, figure, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
 
+## Chapter 12 — Injection Steps
+
+- **Evidence**: the merged §12.3 note allowed a USB-C breakout, then required adding a `VBUS` test point when none existed. It was also a single dense paragraph on the page.
+- **Change**: converted the note into three scan lines. A breakout is now an explicit safe access point; the 0 V → 5 V ramp, ordinary-charger limit, and single-5 V-source warning remain.
+- **Verification**: rebuilt PDF is 210 pages / 228 bookmarks; p121 150-dpi render shows the three bullets and Figure 12-3 with no collision, clipping, or overflow. `test_claims`, `check_book`, `test_book_metadata`, `test_readme_links`, `test_pdf_layout`, and `test_pdf_cleanup` pass.
+- **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
+- **Boundary**: no command, measured limit, figure, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
+
 ## Vividness Pilot — Chapter 10
 
 - Scope: Chapter 10 opening only. Added a concrete factory-acceptance scene and a hand-drawn “验包台” illustration; kept all commands, technical claims, warnings and section order. Existing Chapter 10 figures were renumbered sequentially to 10-1…10-5.
