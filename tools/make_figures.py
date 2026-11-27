@@ -60,10 +60,10 @@ def fig(name, w, h, fn):
 # ---- preface ----------------------------------------------------------
 def learning_path(a):
     stages = [
-        ("画图", "第 1—4 章", "ERC 通过的原理图"),
-        ("设计", "第 5—9 章", "通过 DRC 的两层板"),
-        ("制造", "第 10—12 章", "制造文件齐全"),
-        ("系统", "第 13—15 章", "仿真 · 库 · 自动化"),
+        ("入门", "第 1—4 章", "ERC 通过的原理图"),
+        ("独立设计", "第 5—9 章", "通过 DRC 的两层板"),
+        ("制造验证", "第 10—12 章", "制造文件齐全"),
+        ("工程化", "第 13—15 章", "仿真 · 库 · 自动化"),
     ]
     xs = [28, 198, 368, 538]
     ys = [134, 112, 90, 68]
@@ -73,7 +73,7 @@ def learning_path(a):
         a.rect(x, y, 150, 100, width=2.0, radius=5)
         a.circle(x + 18, y + 18, 9, width=1.4, opacity=.65)
         a.text(x + 18, y + 22, str(i + 1), size=10, opacity=.6)
-        a.text(x + 90, y + 25, stage, size=15)
+        a.text(x + 86, y + 25, stage, size=14)
         a.text(x + 75, y + 49, chapters, size=11, opacity=.6)
         a.line(x + 12, y + 62, x + 138, y + 62, width=1.0, opacity=.3)
         a.text(x + 75, y + 83, outcome, size=10, opacity=.6)
