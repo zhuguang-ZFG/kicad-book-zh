@@ -79,6 +79,14 @@
 - Verification: regenerating twice is byte-identical and only the target SVG changes. The rebuilt PDF remains 210 pages / 228 bookmarks; a 72-dpi whole-book comparison isolates the sole render change to p42. Printed figure text has no bounding-box collisions. `test_claims`, `test_book_metadata`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass. `task_verify run` remains unverified (`project-or-git-baseline-unavailable`, `checks=[]`).
 - Boundary: no manuscript text, technical value, command, warning, section order, test, global style, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
 
+## Cover Art — Teaching Board
+
+- Evidence: the cover's central PCB showed a generic MCU/sensor/antenna board even though the book's baseline is a power-only USB-C teaching board; its six labels used opacity .50–.55. The reference book's cover relies on one strong technical object, while the open-source `tomasr8/attiny85-dev-board` render provides a useful connector/regulator/MCU/LED/header placement reference.
+- Change: redrew `cover()` as an exploded-edge hand-drawn PCB with USB-C, F1/TVS, LDO, ATtiny85, LED/R1, button, ISP header, test points and stitching vias. The sensor and antenna are removed. `make_plates.py` now writes to the repository-relative illustration directory. Cover title, subtitle, author, version, seal, frame, layout and 720×380 viewBox are unchanged.
+- Budget and contrast: the deterministic SVG is 19,313 bytes with 10 text nodes at opacity ≥ .88. Measured worst-case ratios are 5.46:1 on print paper, 5.18:1 on the light sheet and 6.65:1 in dark mode.
+- Verification: regenerating twice is byte-identical and only `cover-kicad.svg` changes. The rebuilt PDF remains 210 pages / 228 bookmarks; a 72-dpi whole-book comparison isolates the sole render change to p1. Cover-art text has no bounding-box collisions. `test_claims`, `test_book_metadata`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass. `task_verify run` remains unverified (`project-or-git-baseline-unavailable`, `checks=[]`).
+- Boundary: no manuscript text, test, global style, title, subtitle, author, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
+
 
 ## Prose De-AI Passes (after Round 7)
 

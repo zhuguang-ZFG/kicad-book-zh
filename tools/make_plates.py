@@ -3,7 +3,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from ink import Ink, save
 
-OUT = Path(r"D:/Users/kkicad/yuyu-book/illustrations")
+OUT = Path(__file__).resolve().parents[1] / "yuyu-book" / "illustrations"
 
 def p1(a):
     # drafting table with a schematic sheet
@@ -122,55 +122,82 @@ def p4(a):
     a.text(80, 40, "04", size=30, opacity=.18, weight="600")
 
 def cover(a):
-    # a large board with USB-C, MCU, sensor, antenna, traces; drafting frame
-    a.rect(40, 36, 640, 300, width=1.2, opacity=.25, radius=4)
-    a.rect(70, 66, 580, 240, width=2.8, radius=10)
-    # USB-C
-    a.rect(92, 150, 44, 72, width=2.2, radius=8)
-    a.rect(100, 160, 28, 52, width=1.0, opacity=.4, radius=4)
-    a.text(114, 240, "USB-C", size=12, opacity=.55)
-    # power path
-    a.path("M136 186L190 186L210 166", width=2.4)
-    a.circle(210, 166, 3.0, width=1.2)
-    # LDO
-    a.rect(220, 140, 56, 48, width=2.0, radius=2)
-    a.text(248, 168, "LDO", size=12, opacity=.55)
-    # MCU
-    a.rect(310, 120, 96, 88, width=2.4, radius=3)
-    for i in range(5):
-        a.line(322 + i * 16, 112, 322 + i * 16, 120, width=1.4)
-        a.line(322 + i * 16, 208, 322 + i * 16, 216, width=1.4)
-    a.text(358, 170, "MCU", size=16, opacity=.55)
-    # sensor
-    a.rect(440, 130, 64, 58, width=2.0, radius=3)
-    a.text(472, 164, "SENSOR", size=9, opacity=.5)
-    # antenna
-    a.path("M540 120q20-20 40 0t40 0", width=2.0)
-    a.line(540, 120, 540, 150, width=1.4, opacity=.5)
-    a.line(620, 120, 620, 150, width=1.4, opacity=.5)
-    a.text(580, 106, "ANT", size=11, opacity=.5)
-    # traces
-    a.path("M276 164L310 164", width=2.2)
-    a.path("M406 150L440 150", width=2.2)
-    a.path("M406 182L440 182", width=1.8)
-    a.path("M248 188L248 220L300 220L320 240", width=1.8)
-    a.path("M358 208L358 240L400 260", width=1.8)
-    a.path("M472 188L472 220L520 220L540 200", width=1.8)
-    a.path("M136 210L180 210L200 230L280 230", width=1.8)
-    # vias and mounting holes
-    for x, y in [(190, 166), (300, 220), (400, 260), (520, 220), (280, 230)]:
-        a.circle(x, y, 2.4, width=1.0)
-        a.circle(x, y, .9, width=.8, fill="currentColor")
-    for x, y in [(90, 86), (630, 86), (90, 286), (630, 286)]:
+    # Drafting frame and a shallow exploded edge give the teaching board depth.
+    a.path("M44 36H676Q680 36 680 40V332Q680 336 676 336H44Q40 336 40 332V40Q40 36 44 36Z",
+           width=1.2, opacity=.25)
+    a.path("M98 72H640Q654 72 654 86V300Q654 314 640 314H98Q84 314 84 300V86Q84 72 98 72Z",
+           width=1.6, opacity=.3)
+    for x1, y1, x2, y2 in ((102, 70, 84, 86), (636, 70, 654, 86),
+                           (102, 284, 84, 300), (636, 284, 654, 300)):
+        a.line(x1, y1, x2, y2, width=1.2, opacity=.35)
+    a.path("M116 56H622Q636 56 636 70V284Q636 298 622 298H116Q102 298 102 284V70Q102 56 116 56Z",
+           width=2.6)
+
+    # Copper paths follow the book's power-only USB-C teaching board.
+    a.path("M160 178H176V151H184 M214 151H246 M316 185H348 "
+           "M184 203V264H330 M460 158H476 M494 158H506 M460 202H512 M460 222H582 "
+           "M248 212V274H612", width=1.9)
+    a.rect(476, 152, 18, 12, width=1.3, radius=1)
+    a.text(485, 146, "R1", size=9, opacity=.88)
+
+    # USB-C receptacle at the board edge.
+    a.rect(112, 140, 48, 76, width=2.2, radius=8)
+    a.rect(120, 150, 32, 56, width=1.0, opacity=.45, radius=5)
+    a.text(136, 236, "USB-C", size=11, opacity=.88)
+
+    # Entry protection and regulator.
+    a.rect(184, 142, 30, 18, width=1.6, radius=2)
+    a.text(199, 136, "F1", size=10, opacity=.88)
+    a.rect(184, 194, 30, 18, width=1.6, radius=2)
+    a.text(199, 228, "TVS", size=10, opacity=.88)
+    a.rect(246, 158, 70, 54, width=2.0, radius=3)
+    a.text(281, 190, "LDO", size=13, opacity=.88)
+
+    # ATtiny85 with gull-wing pins and a pin-1 dot.
+    a.rect(348, 126, 112, 92, width=2.4, radius=3)
+    for i in range(6):
+        x = 360 + i * 17
+        a.line(x, 116, x, 126, width=1.3)
+        a.line(x, 218, x, 228, width=1.3)
+    a.dot(444, 140, 2.6)
+    a.text(404, 176, "ATtiny85", size=14, opacity=.88)
+    a.text(404, 196, "PB3 · LED", size=9.5, opacity=.88)
+
+    # User interface: LED branch and tactile button.
+    a.rect(506, 146, 36, 20, width=1.6, radius=3)
+    a.line(512, 156, 536, 156, width=1.0, opacity=.55)
+    a.text(524, 136, "LED", size=10, opacity=.88)
+    a.circle(532, 224, 16, width=1.8)
+    a.circle(532, 224, 7, width=1.2, opacity=.6)
+    a.text(532, 252, "BTN", size=10, opacity=.88)
+
+    # ISP header and accessible test points.
+    a.rect(578, 204, 38, 56, width=1.4, radius=2)
+    for x in (588, 606):
+        for y in (216, 232, 248):
+            a.circle(x, y, 3.2, width=1.0)
+            a.circle(x, y, 1.0, width=.7, fill="currentColor")
+    a.text(597, 196, "ISP", size=10, opacity=.88)
+    for x, y in ((330, 246), (474, 246), (552, 274)):
+        a.circle(x, y, 3.2, width=1.0)
+        a.circle(x, y, 1.0, width=.7, fill="currentColor")
+
+    # Stitching vias, mounting holes and registration marks.
+    for x in range(200, 561, 36):
+        a.circle(x, 282, 2.2, width=.9)
+        a.circle(x, 282, .7, width=.6, fill="currentColor")
+    for x, y in ((122, 82), (616, 82), (122, 272), (616, 272)):
         a.circle(x, y, 6, width=1.4)
-        a.circle(x, y, 2.4, width=.8, opacity=.4)
-    # corner marks
-    for x, y, dx, dy in [(70, 66, 1, 1), (650, 66, -1, 1), (70, 306, 1, -1), (650, 306, -1, -1)]:
+        a.circle(x, y, 2.4, width=.8, opacity=.45)
+    for x, y, dx, dy in ((102, 56, 1, 1), (636, 56, -1, 1),
+                         (102, 298, 1, -1), (636, 298, -1, -1)):
         a.line(x, y + dy * 18, x, y, width=1.2, opacity=.5)
         a.line(x, y, x + dx * 18, y, width=1.2, opacity=.5)
-    # a pencil at lower right
-    a.path("M560 300l52-70 8 6-52 70z", width=1.8)
-    a.line(612  -0, 300, 620, 290, width=1.4)
+
+    # A drafting pencil anchors the lower edge without competing with the board.
+    a.poly([(530, 342), (628, 318), (632, 328), (534, 352)], width=1.6, close=True)
+    a.poly([(530, 342), (518, 346), (534, 352)], width=1.4, close=True)
+    a.line(620, 321, 624, 331, width=1.0, opacity=.5)
 
 for name, fn in {"part-kicad-p1": p1, "part-kicad-p2": p2, "part-kicad-p3": p3, "part-kicad-p4": p4, "cover-kicad": cover}.items():
     a = Ink(720, 380 if name == "cover-kicad" else 240, label=name)
