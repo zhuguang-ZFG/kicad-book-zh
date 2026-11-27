@@ -95,6 +95,13 @@
 - Verification: the rebuilt PDF remains 210 pages / 228 bookmarks. Thirty-one pages change at 72 dpi because the bookends reflow; representative pages from all four parts show normal chapter openings and closings, and `test_pdf_layout` reports no orphan, overflow or filename regression. `test_claims`, `test_book_metadata`, `check_book`, builder `--check`, and `git diff --check` pass. `task_verify run` remains unverified (`project-or-git-baseline-unavailable`, `checks=[]`).
 - Boundary: generated PDF/HTML remain local and uncommitted; the published version remains v0.1.4.
 
+## Learning Path — Four-Stage Capability Ladder
+
+- Evidence: the preface carried a four-stage deliverable table, a three-level ability table and a four-stage illustration. The table called the final stage “精通” and included simulation, while the illustration called it “工程化” and the baseline table listed simulation as optional.
+- Change: removed the duplicate deliverable table and replaced the ability table with one four-stage ladder: 入门、独立设计、制造验证、工程化. Each row names the chapter range, deliverable and gate evidence. The closing sentence states that library maintenance and automated ERC/DRC/export define the final stage; simulation is used when a specific boundary needs verification.
+- Verification: the rebuilt PDF remains 210 pages / 228 bookmarks. A 72-dpi comparison isolates changes to pp8–10; the four-row table fits without split rows or overflow, and the following front-matter sections reflow normally. `test_claims`, `test_book_metadata`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass. `task_verify run` remains unverified (`project-or-git-baseline-unavailable`, `checks=[]`).
+- Boundary: no chapter text, acceptance criterion, test, global style, manifest, illustration, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
+
 
 ## Prose De-AI Passes (after Round 7)
 
