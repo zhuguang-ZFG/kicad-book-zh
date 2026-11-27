@@ -828,7 +828,7 @@
         <option value="500">500 mA（超限）</option>
       </select>
     </label>
-    <p class="scope">切换场景或限流会从头开始。读数在判断后显示；异常成立时下一步锁定，先断电排查，再换场景练习。</p>
+    <p class="scope">切换场景或限流会从头开始。读数在判断后显示；异常成立时下一步锁定，先断电排查，再换场景练习。判定阈值按第 12 章 §12.7：VBUS/+5V 4.75–5.25 V，+3V3 3.14–3.47 V。</p>
   </section>
 
   <section class="bench" id="bench" data-active="usb" data-probe="none" data-powered="false" aria-label="首次上电电源链">
@@ -1011,6 +1011,16 @@
     }
   };
 
+  const RAIL_LIMITS = {
+    vbus: [4.75, 5.25],
+    plus5: [4.75, 5.25],
+    plus3v3: [3.14, 3.47]
+  };
+
+  function inRailRange(value, range) {
+    return value >= range[0] && value <= range[1];
+  }
+
   const STEPS = [
     {
       id: "short",
@@ -1038,8 +1048,8 @@
       id: "vbus",
       short: "测 VBUS",
       title: "先测输入端 VBUS",
-      brief: "上电后先测 USB-C 的 VBUS 对 GND。只有输入端先接近 5 V，后面的保险丝和稳压器才有讨论的前提。",
-      probeText: "红表笔接 VBUS，黑表笔接 GND；确认 USB-C 已插稳、线缆没有只供电不数据的转接头。",
+      brief: "上电后先测 USB-C 的 VBUS 对 GND。第 12 章 §12.7 的记录表把 VBUS 合格范围定为 4.75–5.25 V；输入端先合格，后面的保险丝和稳压器才有讨论的前提。",
+      probeText: "红表笔接 VBUS，黑表笔接 GND；确认 USB-C 已插稳、线缆和焊点没有松动。数据通信留到 ISP 步骤再查。",
       probeLabel: "VBUS – GND",
       question: "VBUS 读数正常吗？",
       passLabel: "正常",
@@ -1049,7 +1059,7 @@
       id: "plus5",
       short: "测 +5V",
       title: "再测保险丝之后的 +5V",
-      brief: "VBUS 正常后，测 F1 之后的 +5V 轨。这里为 0 V 而 VBUS 正常，就把范围缩到保险丝、焊点和输入路径。",
+      brief: "VBUS 正常后，测 F1 之后的 +5V 轨。第 12 章 §12.7 的记录表把 +5V 合格范围定为 4.75–5.25 V。这里为 0 V 而 VBUS 正常，就把范围缩到保险丝、焊点和输入路径。",
       probeText: "红表笔接 +5V 测试点，黑表笔接 GND；先断电确认 F1 没有断开。",
       probeLabel: "+5V – GND",
       question: "+5V 读数正常吗？",
@@ -1060,7 +1070,7 @@
       id: "plus3v3",
       short: "测 +3V3",
       title: "最后测 LDO 输出 +3V3",
-      brief: "确认 +5V 正常后，再测 U2 的 +3V3 输出。若 +3V3 被拉低，先断电查短路和负载，不要靠加大限流硬撑。",
+      brief: "确认 +5V 正常后，再测 U2 的 +3V3 输出。第 12 章 §12.7 的记录表把 +3V3 合格范围定为 3.14–3.47 V。若 +3V3 被拉低，先断电查短路和负载，不要靠加大限流硬撑。",
       probeText: "红表笔接 +3V3 测试点，黑表笔接 GND；确认 U2 输入、输出和接地焊点。",
       probeLabel: "+3V3 – GND",
       question: "+3V3 读数正常吗？",
@@ -1076,6 +1086,7 @@
     maxStep: 0,
     prediction: null,
     verified: false,
+    revealed: false,
     outcomes: Array(STEPS.length).fill("pending"),
     message: "",
     tone: ""
@@ -1151,51 +1162,53 @@
         ? `限流 ${limit} mA 在书中 50–100 mA 范围内。`
         : `限流 ${limit} mA 超过 50–100 mA；不要上电，改到 100 mA 或更低。`;
     } else if (step === "vbus") {
-      status = cfg.vbus >= 4.5 ? "pass" : "fail";
+      status = inRailRange(cfg.vbus, RAIL_LIMITS.vbus) ? "pass" : "fail";
       active = "usb";
       probe = "vbus";
       mode = "DC V";
       reading = `${cfg.vbus.toFixed(2)} V`;
       detail = status === "pass"
-        ? "VBUS 接近 5 V；输入端已经得电。"
-        : "VBUS 为 0 V；先查 USB-C 插头、线缆和焊点。";
+        ? `VBUS 落在 ${RAIL_LIMITS.vbus[0]}–${RAIL_LIMITS.vbus[1]} V 范围；输入端已经得电。`
+        : `VBUS 不在 ${RAIL_LIMITS.vbus[0]}–${RAIL_LIMITS.vbus[1]} V 范围；先查 USB-C 插头、线缆和焊点。`;
       nodes.usb = status === "pass" ? "ok" : "fail";
-      powered = cfg.vbus >= 4.5;
-      wires.usbFuse = cfg.vbus >= 4.5;
+      powered = cfg.vbus >= RAIL_LIMITS.vbus[0];
+      wires.usbFuse = cfg.vbus >= RAIL_LIMITS.vbus[0];
     } else if (step === "plus5") {
-      status = cfg.plus5 >= 4.5 ? "pass" : "fail";
+      status = inRailRange(cfg.plus5, RAIL_LIMITS.plus5) ? "pass" : "fail";
       active = "fuse";
       probe = "plus5";
       mode = "DC V";
       reading = `${cfg.plus5.toFixed(2)} V`;
       detail = status === "pass"
-        ? "+5V 轨在 4.5 V 以上；保险丝与输入路径正常。"
-        : "+5V 为 0 V；查 F1 是否断开、焊点是否连续。";
-      nodes.usb = cfg.vbus >= 4.5 ? "ok" : "fail";
+        ? `+5V 落在 ${RAIL_LIMITS.plus5[0]}–${RAIL_LIMITS.plus5[1]} V 范围；保险丝与输入路径正常。`
+        : `+5V 不在 ${RAIL_LIMITS.plus5[0]}–${RAIL_LIMITS.plus5[1]} V 范围；查 F1 是否断开、焊点是否连续。`;
+      nodes.usb = cfg.vbus >= RAIL_LIMITS.vbus[0] ? "ok" : "fail";
       nodes.fuse = status === "pass" ? "ok" : "fail";
       nodes.ldo = status === "pass" ? "idle" : "fail";
-      powered = cfg.vbus >= 4.5;
-      wires.usbFuse = cfg.vbus >= 4.5;
-      wires.fuseLdo = cfg.plus5 >= 4.5;
+      powered = cfg.vbus >= RAIL_LIMITS.vbus[0];
+      wires.usbFuse = cfg.vbus >= RAIL_LIMITS.vbus[0];
+      wires.fuseLdo = cfg.plus5 >= RAIL_LIMITS.plus5[0];
     } else if (step === "plus3v3") {
-      const pass = cfg.plus5 >= 4.5 && cfg.plus3v3 >= 3.0 && cfg.short === null;
+      const pass = inRailRange(cfg.plus5, RAIL_LIMITS.plus5)
+        && inRailRange(cfg.plus3v3, RAIL_LIMITS.plus3v3)
+        && cfg.short === null;
       status = pass ? "pass" : "fail";
       active = "ldo";
       probe = "plus3v3";
       mode = "DC V";
       reading = `${cfg.plus3v3.toFixed(2)} V`;
       detail = pass
-        ? "+3V3 在 3.0–3.6 V 范围；电源链通过。"
+        ? `+3V3 落在 ${RAIL_LIMITS.plus3v3[0]}–${RAIL_LIMITS.plus3v3[1]} V 范围；电源链通过。`
         : cfg.short
           ? "+3V3 被短路拉低；先断电，查短路点。"
-          : "+3V3 低于 3.0 V；查 U2 焊接、输入和负载。";
-      nodes.usb = cfg.vbus >= 4.5 ? "ok" : "fail";
-      nodes.fuse = cfg.plus5 >= 4.5 ? "ok" : "fail";
+          : `+3V3 不在 ${RAIL_LIMITS.plus3v3[0]}–${RAIL_LIMITS.plus3v3[1]} V 范围；查 U2 焊接、输入和负载。`;
+      nodes.usb = cfg.vbus >= RAIL_LIMITS.vbus[0] ? "ok" : "fail";
+      nodes.fuse = inRailRange(cfg.plus5, RAIL_LIMITS.plus5) ? "ok" : "fail";
       nodes.ldo = pass ? "ok" : "fail";
       nodes.mcu = pass ? "ok" : "fail";
-      powered = cfg.vbus >= 4.5;
-      wires.usbFuse = cfg.vbus >= 4.5;
-      wires.fuseLdo = cfg.plus5 >= 4.5;
+      powered = cfg.vbus >= RAIL_LIMITS.vbus[0];
+      wires.usbFuse = cfg.vbus >= RAIL_LIMITS.vbus[0];
+      wires.fuseLdo = cfg.plus5 >= RAIL_LIMITS.plus5[0];
       wires.ldoMcu = pass;
     }
 
@@ -1234,6 +1247,7 @@
     state.maxStep = 0;
     state.prediction = null;
     state.verified = false;
+    state.revealed = false;
     state.outcomes = Array(STEPS.length).fill("pending");
     state.message = "";
     state.tone = "";
@@ -1272,6 +1286,7 @@
     state.step = next;
     const outcome = state.outcomes[next];
     state.verified = outcome !== "pending";
+    state.revealed = outcome !== "pending";
     state.prediction = outcome === "pass" ? "pass" : outcome === "fail" ? "fail" : null;
     if (outcome === "pass") {
       state.message = "本步已通过。";
@@ -1310,6 +1325,7 @@
 
     const sim = currentSim();
     if (state.prediction !== sim.expected) {
+      state.revealed = true;
       state.verified = false;
       state.message = `判断与读数不符。当前显示 ${sim.reading}；再看表笔位置，重新判断。`;
       state.tone = "warn";
@@ -1322,6 +1338,7 @@
       };
     }
 
+    state.revealed = true;
     state.verified = true;
     state.outcomes[state.step] = sim.status;
     if (sim.status === "pass") {
@@ -1363,13 +1380,13 @@
       let text = "待测";
       if (completed) {
         text = fmtRail(sim.rails[key]);
-      } else if (state.verified && sim.step === "short") {
+      } else if (state.revealed && sim.step === "short") {
         text = sim.status === "fail" && key === "plus3v3" ? "0.4 Ω" : "∞";
-      } else if (state.verified && sim.step === "vbus" && key === "vbus") {
+      } else if (state.revealed && sim.step === "vbus" && key === "vbus") {
         text = fmtRail(sim.rails.vbus);
-      } else if (state.verified && sim.step === "plus5" && key === "plus5") {
+      } else if (state.revealed && sim.step === "plus5" && key === "plus5") {
         text = fmtRail(sim.rails.plus5);
-      } else if (state.verified && sim.step === "plus3v3" && key === "plus3v3") {
+      } else if (state.revealed && sim.step === "plus3v3" && key === "plus3v3") {
         text = fmtRail(sim.rails.plus3v3);
       }
       reading.textContent = text;
@@ -1385,11 +1402,11 @@
     els.failLabel.textContent = step.failLabel;
 
     els.meterMode.textContent = sim.mode;
-    els.reading.textContent = state.verified ? sim.reading : "— — —";
+    els.reading.textContent = state.revealed ? sim.reading : "— — —";
     els.statusPill.dataset.state = state.verified ? sim.status : "pending";
     els.statusPill.textContent = state.verified
       ? sim.status === "pass" ? "通过" : "异常"
-      : "待验证";
+      : state.revealed ? "再判断" : "待验证";
 
     els.feedback.dataset.tone = state.tone;
     els.feedback.textContent = state.message || "先选“正常”或“异常”，再点验证。读数在判断后显示。";
@@ -1524,6 +1541,26 @@
     assert("100 mA is inside the limit", simModel({ scenario: "normal", limit: 100, step: 1 }).status === "pass");
     assert("500 mA is rejected", simModel({ scenario: "normal", limit: 500, step: 1 }).status === "fail");
 
+    const originalNormal = { ...SCENARIOS.normal };
+    try {
+      SCENARIOS.normal.vbus = 4.74;
+      assert("VBUS below the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 2 }).status === "fail");
+      SCENARIOS.normal.vbus = 5.26;
+      assert("VBUS above the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 2 }).status === "fail");
+      Object.assign(SCENARIOS.normal, originalNormal);
+      SCENARIOS.normal.plus5 = 4.74;
+      assert("+5V below the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 3 }).status === "fail");
+      SCENARIOS.normal.plus5 = 5.26;
+      assert("+5V above the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 3 }).status === "fail");
+      Object.assign(SCENARIOS.normal, originalNormal);
+      SCENARIOS.normal.plus3v3 = 3.13;
+      assert("+3V3 below the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 4 }).status === "fail");
+      SCENARIOS.normal.plus3v3 = 3.48;
+      assert("+3V3 above the §12.7 window fails", simModel({ scenario: "normal", limit: 100, step: 4 }).status === "fail");
+    } finally {
+      Object.assign(SCENARIOS.normal, originalNormal);
+    }
+
     return { ok: failures.length === 0, checks: checks.length, failures };
   }
 
@@ -1540,6 +1577,7 @@
       maxStep: state.maxStep,
       prediction: state.prediction,
       verified: state.verified,
+      revealed: state.revealed,
       outcomes: state.outcomes.slice(),
       sim: currentSim()
     }),
