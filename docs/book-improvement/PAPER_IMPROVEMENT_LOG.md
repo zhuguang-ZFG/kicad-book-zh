@@ -68,6 +68,15 @@
 - **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
 - **Boundary**: no command, measured limit, figure, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
 
+## Chapter 15 — Closing Checklist
+
+- **Evidence**: the old “全书收束” used a generic “完整路线 → 最后三句话 → 地基 / 兜住下限 / 板子会旧” frame. The first replacement table also split 3 + 1 rows across pp166–167, leaving a repeated header and a one-row tail.
+- **Change**: replaced the triad with a four-row delivery checklist for 电路 / PCB / 制造包 / 流程, and added a print-only page break so the heading, table, and final sentence stay together.
+- **Correction**: separated origin alignment (Gerber/drill/POS) from BOM checks (identifiers/quantity against PCB), and narrowed “符号都有封装” to “上板符号都有封装”.
+- **Verification**: rebuilt PDF is 210 pages / 228 bookmarks; p166 ends after the acceptance list, p167 carries the complete four-row table and final sentence. The 120-dpi p166/p167 renders show no split table, repeated header, collision, or clipping. `test_claims`, `check_book`, `test_book_metadata`, `test_readme_links`, `test_pdf_layout`, and `test_pdf_cleanup` pass.
+- **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
+- **Boundary**: no command, measured limit, figure, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
+
 ## Vividness Pilot — Chapter 10
 
 - Scope: Chapter 10 opening only. Added a concrete factory-acceptance scene and a hand-drawn “验包台” illustration; kept all commands, technical claims, warnings and section order. Existing Chapter 10 figures were renumbered sequentially to 10-1…10-5.
