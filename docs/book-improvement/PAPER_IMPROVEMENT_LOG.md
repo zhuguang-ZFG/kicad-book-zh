@@ -44,6 +44,14 @@
 - **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
 - **Boundary**: no chapter commands, measured limits, figures, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
 
+## Preface — Learning-Path Stage Names
+
+- **Evidence**: `learning_path()` still labelled the four cards 画图 / 设计 / 制造 / 系统, while the adjacent table used 入门 / 独立设计 / 制造验证 / 工程化. The caption claimed the cards matched the table.
+- **Change**: updated the generator labels to the table's stage names, adjusted the label position and size for the four-character names, regenerated the SVG, and narrowed the caption to “阶段及主要交付物” with the table as the acceptance authority.
+- **Verification**: all 41 figures were regenerated; only `kicad-learning-path.svg` changed among the SVGs (6,887 bytes). The rebuilt PDF is 210 pages / 228 bookmarks; the p9 150-dpi render shows all four labels fitting without collision or clipping. `test_claims`, `check_book`, `test_book_metadata`, `test_readme_links`, `test_pdf_layout`, and `test_pdf_cleanup` pass.
+- **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
+- **Boundary**: no chapter text, commands, measured limits, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
+
 ## Vividness Pilot — Chapter 10
 
 - Scope: Chapter 10 opening only. Added a concrete factory-acceptance scene and a hand-drawn “验包台” illustration; kept all commands, technical claims, warnings and section order. Existing Chapter 10 figures were renumbered sequentially to 10-1…10-5.
