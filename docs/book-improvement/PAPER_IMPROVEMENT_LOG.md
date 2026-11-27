@@ -87,6 +87,14 @@
 - Verification: regenerating twice is byte-identical and only `cover-kicad.svg` changes. The rebuilt PDF remains 210 pages / 228 bookmarks; a 72-dpi whole-book comparison isolates the sole render change to p1. Cover-art text has no bounding-box collisions. `test_claims`, `test_book_metadata`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass. `task_verify run` remains unverified (`project-or-git-baseline-unavailable`, `checks=[]`).
 - Boundary: no manuscript text, test, global style, title, subtitle, author, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
 
+## De-AI Pass — Chapter Bookends
+
+- Evidence: all 15 chapters opened with the same polished two-sentence “开门一句话”, and 14 chapter transitions used future-promise narration such as “你会第一次”. A keyword-only pass was rejected because most remaining “不是” occurrences are technical negations. The ARIS repository's contribution guide and workflow notes favor focused changes, concrete actions and verifiable outcomes over ornamental claims.
+- Change: rewrote 15 chapter hooks and 14 next-chapter transitions across the entry, design, manufacturing and advanced parts. The new text names the reader's next action and the check that follows; chapter order, acceptance criteria, commands, numbers, network names, warnings and technical distinctions are preserved.
+- Scope audit: exactly 29 source lines change. Line-safe code-token comparison finds no lost inline code; numeric-token comparison finds no lost number; total chapter-source length is unchanged at 125,337 characters. No test, global style, manifest, illustration, version or release artifact changes.
+- Verification: the rebuilt PDF remains 210 pages / 228 bookmarks. Thirty-one pages change at 72 dpi because the bookends reflow; representative pages from all four parts show normal chapter openings and closings, and `test_pdf_layout` reports no orphan, overflow or filename regression. `test_claims`, `test_book_metadata`, `check_book`, builder `--check`, and `git diff --check` pass. `task_verify run` remains unverified (`project-or-git-baseline-unavailable`, `checks=[]`).
+- Boundary: generated PDF/HTML remain local and uncommitted; the published version remains v0.1.4.
+
 
 ## Prose De-AI Passes (after Round 7)
 
