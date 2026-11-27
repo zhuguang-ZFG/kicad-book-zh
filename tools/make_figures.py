@@ -297,50 +297,70 @@ def ch04_bom(a):
 
 
 def ch04_audit(a):
-    for x, lab in ((16, "顶视图"), (248, "侧视图"), (480, "核对项")):
-        a.rect(x, 36, 224, 226, width=1.0, opacity=.22, radius=3)
-        a.text(x + 112, 58, lab, size=13, opacity=.6)
+    a.text(360, 26, "SOIC-8 封装核对卡", size=15, opacity=.78)
+    a.path("M24 44H342Q346 44 346 48V238Q346 242 342 242H24Q20 242 20 238V48Q20 44 24 44Z",
+           width=1.2, opacity=.4)
+    a.path("M366 44H684Q688 44 688 48V238Q688 242 684 242H366Q362 242 362 238V48Q362 44 366 44Z",
+           width=1.2, opacity=.4)
+    a.circle(47, 64, 8, width=1.3)
+    a.text(47, 68, "1", size=9)
+    a.text(62, 68, "方向与编号", size=12, anchor="start", opacity=.78)
+    a.circle(389, 64, 8, width=1.3)
+    a.text(389, 68, "2", size=9)
+    a.text(404, 68, "尺寸与边界", size=12, anchor="start", opacity=.78)
 
-    # top view: body, pads, pin 1, pitch, body width
-    a.rect(64, 100, 128, 80, width=2.0, radius=2)
-    a.text(128, 145, "SOIC-8", size=10, opacity=.35)
+    # Top view rotated so pin 1 is at the upper right, matching the caption.
+    a.rect(94, 104, 154, 84, width=2.0, radius=3)
+    a.text(171, 151, "SOIC-8", size=13, opacity=.8)
     for i in range(4):
-        x = 64 + i * 34
-        a.rect(x, 86, 22, 14, width=1.4, radius=1)
-        a.rect(x, 180, 22, 14, width=1.4, radius=1)
-        a.text(x + 11, 80, str(4 - i), size=10, opacity=.55)
-        a.text(x + 11, 208, str(5 + i), size=10, opacity=.55)
-    a.dot(180, 112, 2.6)
-    a.line(75, 226, 109, 226, width=1.0, opacity=.5)
-    a.line(75, 222, 75, 230, width=1.0, opacity=.4)
-    a.line(109, 222, 109, 230, width=1.0, opacity=.4)
-    a.text(92, 246, "P1.27", size=10, opacity=.55)
-    a.line(208, 100, 208, 180, width=1.0, opacity=.5)
-    a.line(204, 100, 212, 100, width=1.0, opacity=.4)
-    a.line(204, 180, 212, 180, width=1.0, opacity=.4)
-    a.text(220, 140, "3.9", size=10, opacity=.55, rotate=90)
+        x = 108 + i * 38
+        a.rect(x, 90, 26, 14, width=1.6, radius=2)
+        a.rect(x, 188, 26, 14, width=1.6, radius=2)
+        a.text(x + 13, 84, str(4 - i), size=11, opacity=.8)
+        a.text(x + 13, 218, str(5 + i), size=11, opacity=.8)
+    a.dot(238, 113, 3)
+    a.line(242, 110, 264, 94, width=1.1, opacity=.7)
+    a.text(270, 94, "pin 1", size=10, anchor="start", opacity=.8)
+    a.path("M248 78H104Q94 78 94 88V194Q94 204 104 204H248V78",
+           width=1.0, opacity=.55, dash="4 5")
+    a.line(248, 78, 243, 85, width=1.0)
+    a.line(248, 78, 253, 85, width=1.0)
+    a.text(171, 239, "从 pin 1 逆时针核对 1 → 8", size=10, opacity=.78)
 
-    # side view: gull-wing leads, pads, courtyard
-    a.rect(268, 180, 180, 25, width=1.2, opacity=.6)
-    a.text(358, 198, "PCB", size=10, opacity=.4)
-    a.rect(310, 105, 95, 70, width=1.8, radius=2)
-    a.text(358, 145, "本体", size=10, opacity=.4)
-    a.poly([(310, 140), (290, 140), (290, 180)], width=1.8)
-    a.poly([(405, 140), (425, 140), (425, 180)], width=1.8)
-    a.rect(280, 176, 20, 10, width=1.2, radius=1)
-    a.rect(416, 176, 20, 10, width=1.2, radius=1)
-    a.rect(276, 92, 164, 124, width=1.0, dash="3 5", opacity=.5)
-    a.text(358, 84, "courtyard", size=10, opacity=.5)
-    a.text(358, 246, "器件允许占用的边界", size=10, opacity=.45)
+    # Side cross-section: direct leaders tie each check to the geometry.
+    a.rect(404, 178, 224, 18, width=1.6, opacity=.75, radius=2)
+    a.text(516, 191, "PCB", size=10, opacity=.8)
+    a.rect(458, 104, 116, 62, width=2.0, radius=3)
+    a.text(516, 140, "本体", size=11, opacity=.8)
+    a.poly([(458, 140), (436, 140), (436, 178)], width=1.8)
+    a.poly([(574, 140), (596, 140), (596, 178)], width=1.8)
+    a.rect(428, 174, 20, 10, width=1.4, radius=2)
+    a.rect(584, 174, 20, 10, width=1.4, radius=2)
+    a.rect(412, 88, 220, 118, width=1.2, dash="4 5", opacity=.6, radius=2)
+    a.text(380, 132, "引脚", size=9.5, anchor="start", opacity=.8)
+    a.line(405, 129, 436, 140, width=1.0, opacity=.7)
+    a.dot(436, 140, 1.8)
+    a.text(380, 170, "焊盘", size=9.5, anchor="start", opacity=.8)
+    a.line(405, 167, 438, 179, width=1.0, opacity=.7)
+    a.dot(438, 179, 1.8)
+    a.text(650, 104, "courtyard", size=9.5, opacity=.8)
+    a.text(650, 121, "允许占用边界", size=9, opacity=.8)
+    a.line(622, 95, 642, 101, width=1.0, opacity=.7)
+    a.text(650, 158, "3.9 × 4.9 mm", size=9.5, opacity=.8)
+    a.line(574, 112, 620, 136, width=1.0, opacity=.7)
+    a.text(650, 184, "P1.27 mm", size=9.5, opacity=.8)
 
-    rows = ("1 脚与丝印同向", "pad 编号逐脚对", "间距 / 本体量一遍", "courtyard 不压邻居")
-    for i, row in enumerate(rows):
-        y = 100 + i * 34
-        check(a, 498, y - 4, s=6)
-        a.text(516, y, row, size=10, anchor="start", opacity=.65)
-    a.text(592, 246, "名字相同 ≠ 封装相同", size=10, opacity=.5)
-
-    a.text(360, 288, "封装核对不是“看一眼”：方向、编号、尺寸、边界，四个都过才算分配完成。", size=12, opacity=.55)
+    checks = (("1", "方向", "pin 1 与丝印同向"),
+              ("2", "编号", "1→8 逐脚核对"),
+              ("3", "尺寸", "3.9×4.9 / P1.27"),
+              ("4", "边界", "courtyard 不压邻居"))
+    for i, (num, label, sub) in enumerate(checks):
+        x = 20 + i * 172
+        a.rect(x, 256, 160, 44, width=1.2, opacity=.55, radius=3)
+        a.circle(x + 17, 278, 9, width=1.3)
+        a.text(x + 17, 282, num, size=10)
+        a.text(x + 33, 274, label, size=11, anchor="start", opacity=.8)
+        a.text(x + 33, 291, sub, size=9.5, anchor="start", opacity=.78)
 
 
 # ---- chapter 5 ---------------------------------------------------------
