@@ -5,6 +5,7 @@ from check_book import (
     claim_problems,
     cli_origin_problems,
     led_net_problems,
+    preface_ladder_order_problems,
     round2_claim_problems,
     selection_lock_problems,
 )
@@ -94,6 +95,20 @@ def test_round2_calibrations_cannot_drift_back() -> None:
     assert round2_claim_problems({**texts, "ch15": "完全可复现"})
 
 
+def test_preface_learning_path_figure_follows_table() -> None:
+    table = (
+        "| 阶段 | 交付物 | 过关证据 |\n"
+        "| --- | --- | --- |\n"
+        "| 入门（1—4） | 通过 ERC 的原理图与 BOM | 字段完整 |\n"
+    )
+    figure = (
+        "```ill\nkicad-learning-path\n```\n\n"
+        "图 0-1 从入门到工程化的四个阶段；卡片内容与上表对应。\n"
+    )
+    assert preface_ladder_order_problems("（图 0-1）\n" + table + figure) == []
+    assert preface_ladder_order_problems(figure + table)
+
+
 if __name__ == "__main__":
     test_old_claims_are_rejected()
     test_new_claims_pass()
@@ -102,4 +117,5 @@ if __name__ == "__main__":
     test_cli_examples_share_one_origin()
     test_open_selection_is_locked_before_layout()
     test_round2_calibrations_cannot_drift_back()
+    test_preface_learning_path_figure_follows_table()
     print("claim regression: OK")

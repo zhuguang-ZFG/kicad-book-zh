@@ -770,6 +770,24 @@ def check_placeholders() -> None:
                 errors.append(f"{p}: leftover {token}")
 
 
+def preface_ladder_order_problems(text: str) -> list[str]:
+    """The learning-path figure must follow the table it claims to summarize."""
+    table = text.find("| 阶段 | 交付物 | 过关证据 |")
+    figure = text.find("```ill\nkicad-learning-path")
+    if table < 0:
+        return ["preface: four-stage ladder table is missing"]
+    if figure < 0:
+        return ["preface: learning-path figure is missing"]
+    if figure < table:
+        return ["preface: figure 0-1 appears before the ladder table it summarizes"]
+    return []
+
+
+def check_preface_ladder_order() -> None:
+    text = (ROOT / "00-前言.md").read_text(encoding="utf-8")
+    errors.extend(preface_ladder_order_problems(text))
+
+
 def main() -> int:
     check_units()
     check_source_figure_numbers()
@@ -792,6 +810,7 @@ def main() -> int:
     check_readme_stats()
     check_artifact_claims()
     check_unverified_claims()
+    check_preface_ladder_order()
     check_placeholders()
     if errors:
         print("CONTENT CHECK FAILED")
