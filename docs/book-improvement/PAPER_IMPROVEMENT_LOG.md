@@ -71,6 +71,14 @@
 - Verification: regenerating twice is byte-identical and only `kicad-ch09-three-gates.svg` changes. The rebuilt PDF remains 210 pages / 228 bookmarks; a 72-dpi comparison against a clean `origin/main` build isolates the sole render change to p93. Printed figure text has no bounding-box collisions. `test_claims`, `test_book_metadata`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass.
 - Boundary: no manuscript text, technical value, command, warning, section order, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
 
+## Illustration Audit — Chapter 4 Footprint Check
+
+- Evidence: Figure 4-2 had 24 text nodes with minimum opacity .35; top view, side view and the four checks competed in three undifferentiated columns. The reference book's Figure 5.12 uses direct leaders from labels to package/PCB geometry, and the official KiCad SOIC-8 footprint confirms the `3.9 × 4.9 mm` body, `P1.27 mm` pitch and pin geometry.
+- Change: redrew `ch04_audit` as two evidence panels—direction/numbering and dimensions/boundary—with direct callouts for pin 1, body, lead, pad, PCB and courtyard, plus four bottom check cards. The upper-right pin-1 orientation, 1→8 sequence, SOIC-8, dimensions, courtyard meaning, caption, figure number and 720×310 viewBox are preserved.
+- Budget and contrast: the deterministic SVG is 19,286 bytes with 36 text nodes at opacity ≥ .78. Measured worst-case ratios are 7.13:1 on print paper, 6.91:1 on the light sheet and 8.19:1 in dark mode.
+- Verification: regenerating twice is byte-identical and only the target SVG changes. The rebuilt PDF remains 210 pages / 228 bookmarks; a 72-dpi whole-book comparison isolates the sole render change to p42. Printed figure text has no bounding-box collisions. `test_claims`, `test_book_metadata`, `check_book`, `test_pdf_layout`, builder `--check`, and `git diff --check` pass. `task_verify run` remains unverified (`project-or-git-baseline-unavailable`, `checks=[]`).
+- Boundary: no manuscript text, technical value, command, warning, section order, test, global style, version or release artifact changed; generated PDF/HTML remain local and uncommitted.
+
 
 ## Prose De-AI Passes (after Round 7)
 
