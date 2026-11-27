@@ -27,6 +27,15 @@
 - **Repository gates**: `tools/test_readme_links.py` → `README link regression: OK`; `tools/check_book.py` → `CONTENT CHECK OK`; `tools/test_book_metadata.py -q` → `book metadata regression: OK`.
 - **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the repository gates and browser evidence above are the executed checks.
 
+## Preface — Learning-Path Figure Alignment
+
+- **Evidence**: Figure 0-1 sat in “一个项目，一条主线” and said “卡片内容与上面的阶段表对应”, but the four-stage table was forty lines later in “怎么读”. The page order contradicted the caption.
+- **Change**: moved the `kicad-learning-path` figure below the four-stage table, named `图 0-1` in the lead-in, and changed the caption to point at the table above. No wording, number, figure, or section was removed.
+- **Verification**: rebuilt PDF is 210 pages / 228 bookmarks; the table and figure now share p9. The p8/p9 120-dpi renders show no collision, clipped text, or stranded figure. `test_claims`, `check_book`, `test_book_metadata`, `test_readme_links`, `test_pdf_layout`, and `test_pdf_cleanup` all pass.
+- **Regression**: `preface_ladder_order_problems()` now rejects a learning-path figure placed before its four-stage table. The old order returns an error; the current source returns none.
+- **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
+- **Boundary**: no chapter text, SVG, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
+
 ## Vividness Pilot — Chapter 10
 
 - Scope: Chapter 10 opening only. Added a concrete factory-acceptance scene and a hand-drawn “验包台” illustration; kept all commands, technical claims, warnings and section order. Existing Chapter 10 figures were renumbered sequentially to 10-1…10-5.
