@@ -52,6 +52,14 @@
 - **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
 - **Boundary**: no chapter text, commands, measured limits, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
 
+## Chapter 12 — First-Power Injection Path
+
+- **Evidence**: §12.3 step 3 set 5 V / 50–100 mA but did not say where to inject it; §11 already required starting at 0 V. The board has `VBUS`/`GND` test points, but the first-power section did not warn against charging via USB-C while feeding `VBUS` externally.
+- **Change**: added “限流电源怎么接”: via `VBUS`/`GND` test points or a USB-C breakout, 0 V → 5 V ramp; ordinary USB-C chargers cannot set 50–100 mA; never connect USB-C and external 5 V simultaneously; add a `VBUS` test point rather than probing the connector pins.
+- **Verification**: rebuilt PDF is 210 pages / 228 bookmarks; the paragraph is on p121 above Figure 12-3; p120/p121 renders show no collision or clipping. `test_claims`, `check_book`, `test_book_metadata`, `test_readme_links`, `test_pdf_layout`, and `test_pdf_cleanup` pass.
+- **task_verify**: `unverified` — `project-or-git-baseline-unavailable`, `checks: []`; the gates above are the executed checks.
+- **Boundary**: no command, measured limit, figure, manifest, version, or release artifact changed; generated PDF remains local and uncommitted.
+
 ## Vividness Pilot — Chapter 10
 
 - Scope: Chapter 10 opening only. Added a concrete factory-acceptance scene and a hand-drawn “验包台” illustration; kept all commands, technical claims, warnings and section order. Existing Chapter 10 figures were renumbered sequentially to 10-1…10-5.
